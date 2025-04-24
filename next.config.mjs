@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   output: 'export',
   basePath: '/rus-100',
+  // Explicitly set assetPrefix for GitHub Pages deployment
+  assetPrefix: isProd ? '/rus-100/' : undefined,
   eslint: {
     ignoreDuringBuilds: true,
   },
