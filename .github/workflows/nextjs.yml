@@ -54,6 +54,10 @@ jobs:
         with:
           node-version: "18"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8 # Or specify your desired pnpm version
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
