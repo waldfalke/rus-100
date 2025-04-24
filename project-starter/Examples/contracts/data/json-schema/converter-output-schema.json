@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ConverterOutput",
+  "description": "Схема для валидации выходных данных модуля Converter",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Уникальный идентификатор записи"
+      },
+      "isbn": {
+        "type": ["string", "null"],
+        "description": "ISBN книги",
+        "pattern": "^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$"
+      },
+      "sku": {
+        "type": ["string", "null"],
+        "description": "Артикул или SKU товара"
+      },
+      "title": {
+        "type": "string",
+        "description": "Название товара",
+        "minLength": 1
+      },
+      "author": {
+        "type": ["string", "null"],
+        "description": "Автор книги"
+      },
+      "publisher": {
+        "type": ["string", "null"],
+        "description": "Издательство книги"
+      },
+      "year": {
+        "type": ["integer", "null"],
+        "description": "Год издания книги",
+        "minimum": 1000,
+        "maximum": 2100
+      },
+      "price": {
+        "type": ["number", "null"],
+        "description": "Цена товара",
+        "minimum": 0
+      },
+      "category": {
+        "type": ["string", "null"],
+        "description": "Категория товара"
+      },
+      "description": {
+        "type": ["string", "null"],
+        "description": "Описание товара"
+      },
+      "pages": {
+        "type": ["integer", "null"],
+        "description": "Количество страниц в книге",
+        "minimum": 1
+      },
+      "weight": {
+        "type": ["number", "null"],
+        "description": "Вес товара в граммах",
+        "minimum": 0
+      },
+      "dimensions": {
+        "type": ["object", "null"],
+        "description": "Размеры товара",
+        "properties": {
+          "length": {
+            "type": "number",
+            "description": "Длина товара в мм",
+            "minimum": 0
+          },
+          "width": {
+            "type": "number",
+            "description": "Ширина товара в мм",
+            "minimum": 0
+          },
+          "height": {
+            "type": "number",
+            "description": "Высота товара в мм",
+            "minimum": 0
+          }
+        }
+      },
+      "images": {
+        "type": ["array", "null"],
+        "description": "Список URL изображений товара",
+        "items": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "vendor": {
+        "type": ["string", "null"],
+        "description": "Поставщик товара"
+      },
+      "vendor_id": {
+        "type": ["string", "null"],
+        "description": "Идентификатор товара у поставщика"
+      },
+      "barcode": {
+        "type": ["string", "null"],
+        "description": "Штрихкод товара",
+        "pattern": "^[0-9]{8,14}$"
+      },
+      "series": {
+        "type": ["string", "null"],
+        "description": "Серия книги"
+      },
+      "language": {
+        "type": ["string", "null"],
+        "description": "Язык книги"
+      },
+      "binding": {
+        "type": ["string", "null"],
+        "description": "Тип переплета книги"
+      },
+      "metadata": {
+        "type": ["object", "null"],
+        "description": "Дополнительные метаданные товара",
+        "additionalProperties": true
+      },
+      "source_file": {
+        "type": ["string", "null"],
+        "description": "Имя исходного файла"
+      },
+      "source_row": {
+        "type": ["integer", "null"],
+        "description": "Номер строки в исходном файле",
+        "minimum": 1
+      },
+      "conversion_date": {
+        "type": ["string", "null"],
+        "description": "Дата и время конвертации",
+        "format": "date-time"
+      }
+    },
+    "additionalProperties": true
+  },
+  "minItems": 0,
+  "definitions": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "source_file": {
+          "type": "string",
+          "description": "Имя исходного файла"
+        },
+        "total_rows": {
+          "type": "integer",
+          "description": "Общее количество строк в исходном файле",
+          "minimum": 0
+        },
+        "processed_rows": {
+          "type": "integer",
+          "description": "Количество обработанных строк",
+          "minimum": 0
+        },
+        "processing_time_ms": {
+          "type": "integer",
+          "description": "Время обработки в миллисекундах",
+          "minimum": 0
+        },
+        "vendor": {
+          "type": "string",
+          "description": "Определенный поставщик"
+        },
+        "warnings": {
+          "type": "array",
+          "description": "Предупреждения, возникшие при конвертации",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conversion_date": {
+          "type": "string",
+          "description": "Дата и время конвертации",
+          "format": "date-time"
+        }
+      },
+      "required": ["source_file", "total_rows", "processed_rows", "processing_time_ms", "conversion_date"]
+    }
+  }
+}

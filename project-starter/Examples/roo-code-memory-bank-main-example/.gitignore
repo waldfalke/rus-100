@@ -1,0 +1,10 @@
+.vscode
+/memory-bank
+.rooignore
+.roorules-architect
+.roorules-ask
+.roorules-code
+.roorules-debug
+.roorules-test
+.roomodes
+!/config/*

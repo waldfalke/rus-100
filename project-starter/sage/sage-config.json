@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "projectName": "Your Project Name",
+  "environment": "development",
+  "api": {
+    "baseUrl": "http://localhost:3000",
+    "endpoints": {
+      "login": "/api/auth/login",
+      "logout": "/api/auth/logout",
+      "users": "/api/users",
+      "projects": "/api/projects"
+    }
+  },
+  "database": {
+    "type": "sqlite",
+    "name": "database.sqlite"
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/sage.log"
+  },
+  "features": {
+    "analytics": false,
+    "notifications": true,
+    "darkMode": false
+  }
+}
