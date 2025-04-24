@@ -146,7 +146,6 @@
 /* Fix for content containers */
 [role="tabpanel"] > div {
   border-radius: 0.75rem;
-  overflow: hidden;
   width: 100%;
 }
 
