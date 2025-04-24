@@ -9,9 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { tasksData, egeFormatData, exercisesData } from "@/data/test-content"
-import SelectableExamText from "@/components/feature/selectable-exam-text"
+import { tasksData, egeFormatData, exercisesData, TestItem, TestCategory, EGESection, EGECategory } from "@/data/test-content"
+import { SelectableExamText } from "@/components/feature/selectable-exam-text"
 import { Badge } from "@/components/ui/badge"
+import { difficultyStatsData, TaskDifficultyStats, DifficultyDataMap } from "@/data/difficulty-data"
 
 // Define difficulty types
 // type DifficultyType = "none" | "easy" | "hard" | "both" // Old types - removed
@@ -44,22 +45,37 @@ interface SimpleSection {
   // Добавьте другие свойства секции, если они используются
 }
 
+// --- Определяем порядок и метки для уровней сложности --- 
+// (убираем count из этой структуры, т.к. он будет вычисляться)
+interface DifficultyTier {
+  id: 'easiest' | 'easy' | 'medium' | 'hard' | 'hardest'; // Уровни сложности
+  label: string; // Метка для отображения
+}
+
+const difficultyTiers: DifficultyTier[] = [
+  { id: "easiest", label: "Самые лёгкие" },
+  { id: "easy", label: "Лёгкие" },
+  { id: "medium", label: "Средние" },
+  { id: "hard", label: "Сложные" },
+  { id: "hardest", label: "Самые сложные" },
+  // { id: "unclassified", label: "Без данных" }, // Можно добавить при необходимости
+];
+
+// --- Интерфейс для состояния difficultyLevels (включая 'any') ---
+interface DisplayDifficultyLevel {
+  id: string; // 'any' или id из DifficultyTier
+  label: string;
+  count: number;
+}
+
 // --- Мок-данные для примера ---
-const mockDifficultyLevels: DifficultyLevel[] = [
-  { id: "any", label: "Любая", count: 150 }, // Общее количество, если 'Любая' выбрана
-  { id: "easiest", label: "Самые лёгкие", count: 25 },
-  { id: "easy", label: "Лёгкие", count: 42 },
-  { id: "medium", label: "Средние", count: 53 },
-  { id: "hard", label: "Сложные", count: 20 },
-  { id: "hardest", label: "Самые сложные", count: 10 },
-  { id: "unclassified", label: "Без данных", count: 0 }, // Пример для disabled
-]
-// --- Конец новых структур ---
+// const mockDifficultyLevels: DifficultyLevel[] = [...]; 
 
 export default function TestGenerator() {
-  const [tasksDataState, setTasksDataState] = useState(tasksData)
-  const [egeFormatDataState, setEgeFormatDataState] = useState(egeFormatData)
-  const [exercisesDataState, setExercisesDataState] = useState(exercisesData)
+  // --- Инициализируем состояния пустыми массивами --- 
+  const [tasksDataState, setTasksDataState] = useState(tasksData);
+  const [egeFormatDataState, setEgeFormatDataState] = useState(egeFormatData);
+  const [exercisesDataState, setExercisesDataState] = useState(exercisesData);
 
   const [selectedTab, setSelectedTab] = useState("tasks")
   const [testName, setTestName] = useState("")
@@ -70,39 +86,33 @@ export default function TestGenerator() {
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({}) 
   const [buttonText, setButtonText] = useState("Создать тест")
 
-  // --- Состояния для управления сложностью ---
-  const [difficultyLevels, setDifficultyLevels] = useState<DifficultyLevel[]>(
-    mockDifficultyLevels
-  ) // Загрузка мок-данных
-  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(["any"]) // По умолчанию выбрана 'Любая'
-  // --- Конец состояний сложности ---
+  // --- Убираем состояние difficultyLevels и его инициализацию --- 
+  // const [difficultyLevels, setDifficultyLevels] = useState<DisplayDifficultyLevel[]>(() => { ... });
+  // Состояние selectedDifficulties ОСТАВЛЯЕМ для глобальной фильтрации
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(["any"]); 
 
+  // --- Оставляем useEffect для expandedCategories, НО УПРОЩАЕМ ИНИЦИАЛИЗАЦИЮ --- 
   useEffect(() => {
-    const initialExpandedState: Record<string, boolean> = {}
-
-    // Initialize for tasks tab
-    tasksData.forEach((category) => {
+    // Просто инициализируем пустым объектом, чтобы избежать итерации при сборке
+    const initialExpandedState: Record<string, boolean> = {};
+    // Старый код инициализации:
+    tasksData.forEach((category: TestCategory) => {
       initialExpandedState[category.category] = true
     })
-
-    // Initialize for ege format tab
-    egeFormatData.forEach((section) => {
+    egeFormatData.forEach((section: EGESection) => {
       initialExpandedState[section.title] = true
-      section.categories.forEach((category) => {
+      section.categories.forEach((category: EGECategory) => {
         initialExpandedState[`${section.title}-${category.title}`] = true
       })
     })
-
-    // Initialize for exercises tab
-    exercisesData.forEach((section) => {
+    exercisesData.forEach((section: EGESection) => {
       initialExpandedState[section.title] = true
-      section.categories.forEach((category) => {
+      section.categories.forEach((category: EGECategory) => {
         initialExpandedState[`${section.title}-${category.title}`] = true
       })
     })
-
-    setExpandedCategories(initialExpandedState)
-  }, [])
+    setExpandedCategories(initialExpandedState);
+  }, []);
 
   const totalLimit = 50
   const [totalSelected, setTotalSelected] = useState(0)
@@ -136,18 +146,17 @@ export default function TestGenerator() {
   // Добавляем типы к параметрам handleCountChange
   const handleCountChange = (
     id: string | number, // ID может быть строкой или числом
-    category: string, // Категория - строка
+    categoryIdentifier: string, // Используем общее имя
     increment: number, // Инкремент - число
     tabType: "tasks" | "ege" | "exercises" // Тип вкладки
   ) => {
-    // Create a deep copy of the data based on the tab type
     let updatedData
     if (tabType === "tasks") {
       updatedData = JSON.parse(JSON.stringify(tasksDataState))
       // Find the item and update its count
       for (const categoryData of updatedData) {
         // Указываем тип Item для item
-        const item: Item | undefined = categoryData.items.find((item: Item) => item.id === id)
+        const item: TestItem | undefined = categoryData.items.find((item: TestItem) => item.id === id)
         if (item) {
           const oldCount = item.count || 0
           const newCount = Math.max(
@@ -162,114 +171,76 @@ export default function TestGenerator() {
           )
 
           // Update tab selection state if there are any items selected
-          const hasSelectedItems = updatedData.some((cat: SimpleCategory) =>
-            cat.items.some((item: Item) => item.count && item.count > 0)
+          const hasSelectedItems = updatedData.some((cat: TestCategory) =>
+            cat.items.some((item: TestItem) => item.count && item.count > 0)
           )
           setTasksSelected(hasSelectedItems)
           setTasksDataState(updatedData)
           break
         }
       }
-    } else if (tabType === "ege") {
-      updatedData = JSON.parse(JSON.stringify(egeFormatDataState))
-      // Find the item and update its count
-      let found = false
+    } else if (tabType === "ege" || tabType === "exercises") { // Объединяем логику для EGE и Exercises
+      const currentState = tabType === "ege" ? egeFormatDataState : exercisesDataState;
+      updatedData = JSON.parse(JSON.stringify(currentState));
+      let found = false;
       for (const section of updatedData) {
         for (const categoryData of section.categories) {
-          const item: Item | undefined = categoryData.items.find((item: Item) => item.id === id)
+          const item: TestItem | undefined = categoryData.items.find((item: TestItem) => item.id === id);
           if (item) {
-            const oldCount = item.count || 0
+            const oldCount = item.count || 0;
             const newCount = Math.max(
               0,
               Math.min(item.maxCount || 10, oldCount + increment)
-            )
-            item.count = newCount
+            );
+            item.count = newCount;
+            setTotalSelected((prev) => Math.max(0, Math.min(totalLimit, prev + (newCount - oldCount))));
 
-            // Update total selected count
-            setTotalSelected((prev) =>
-              Math.max(0, Math.min(totalLimit, prev + (newCount - oldCount)))
-            )
-
-            // Update tab selection state if there are any items selected
-            const hasSelectedItems = updatedData.some((section: SimpleSection) =>
-              section.categories.some((cat: SimpleCategory) =>
-                cat.items.some((item: Item) => item.count && item.count > 0)
+            const hasSelectedItems = updatedData.some((sec: EGESection) =>
+              sec.categories.some((cat: EGECategory) =>
+                cat.items.some((i: TestItem) => i.count && i.count > 0)
               )
-            )
-            setEgeSelected(hasSelectedItems)
-            setEgeFormatDataState(updatedData)
-            found = true
-            break
+            );
+            if (tabType === "ege") setEgeSelected(hasSelectedItems);
+            else setExercisesSelected(hasSelectedItems);
+
+            if (tabType === "ege") setEgeFormatDataState(updatedData);
+            else setExercisesDataState(updatedData);
+            found = true;
+            break;
           }
         }
-        if (found) break
-      }
-    } else if (tabType === "exercises") {
-      updatedData = JSON.parse(JSON.stringify(exercisesDataState))
-      // Find the item and update its count
-      let found = false
-      for (const section of updatedData) {
-        for (const categoryData of section.categories) {
-          const item: Item | undefined = categoryData.items.find((item: Item) => item.id === id)
-          if (item) {
-            const oldCount = item.count || 0
-            const newCount = Math.max(
-              0,
-              Math.min(item.maxCount || 10, oldCount + increment)
-            )
-            item.count = newCount
-
-            // Update total selected count
-            setTotalSelected((prev) =>
-              Math.max(0, Math.min(totalLimit, prev + (newCount - oldCount)))
-            )
-
-            // Update tab selection state if there are any items selected
-            const hasSelectedItems = updatedData.some((section: SimpleSection) =>
-              section.categories.some((cat: SimpleCategory) =>
-                cat.items.some((item: Item) => item.count && item.count > 0)
-              )
-            )
-            setExercisesSelected(hasSelectedItems)
-            setExercisesDataState(updatedData)
-            found = true
-            break
-          }
-        }
-        if (found) break
+        if (found) break;
       }
     }
   }
 
-  // --- Новая функция для обработки выбора сложности ---
+  // --- handleDifficultySelect ОСТАВЛЯЕМ для управления selectedDifficulties --- 
   const handleDifficultySelect = (difficultyId: string) => {
     setSelectedDifficulties((prevSelected) => {
-      const level = difficultyLevels.find(l => l.id === difficultyId);
-      // Нельзя выбрать disabled
-      if (level?.count === 0 && difficultyId !== 'any') return prevSelected;
-
+      // Проверяем, есть ли вообще задания для этого уровня (хотя бы 1)
+      // Это предотвратит выбор полностью пустых категорий, кроме 'any'
+      let totalCountForLevel = 0;
+      if (difficultyId !== 'any') {
+          totalCountForLevel = Object.values(difficultyStatsData).reduce((sum, stats) => sum + (stats[difficultyId as keyof TaskDifficultyStats] || 0), 0);
+      }
+      if (totalCountForLevel === 0 && difficultyId !== 'any') {
+         console.warn(`Attempted to select difficulty '${difficultyId}' with 0 total tasks.`);
+         return prevSelected; // Не меняем выбор, если заданий 0
+      } 
+      // Остальная логика мультивыбора
       if (difficultyId === "any") {
-        // Если выбрана 'Любая', отменить все остальные
         return ["any"];
       } else {
-        // Если выбрана конкретная сложность
-        const currentlySelected = prevSelected.filter((id) => id !== "any"); // Убрать 'Любая', если она была
-
+        const currentlySelected = prevSelected.filter((id) => id !== "any");
         if (currentlySelected.includes(difficultyId)) {
-          // Если уже выбрана, убрать ее
           const newSelection = currentlySelected.filter((id) => id !== difficultyId);
-          // Если ничего не осталось, выбрать 'Любая'
           return newSelection.length === 0 ? ["any"] : newSelection;
         } else {
-          // Если не выбрана, добавить ее
           return [...currentlySelected, difficultyId];
         }
       }
     });
-    // TODO: Здесь можно добавить логику для пересчета доступных заданий
-    // и обновления count в difficultyLevels, если другие фильтры влияют на это.
   };
-  // --- Конец новой функции ---
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) => ({
@@ -278,81 +249,93 @@ export default function TestGenerator() {
     }))
   }
 
-  // --- Функция для рендера чипов сложности ---
-  const renderDifficultyChips = () => {
-    return (
-      <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-sm font-medium text-gray-700 mr-2">Сложность:</span>
-        {difficultyLevels.map((level) => {
-          const isSelected = selectedDifficulties.includes(level.id);
-          const isDisabled = level.count === 0 && level.id !== 'any'; // 'Любая' не может быть disabled по count=0
-          const isAnySelected = selectedDifficulties.includes('any');
+  // --- Модифицированная renderItemRow --- 
+  const renderItemRow = (item: TestItem, category: TestCategory | EGECategory, tabType: "tasks" | "ege" | "exercises") => {
+      const currentCount = item.count || 0;
+      const maxCount = item.maxCount || 10;
+      const categoryIdentifier = 'category' in category ? category.category : category.title; 
+      
+      // Формируем уникальный ID для поиска в difficultyStatsData
+      // Префиксы должны совпадать с ключами в data/difficulty-data.ts
+      const statsId = `${tabType}-${item.id}`;
+      const itemStats: TaskDifficultyStats | undefined = difficultyStatsData[statsId];
 
-          return (
-            <Badge
-              key={level.id}
-              variant={isSelected ? "default" : "outline"}
-              onClick={() => handleDifficultySelect(level.id)}
-              className={`cursor-pointer transition-colors ${
-                isDisabled
-                  ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
-                  : isSelected
-                  ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-              aria-disabled={isDisabled}
-              role="checkbox"
-              aria-checked={isSelected}
-              tabIndex={isDisabled ? -1 : 0} // Доступность
-            >
-              {level.id === "any" && (
-                 <Dice3 className="w-4 h-4 mr-1 inline-block" />
-              )}
-              {level.label} ({level.id === 'any' ? difficultyLevels.reduce((sum, l) => l.id !== 'any' ? sum + l.count : sum, 0) : level.count})
-              {/* Показываем сумму для 'Любая' или конкретное число */}
-            </Badge>
-          );
-        })}
-      </div>
-    );
-  };
-  // --- Конец функции рендера ---
-
-  // --- Helper function to render items, now without old difficulty buttons --- 
-  const renderItemRow = (item: any, category: any, tabType: "tasks" | "ege" | "exercises") => {
-      const currentCount = item.count || 0
-      const maxCount = item.maxCount || 10
-      const diff = maxCount - currentCount
-      const categoryIdentifier = category.category || category.title // Handle different category structures
-  
       return (
-        <div key={item.id} className="flex items-center justify-between py-2">
-          <span className="text-sm text-gray-800 flex-1 pr-4">{item.title}</span>
-          <div className="flex items-center space-x-2">
-            {/* Count adjustment buttons - kept */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => handleCountChange(item.id, categoryIdentifier, -1, tabType)}
-              disabled={currentCount <= 0}
-            >
-              -
-            </Button>
-            <span className="text-sm font-medium w-8 text-center">{currentCount}</span>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => handleCountChange(item.id, categoryIdentifier, 1, tabType)}
-              disabled={currentCount >= maxCount}
-            >
-              +
-            </Button>
-          </div>
-        </div>
-      )
-    }
+        // Оборачиваем в Card для лучшего вида, если нужно
+        <Card key={item.id} className="border border-gray-200 mb-2">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              {/* Название задания */}
+              <span className="text-sm text-gray-800 flex-grow pr-4">{item.title}</span>
+
+              {/* Блок управления (сложность + количество) */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 w-full sm:w-auto justify-end">
+                
+                {/* Чипсы сложности для этого задания */}
+                <div className="flex flex-wrap gap-1.5">
+                  {itemStats ? (
+                    difficultyTiers.map(tier => {
+                      const countForItemTier = itemStats[tier.id] || 0;
+                      const isDisabled = countForItemTier === 0;
+                      const isGloballySelected = selectedDifficulties.includes("any") || selectedDifficulties.includes(tier.id);
+
+                      return (
+                        <Badge
+                          key={tier.id}
+                          variant={isGloballySelected && !isDisabled ? "default" : "outline"} // Выделяем, если выбрано глобально и доступно
+                          onClick={() => !isDisabled && handleDifficultySelect(tier.id)} // Выбираем глобальный фильтр
+                          className={`cursor-pointer transition-colors text-xs px-2 py-0.5 ${ 
+                            isDisabled
+                              ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
+                              : isGloballySelected
+                              ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
+                              : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                          }`}
+                          aria-disabled={isDisabled}
+                          role="checkbox"
+                          aria-checked={isGloballySelected && !isDisabled}
+                          tabIndex={isDisabled ? -1 : 0} 
+                        >
+                          {tier.label} ({countForItemTier})
+                        </Badge>
+                      );
+                    })
+                  ) : (
+                    <span className="text-xs text-gray-400 italic">Нет данных о сложности</span>
+                  )}
+                </div>
+
+                {/* Разделитель */}
+                <Separator orientation="vertical" className="h-6 hidden sm:block" />
+
+                {/* Кнопки +/- */} 
+                <div className="flex items-center space-x-1.5 flex-shrink-0">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => handleCountChange(item.id, categoryIdentifier, -1, tabType)}
+                    disabled={currentCount <= 0}
+                  >
+                    -
+                  </Button>
+                  <span className="text-sm font-medium w-8 text-center tabular-nums">{currentCount}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => handleCountChange(item.id, categoryIdentifier, 1, tabType)}
+                    disabled={currentCount >= maxCount}
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    };
 
   return (
     <div className="bg-gray-100 font-sans pb-24 min-h-screen">
@@ -487,15 +470,12 @@ export default function TestGenerator() {
             </div>
           </div>
 
-          {/* --- Вставка чипов выбора сложности --- */}
-          <div className="mb-6"> {/* Отступ снизу */}
-            {renderDifficultyChips()}
-          </div>
-          {/* --- Конец вставки --- */}
+          {/* --- УДАЛЕНА ВСТАВКА ГЛОБАЛЬНЫХ ЧИПОВ --- */}
+          {/* <div className="mb-6"> {renderDifficultyChips()} </div> */}
 
         </div>
 
-        {/* Selectable Exam Text Component */}
+        {/* Selectable Exam Text */}
         <div className="mb-4">
           <SelectableExamText />
         </div>
@@ -532,15 +512,16 @@ export default function TestGenerator() {
 
           {/* Общий контейнер для всех вкладок с единым отступом */}
           <div className="pt-6">
-            {/* По заданиям Tab */}
+            {/* Восстановленное содержимое вкладок */}
             <TabsContent value="tasks" className="w-full max-w-full mt-0">
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Генерация по заданиям</h2>
                 <p className="text-sm text-gray-600 mb-6">
                   Выберите количество вопросов и уровень сложности для каждого задания:
                 </p>
-
-                {tasksDataState.map((category) => (
+                {tasksDataState?.map((category: TestCategory) => {
+                  if (!category) return null;
+                  return (
                   <div key={category.category} className="mb-6">
                     <div
                       className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
@@ -553,28 +534,31 @@ export default function TestGenerator() {
                         <ChevronDown className="w-5 h-5 text-gray-500" />
                       )}
                     </div>
-
                     {expandedCategories[category.category] && (
                       <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                        {category.items.map((item) => renderItemRow(item, category, "tasks"))}
+                          {category.items?.map((item: TestItem) => {
+                            if (!item) return null;
+                            return renderItemRow(item, category, "tasks");
+                          })}
                       </div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </TabsContent>
-
-            {/* Формат ЕГЭ Tab */}
             <TabsContent value="ege" className="w-full max-w-full mt-0">
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Формат ЕГЭ</h2>
                 <p className="text-sm text-gray-600 mb-6">Выберите параметры для генерации теста в формате ЕГЭ:</p>
-
-                {egeFormatDataState.map((section) => (
+                {egeFormatDataState?.map((section: EGESection) => {
+                  if (!section) return null;
+                  return (
                   <div key={section.title} className="mb-5 sm:mb-8">
                     <h3 className="text-lg font-medium text-gray-800 mb-4">{section.title}</h3>
-
-                    {section.categories.map((category) => (
+                      {section.categories?.map((category: EGECategory) => {
+                        if (!category) return null;
+                        return (
                       <div key={`${section.title}-${category.title}`} className="mb-6">
                         <div
                           className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
@@ -587,30 +571,34 @@ export default function TestGenerator() {
                             <ChevronDown className="w-5 h-5 text-gray-500" />
                           )}
                         </div>
-
                         {expandedCategories[`${section.title}-${category.title}`] && (
                           <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                            {category.items.map((item) => renderItemRow(item, category, "ege"))}
+                                {category.items?.map((item: TestItem) => {
+                                  if (!item) return null;
+                                  return renderItemRow(item, category, "ege");
+                                })}
+                                        </div>
+                                      )}
                           </div>
-                        )}
+                        );
+                      })}
                       </div>
-                    ))}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </TabsContent>
-
-            {/* Упражнения Tab */}
             <TabsContent value="exercises" className="w-full max-w-full mt-0">
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Упражнения</h2>
                 <p className="text-sm text-gray-600 mb-6">Выберите упражнения для включения в тест:</p>
-
-                {exercisesDataState.map((section) => (
+                {exercisesDataState?.map((section: EGESection) => {
+                  if (!section) return null;
+                  return (
                   <div key={section.title} className="mb-5 sm:mb-8">
                     <h3 className="text-lg font-medium text-gray-800 mb-4">{section.title}</h3>
-
-                    {section.categories.map((category) => (
+                      {section.categories?.map((category: EGECategory) => {
+                        if (!category) return null;
+                        return (
                       <div key={`${section.title}-${category.title}`} className="mb-6">
                         <div
                           className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
@@ -623,16 +611,20 @@ export default function TestGenerator() {
                             <ChevronDown className="w-5 h-5 text-gray-500" />
                           )}
                         </div>
-
                         {expandedCategories[`${section.title}-${category.title}`] && (
                           <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                            {category.items.map((item) => renderItemRow(item, category, "exercises"))}
+                                {category.items?.map((item: TestItem) => {
+                                  if (!item) return null;
+                                  return renderItemRow(item, category, "exercises");
+                                })}
+                                        </div>
+                                      )}
                           </div>
-                        )}
+                        );
+                      })}
                       </div>
-                    ))}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </TabsContent>
           </div>

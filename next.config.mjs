@@ -5,33 +5,14 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    // Temporarily disable ignoring build errors to surface potential type issues
+    ignoreBuildErrors: false,
   },
   images: {
     unoptimized: true,
   },
-  // Отключаем WebAssembly и используем чистый JavaScript для хеширования
-  webpack: (config, { isServer, dev }) => {
-    // Отключаем использование WasmHash, который вызывает ошибку
-    config.optimization.moduleIds = 'deterministic';
-    
-    // Отключаем WebAssembly-зависимые хеш-функции
-    if (config.optimization && config.optimization.minimizer) {
-      for (const minimizer of config.optimization.minimizer) {
-        if (minimizer.constructor.name === 'TerserPlugin') {
-          minimizer.options.terserOptions = {
-            ...minimizer.options.terserOptions,
-            format: {
-              ...minimizer.options.terserOptions?.format,
-              comments: false,
-            },
-          };
-        }
-      }
-    }
-    
-    return config;
-  },
+  // The custom webpack config below caused the build failure and is removed.
+  // It was originally added possibly to address a WasmHash issue.
 }
 
 export default nextConfig
