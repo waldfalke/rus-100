@@ -73,46 +73,17 @@ interface DisplayDifficultyLevel {
 
 export default function TestGenerator() {
   // --- Инициализируем состояния пустыми массивами --- 
-  const [tasksDataState, setTasksDataState] = useState(tasksData);
-  const [egeFormatDataState, setEgeFormatDataState] = useState(egeFormatData);
-  const [exercisesDataState, setExercisesDataState] = useState(exercisesData);
-
-  const [selectedTab, setSelectedTab] = useState("tasks")
   const [testName, setTestName] = useState("")
-  const [testGroup, setTestGroup] = useState("")
-  const [account, setAccount] = useState("")
+  const [testGroup, setTestGroup] = useState<string | undefined>(undefined)
+  const [account, setAccount] = useState<string | undefined>(undefined)
+  const [tasksDataState, setTasksDataState] = useState<TestCategory[] | null>(null);
+  const [egeFormatDataState, setEgeFormatDataState] = useState<EGESection[] | null>(null);
+  const [exercisesDataState, setExercisesDataState] = useState<EGESection[] | null>(null);
+  const [itemDifficulties, setItemDifficulties] = useState<Record<string, string>>({});
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [selectedTab, setSelectedTab] = useState("tasks");
   const [newGroup, setNewGroup] = useState("")
-  // Указываем тип для expandedCategories
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({}) 
   const [buttonText, setButtonText] = useState("Создать тест")
-
-  // --- Убираем состояние difficultyLevels и его инициализацию --- 
-  // const [difficultyLevels, setDifficultyLevels] = useState<DisplayDifficultyLevel[]>(() => { ... });
-  // Состояние selectedDifficulties ОСТАВЛЯЕМ для глобальной фильтрации
-  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(["any"]); 
-
-  // --- Оставляем useEffect для expandedCategories, НО УПРОЩАЕМ ИНИЦИАЛИЗАЦИЮ --- 
-  useEffect(() => {
-    // Просто инициализируем пустым объектом, чтобы избежать итерации при сборке
-    const initialExpandedState: Record<string, boolean> = {};
-    // Старый код инициализации:
-    tasksData.forEach((category: TestCategory) => {
-      initialExpandedState[category.category] = true
-    })
-    egeFormatData.forEach((section: EGESection) => {
-      initialExpandedState[section.title] = true
-      section.categories.forEach((category: EGECategory) => {
-        initialExpandedState[`${section.title}-${category.title}`] = true
-      })
-    })
-    exercisesData.forEach((section: EGESection) => {
-      initialExpandedState[section.title] = true
-      section.categories.forEach((category: EGECategory) => {
-        initialExpandedState[`${section.title}-${category.title}`] = true
-      })
-    })
-    setExpandedCategories(initialExpandedState);
-  }, []);
 
   const totalLimit = 50
   const [totalSelected, setTotalSelected] = useState(0)
@@ -214,32 +185,12 @@ export default function TestGenerator() {
     }
   }
 
-  // --- handleDifficultySelect ОСТАВЛЯЕМ для управления selectedDifficulties --- 
-  const handleDifficultySelect = (difficultyId: string) => {
-    setSelectedDifficulties((prevSelected) => {
-      // Проверяем, есть ли вообще задания для этого уровня (хотя бы 1)
-      // Это предотвратит выбор полностью пустых категорий, кроме 'any'
-      let totalCountForLevel = 0;
-      if (difficultyId !== 'any') {
-          totalCountForLevel = Object.values(difficultyStatsData).reduce((sum, stats) => sum + (stats[difficultyId as keyof TaskDifficultyStats] || 0), 0);
-      }
-      if (totalCountForLevel === 0 && difficultyId !== 'any') {
-         console.warn(`Attempted to select difficulty '${difficultyId}' with 0 total tasks.`);
-         return prevSelected; // Не меняем выбор, если заданий 0
-      } 
-      // Остальная логика мультивыбора
-      if (difficultyId === "any") {
-        return ["any"];
-      } else {
-        const currentlySelected = prevSelected.filter((id) => id !== "any");
-        if (currentlySelected.includes(difficultyId)) {
-          const newSelection = currentlySelected.filter((id) => id !== difficultyId);
-          return newSelection.length === 0 ? ["any"] : newSelection;
-        } else {
-          return [...currentlySelected, difficultyId];
-        }
-      }
-    });
+  // ADD NEW PER-ITEM HANDLER
+  const handleItemDifficultyChange = (itemId: string | number, difficultyId: string) => {
+    setItemDifficulties(prev => ({
+      ...prev,
+      [itemId]: difficultyId // Set the difficulty for the specific item
+    }));
   };
 
   const toggleCategory = (category: string) => {
@@ -272,34 +223,55 @@ export default function TestGenerator() {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 w-full sm:w-auto justify-end">
                 
                 {/* Чипсы сложности для этого задания */}
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 items-center">
                   {itemStats ? (
-                    difficultyTiers.map(tier => {
-                      const countForItemTier = itemStats[tier.id] || 0;
-                      const isDisabled = countForItemTier === 0;
-                      const isGloballySelected = selectedDifficulties.includes("any") || selectedDifficulties.includes(tier.id);
+                    <>
+                      {/* "Любая" Badge */}
+                      <Badge
+                        key={`${item.id}-any`}
+                        variant={!itemDifficulties[item.id] || itemDifficulties[item.id] === 'any' ? "default" : "outline"}
+                        onClick={() => handleItemDifficultyChange(item.id, 'any')}
+                        className={`cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 ${
+                          !itemDifficulties[item.id] || itemDifficulties[item.id] === 'any'
+                            ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
+                            : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                        }`}
+                        role="radio"
+                        aria-checked={!itemDifficulties[item.id] || itemDifficulties[item.id] === 'any'}
+                        tabIndex={0}
+                      >
+                        <Dice3 className="w-3 h-3" />
+                        Любая ({Object.values(itemStats).reduce((sum, count) => sum + count, 0)})
+                      </Badge>
 
-                      return (
-                        <Badge
-                          key={tier.id}
-                          variant={isGloballySelected && !isDisabled ? "default" : "outline"} // Выделяем, если выбрано глобально и доступно
-                          onClick={() => !isDisabled && handleDifficultySelect(tier.id)} // Выбираем глобальный фильтр
-                          className={`cursor-pointer transition-colors text-xs px-2 py-0.5 ${ 
-                            isDisabled
-                              ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
-                              : isGloballySelected
-                              ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                              : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                          }`}
-                          aria-disabled={isDisabled}
-                          role="checkbox"
-                          aria-checked={isGloballySelected && !isDisabled}
-                          tabIndex={isDisabled ? -1 : 0} 
-                        >
-                          {tier.label} ({countForItemTier})
-                        </Badge>
-                      );
-                    })
+                      {/* Tier-specific Badges */}
+                      {difficultyTiers.map(tier => {
+                        const countForItemTier = itemStats[tier.id] || 0;
+                        const isDisabled = countForItemTier === 0;
+                        const isSelected = itemDifficulties[item.id] === tier.id;
+
+                        return (
+                          <Badge
+                            key={`${item.id}-${tier.id}`}
+                            variant={isSelected && !isDisabled ? "default" : "outline"}
+                            onClick={() => !isDisabled && handleItemDifficultyChange(item.id, tier.id)}
+                            className={`cursor-pointer transition-colors text-xs px-2 py-0.5 ${ 
+                              isDisabled
+                                ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
+                                : isSelected
+                                ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
+                                : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                            }`}
+                            aria-disabled={isDisabled}
+                            role="radio"
+                            aria-checked={isSelected && !isDisabled}
+                            tabIndex={isDisabled ? -1 : 0}
+                          >
+                            {tier.label} ({countForItemTier})
+                          </Badge>
+                        );
+                      })}
+                    </>
                   ) : (
                     <span className="text-xs text-gray-400 italic">Нет данных о сложности</span>
                   )}
