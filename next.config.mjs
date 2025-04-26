@@ -1,20 +1,40 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production'
+const isGithubPages = process.env.GITHUB_PAGES === 'true'
 
 const nextConfig = {
   output: 'export',
-  basePath: '/rus-100',
-  // Explicitly set assetPrefix for GitHub Pages deployment
-  assetPrefix: isProd ? '/rus-100/' : undefined,
+  // Условно устанавливаем basePath только для GitHub Pages
+  basePath: isGithubPages ? '/rus-100' : '',
+  // Условно устанавливаем assetPrefix только для GitHub Pages
+  assetPrefix: isGithubPages ? '/rus-100/' : undefined,
+  // Добавляем поддержку изображений
+  images: {
+    unoptimized: true,
+    domains: ['github.com', 'raw.githubusercontent.com'],
+  },
+  // Отключаем trailingSlash для лучшей совместимости
+  trailingSlash: false,
+  // Обновляем экспериментальные настройки
+  experimental: {
+    // Удаляем appDir, так как он больше не является экспериментальным
+    // Обновляем serverActions на объект с enabled: true
+    serverActions: {
+      enabled: true
+    }
+  },
+  // Настройки для правильной работы с GitHub Pages
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubPages ? '/rus-100' : '',
+  },
+  // Отключаем строгий режим для отладки
+  reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     // Temporarily disable ignoring build errors to surface potential type issues
     ignoreBuildErrors: false,
-  },
-  images: {
-    unoptimized: true,
   },
   // The custom webpack config below caused the build failure and is removed.
   // It was originally added possibly to address a WasmHash issue.
