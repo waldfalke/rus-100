@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:local": "next build",
     "build:gh-pages": "GITHUB_PAGES=true next build",
     "build:gh-pages:win": "set GITHUB_PAGES=true&& next build",
     "start": "next start",
-    "start:static": "serve out",
+    "start:static": "npx serve out",
+    "start:static:local": "npx serve out -p 3000",
     "lint": "next lint"
   },
   "dependencies": {

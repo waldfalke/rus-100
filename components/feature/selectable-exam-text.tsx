@@ -200,7 +200,7 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[400px] w-full rounded-md border p-4 whitespace-pre-line bg-white">
+        <ScrollArea className="h-[300px] w-full rounded-md border p-4 whitespace-pre-line bg-white text-base">
           {selectedText?.content || "Текст не выбран."}
         </ScrollArea>
       </CardContent>
