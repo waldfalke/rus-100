@@ -94,9 +94,42 @@
 }
 
 /* Style for task-level labels (non-bold) */
-.question-card p {
+.task-level {
   font-weight: normal;
-  font-size: 0.95rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Style for difficulty chips */
+.difficulty-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgb(209 213 219);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.difficulty-chip.selected {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+
+.difficulty-chip:not(.selected) {
+  background-color: white;
+  color: rgb(75 85 99);
+}
+
+.difficulty-chip:not(.selected):hover {
+  background-color: rgb(249 250 251);
+}
+
+.difficulty-chip + .difficulty-chip {
+  margin-left: 4px;
 }
 
 /* Style for category-level headers */
@@ -161,39 +194,4 @@
 .fixed.bottom-0 button {
   opacity: 1 !important;
   font-weight: 500;
-}
-
-/* New hirehi-style chip design */
-.difficulty-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 400;
-  padding: 2px 8px;
-  height: 24px;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  color: #333;
-  border: none;
-}
-
-.difficulty-chip:hover:not(:disabled) {
-  background-color: #eaeaea;
-}
-
-.difficulty-chip.active {
-  background-color: #f3f9e3;
-  color: #333;
-}
-
-.difficulty-chip:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.difficulty-chip + .difficulty-chip {
-  margin-left: 4px;
 }
