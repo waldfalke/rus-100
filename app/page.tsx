@@ -93,6 +93,36 @@ export default function TestGenerator() {
   const [egeSelected, setEgeSelected] = useState(false)
   const [exercisesSelected, setExercisesSelected] = useState(false)
 
+  // Добавляем состояние для отслеживания загрузки
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  // Модифицируем useEffect для лучшей обработки загрузки данных
+  useEffect(() => {
+    try {
+      // Проверяем наличие данных
+      if (!tasksData || !egeFormatData || !exercisesData) {
+        throw new Error('Data is missing');
+      }
+
+      // Инициализируем данные
+      setTasksDataState(tasksData);
+      setEgeFormatDataState(egeFormatData);
+      setExercisesDataState(exercisesData);
+      
+      // Автоматически разворачиваем первую категорию
+      if (tasksData.length > 0) {
+        setExpandedCategories(prev => ({ ...prev, [tasksData[0].category]: true }));
+      }
+      
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error initializing data:', error);
+      setIsError(true);
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     updateButtonText()
   }, [tasksSelected, egeSelected, exercisesSelected])
@@ -308,6 +338,32 @@ export default function TestGenerator() {
         </Card>
       );
     };
+
+  // Добавляем обработку состояний загрузки
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Progress value={30} className="w-[60%] mx-auto" />
+          <p className="mt-4">Загрузка данных...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-red-600">Ошибка загрузки</h2>
+          <p className="mt-2">Не удалось загрузить данные. Пожалуйста, обновите страницу.</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            Обновить страницу
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 font-sans pb-24 min-h-screen">

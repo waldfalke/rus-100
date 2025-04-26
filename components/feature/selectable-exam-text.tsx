@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Data based on FC-001 Selectable Exam Text contract
 const prototypeTexts = [
@@ -113,15 +113,69 @@ interface SelectableExamTextProps {
 }
 
 export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
-  const [selectedTextId, setSelectedTextId] = useState<string>(
-    prototypeTexts[0].id // Default to the first text
-  );
+  const [selectedTextId, setSelectedTextId] = useState<string>(prototypeTexts[0].id);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Имитируем загрузку данных
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        // Проверяем наличие данных
+        if (!prototypeTexts || prototypeTexts.length === 0) {
+          throw new Error('Тексты не найдены');
+        }
+        // Имитируем задержку загрузки
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setIsLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Произошла ошибка при загрузке текстов');
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const selectedText = prototypeTexts.find((text) => text.id === selectedTextId);
 
   const handleValueChange = (value: string) => {
     setSelectedTextId(value);
   };
+
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-8 w-[200px]" />
+            <Skeleton className="h-10 w-[280px]" />
+          </div>
+          <Skeleton className="h-4 w-[300px] mt-2" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[400px] w-full" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-red-600">Ошибка</CardTitle>
+          <CardDescription>{error}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-center items-center h-[400px] text-red-500">
+            Не удалось загрузить тексты. Пожалуйста, обновите страницу.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full">
@@ -146,16 +200,12 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[400px] w-full rounded-md border p-4 whitespace-pre-line">
+        <ScrollArea className="h-[400px] w-full rounded-md border p-4 whitespace-pre-line bg-white">
           {selectedText?.content || "Текст не выбран."}
         </ScrollArea>
       </CardContent>
-      {/* <CardFooter>
-        <p>Optional Footer Content</p>
-      </CardFooter> */}
     </Card>
   );
 };
 
-// Export the component for use in other parts of the application
 export default SelectableExamText; 
