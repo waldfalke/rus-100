@@ -34,7 +34,8 @@ git commit -m "Описание изменений"
 git push
 ```
 2. GitHub Actions автоматически:
-   - Запустит сборку с правильными настройками для GitHub Pages
+   - Запустит сборку с правильными настройками для GitHub Pages (используя workflow `.github/workflows/nextjs.yml`)
+   - **Важно:** Текущий рабочий workflow использует Node.js 18. Попытки использовать Node.js 20 приводили к ошибкам нехватки памяти во время сборки.
    - Выполнит деплой на GitHub Pages
    - Процесс можно отслеживать во вкладке "Actions" на GitHub
 
@@ -50,15 +51,16 @@ npm run build:gh-pages:win
 ```bash
 npm run build:gh-pages
 ```
+- **Примечание:** Локальная сборка для GitHub Pages также может потребовать использования Node.js 18 или увеличения лимита памяти Node.js (`NODE_OPTIONS=--max-old-space-size=4096`), если возникают ошибки нехватки памяти.
 
 ## Деплой Storybook на GitHub Pages
 
 ### Автоматический деплой через GitHub Actions
-Storybook можно деплоить отдельно от основного сайта на GitHub Pages. Для этого используется отдельный workflow (например, `.github/workflows/deploy-storybook.yml`).
+Storybook можно деплоить отдельно от основного сайта на GitHub Pages. Для этого используется отдельный workflow `.github/workflows/deploy-storybook.yml`.
 
 1. После коммита в основную ветку GitHub Actions:
-   - Собирает Storybook командой `npm run build-storybook`
-   - Публикует содержимое папки `storybook-static` на ветку `gh-pages` или в поддиректорию `/storybook/`
+   - Собирает Storybook командой `npm run build-storybook` (обычно использует Node.js 18 или 20, см. `.github/workflows/deploy-storybook.yml`)
+   - Публикует содержимое папки `storybook-static` в поддиректорию `/storybook/`
    - Публичная ссылка: `https://<username>.github.io/<repository-name>/storybook/`
 
 2. Для ручной сборки Storybook:
@@ -71,29 +73,90 @@ npm run build-storybook
 npx serve storybook-static
 ```
 
-### Пример workflow для деплоя Storybook
+### Пример workflow для деплоя основного сайта (`.github/workflows/nextjs.yml` - Рабочая версия на 2025-04-30)
 ```yaml
-name: Deploy Storybook to GitHub Pages
+name: Deploy Next.js site to Pages
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect Package Manager
+        id: detect-package-manager
+        run: |
+          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=yarn" >> $GITHUB_OUTPUT
+            exit 0
+          elif [ -f "${{ github.workspace }}/pnpm-lock.yaml" ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=pnpm" >> $GITHUB_OUTPUT
+            exit 0
+          elif [ -f "${{ github.workspace }}/package.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "runner=npx" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Unable to determine package manager"
+            exit 1
+          fi
+      - name: Install pnpm
+        if: steps.detect-package-manager.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '20'
-      - run: npm ci
-      - run: npm run build-storybook
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Используем Node.js 18
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s?', '**.[jt]sx?') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Install dependencies
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }} # Использует npm ci или эквивалент
+      - name: Build with Next.js
+        run: ${{ steps.detect-package-manager.outputs.runner }} next build # Использует npx next build
+      - name: Create .nojekyll file
+        run: touch ./out/.nojekyll # Важно для GitHub Pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          destination_dir: storybook
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
 ## Storybook: настройка, токены, деплой
@@ -176,6 +239,6 @@ rm -rf node_modules/.cache/storybook
    - Переустановить зависимости: `npm ci`
 
 2. Если деплой на GitHub Pages не работает:
-   - Проверить настройки репозитория (Settings -> Pages)
-   - Проверить файл `.github/workflows/deploy.yml`
+   - Проверить настройки репозитория (Settings -> Pages -> Build and deployment -> Source: GitHub Actions)
+   - Проверить файл `.github/workflows/nextjs.yml`
    - Просмотреть логи в GitHub Actions 
