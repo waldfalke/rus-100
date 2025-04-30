@@ -33,22 +33,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Временно отключаем проверку ошибок сборки для решения проблем с типами
-    ignoreBuildErrors: true,
+    // Включаем обратно проверку ошибок типов
+    ignoreBuildErrors: false,
   },
-  // Ограничиваем память для сборки и предотвращаем ошибки с большими массивами
-  webpack: (config, { isServer }) => {
-    // Предотвращаем ошибки с большими массивами в режиме сборки
-    config.performance = {
-      ...config.performance,
-      hints: false,
-      maxEntrypointSize: 512000,
-      maxAssetSize: 512000
-    };
-    
-    // Возвращаем обновленную конфигурацию
-    return config;
-  }
 }
 
 export default nextConfig

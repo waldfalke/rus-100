@@ -243,7 +243,7 @@ export default function TestGenerator() {
   // ADD NEW PER-ITEM HANDLER
   const handleItemDifficultyChange = (itemId: string | number, difficulty: string[]) => {
     setItemDifficulties(prev => ({
-      ...prev,
+          ...prev,
       [itemId]: difficulty
     }));
   };

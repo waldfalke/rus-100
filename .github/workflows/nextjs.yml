@@ -54,10 +54,10 @@ jobs:
         run: npm install --package-lock-only
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      - name: Install cross-env
-        run: npm install -g cross-env
       - name: Build with Next.js
-        run: cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+        run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
