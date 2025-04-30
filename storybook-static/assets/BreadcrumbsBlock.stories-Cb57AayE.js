@@ -1,0 +1,4 @@
+import{j as e}from"./jsx-runtime-DoEZbXM1.js";import"./jsx-runtime-Bw5QeaCk.js";const s=()=>e.jsxs("nav",{className:"breadcrumbs text-sm text-gray-600 mb-4",children:[e.jsx("a",{href:"#",className:"hover:underline",children:"Главная"})," > ",e.jsx("span",{children:"Генерация теста"})]});try{s.displayName="BreadcrumbsBlock",s.__docgenInfo={description:"",displayName:"BreadcrumbsBlock",props:{}}}catch{}const m={title:"Blocks/BreadcrumbsBlock",component:s},r={render:()=>e.jsx(s,{})};var a,c,o;r.parameters={...r.parameters,docs:{...(a=r.parameters)==null?void 0:a.docs,source:{originalSource:`{
+  render: () => <BreadcrumbsBlock />
+}`,...(o=(c=r.parameters)==null?void 0:c.docs)==null?void 0:o.source}}};const l=["Default"];export{r as Default,l as __namedExportsOrder,m as default};
+//# sourceMappingURL=BreadcrumbsBlock.stories-Cb57AayE.js.map

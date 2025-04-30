@@ -10,10 +10,13 @@ import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { tasksData, egeFormatData, exercisesData, TestItem, TestCategory, EGESection, EGECategory } from "@/data/test-content"
-import { SelectableExamText } from "@/components/feature/selectable-exam-text"
+import { SelectableExamText } from "@/components/ui/selectable-exam-text"
 import { Badge } from "@/components/ui/badge"
 import { difficultyStatsData, TaskDifficultyStats, DifficultyDataMap } from "@/data/difficulty-data"
-import { TaskCategorySelector } from "@/components/feature/task-category-selector"
+import { TaskCategorySelector } from "@/components/ui/task-category-selector"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { TaskCardBlock } from "@/components/ui/TaskCardBlock"
+import { SelectionDropdown, SelectionOption } from "@/components/ui/SelectionDropdown"
 
 // Define difficulty types
 // type DifficultyType = "none" | "easy" | "hard" | "both" // Old types - removed
@@ -81,6 +84,14 @@ interface ItemDifficulties {
 interface ItemCategories {
   [key: string | number]: string[];
 }
+
+// Добавляем маппинг заданий к их категориям
+const taskCategories: Record<string, string[]> = {
+  "1": ["предлоги", "союзы", "частицы", "местоимения", "наречия", "вводные слова"],
+  "6": ["исключить", "заменить"],
+  "21": ["запятая", "тире", "двоеточие"],
+  "25": ["синонимы", "антонимы", "фразеологизмы", "слово"],
+};
 
 export default function TestGenerator() {
   // --- Инициализируем состояния пустыми массивами --- 
@@ -230,39 +241,11 @@ export default function TestGenerator() {
   }
 
   // ADD NEW PER-ITEM HANDLER
-  const handleItemDifficultyChange = (itemId: string | number, difficultyId: string) => {
-    setItemDifficulties(prev => {
-      const currentDifficulties = prev[itemId] || [];
-      
-      // Если выбрана опция "any", очищаем все другие
-      if (difficultyId === 'any') {
-        return {
-          ...prev,
-          [itemId]: ['any']
-        };
-      }
-      
-      // Если уже были выбраны конкретные сложности
-      let newDifficulties: string[];
-      if (currentDifficulties.includes(difficultyId)) {
-        // Убираем сложность если она уже была выбрана
-        newDifficulties = currentDifficulties.filter(d => d !== difficultyId);
-        // Если ничего не осталось, устанавливаем "any"
-        if (newDifficulties.length === 0) {
-          newDifficulties = ['any'];
-        }
-      } else {
-        // Добавляем новую сложность и убираем "any" если она была
-        newDifficulties = currentDifficulties
-          .filter(d => d !== 'any')
-          .concat(difficultyId);
-      }
-      
-      return {
-        ...prev,
-        [itemId]: newDifficulties
-      };
-    });
+  const handleItemDifficultyChange = (itemId: string | number, difficulty: string[]) => {
+    setItemDifficulties(prev => ({
+      ...prev,
+      [itemId]: difficulty
+    }));
   };
 
   const toggleCategory = (category: string) => {
@@ -274,125 +257,113 @@ export default function TestGenerator() {
 
   // Добавляем функцию для обработки изменения категорий
   const handleCategoriesChange = (itemId: string | number, categories: string[]) => {
-    setItemCategories(prev => ({
-      ...prev,
-      [itemId]: categories
-    }));
+    setItemCategories({ ...itemCategories, [itemId]: categories });
   };
 
-  // Обновляем функцию renderItemRow
+  // Функция рендеринга карточки задания
   const renderItemRow = (item: TestItem, category: TestCategory | EGECategory, tabType: "tasks" | "ege" | "exercises") => {
     const currentCount = item.count || 0;
     const maxCount = item.maxCount || 10;
     const categoryIdentifier = 'category' in category ? category.category : category.title;
     const statsId = `${tabType}-${item.id}`;
-    const itemStats: TaskDifficultyStats | undefined = difficultyStatsData[statsId];
-
-    // Извлекаем номер задания из заголовка
+    const itemStats = difficultyStatsData[statsId] || null;
+    
+    // Определение типа карточки по контракту B-стиля
     const taskNumber = item.title.match(/№\s*(\d+)/)?.[1];
-
+    const hasCategories = taskNumber && taskNumber in taskCategories;
+    const availableCategories = hasCategories 
+      ? taskCategories[taskNumber]
+      : [];
+    
+    // Создаем дропдауны для категорий и сложности (B-стиль)
+    const difficultyDropdown = itemStats ? createDifficultyDropdown(item, itemStats) : null;
+    const categoryDropdown = hasCategories ? createCategoryDropdown(item, availableCategories) : null;
+    
+    // Обновленный рендер TaskCardBlock
     return (
-      <Card key={item.id} className="border border-gray-200 mb-2">
-        <CardContent className="p-3 sm:p-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            {/* Название задания и категории */}
-            <div className="flex items-center gap-2 flex-grow pr-4">
-              <span className="text-sm text-gray-800">{item.title}</span>
-              {taskNumber && (
-                <TaskCategorySelector
-                  taskNumber={taskNumber}
-                  selectedCategories={itemCategories[item.id] || []}
-                  onCategoriesChange={(categories) => handleCategoriesChange(item.id, categories)}
-                />
-              )}
-            </div>
-
-            {/* Блок управления (сложность + количество) */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 w-full sm:w-auto justify-end">
-              {/* Чипсы сложности для этого задания */}
-              <div className="flex flex-wrap gap-1.5 items-center">
-                {itemStats ? (
-                  <>
-                    {/* "Любая" Badge */}
-                    <Badge
-                      key={`${item.id}-any`}
-                      variant={(!itemDifficulties[item.id] || itemDifficulties[item.id]?.includes('any')) ? "default" : "outline"}
-                      onClick={() => handleItemDifficultyChange(item.id, 'any')}
-                      className={`cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 ${
-                        !itemDifficulties[item.id] || itemDifficulties[item.id]?.includes('any')
-                          ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                          : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                      }`}
-                      role="radio"
-                      aria-checked={!itemDifficulties[item.id] || itemDifficulties[item.id]?.includes('any')}
-                      tabIndex={0}
-                    >
-                      <Dice3 className="w-3 h-3" />
-                      Любая ({Object.values(itemStats).reduce((sum, count) => sum + count, 0)})
-                    </Badge>
-
-                    {/* Tier-specific Badges */}
-                    {difficultyTiers.map(tier => {
-                      const countForItemTier = itemStats[tier.id] || 0;
-                      const isDisabled = countForItemTier === 0;
-                      const isSelected = itemDifficulties[item.id]?.includes(tier.id);
-
-                      return (
-                        <Badge
-                          key={`${item.id}-${tier.id}`}
-                          variant={isSelected && !isDisabled ? "default" : "outline"}
-                          onClick={() => !isDisabled && handleItemDifficultyChange(item.id, tier.id)}
-                          className={`cursor-pointer transition-colors text-xs px-2 py-0.5 ${
-                            isDisabled
-                              ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
-                              : isSelected
-                              ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                              : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                          }`}
-                          aria-disabled={isDisabled}
-                          role="radio"
-                          aria-checked={isSelected && !isDisabled}
-                          tabIndex={isDisabled ? -1 : 0}
-                        >
-                          {tier.label} ({countForItemTier})
-                        </Badge>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <span className="text-xs text-gray-400 italic">Нет данных о сложности</span>
-                )}
-              </div>
-
-              {/* Разделитель */}
-              <Separator orientation="vertical" className="h-6 hidden sm:block" />
-
-              {/* Кнопки +/- */} 
-              <div className="flex items-center space-x-1.5 flex-shrink-0">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={() => handleCountChange(item.id, categoryIdentifier, -1, tabType)}
-                  disabled={currentCount <= 0}
-                >
-                  -
-                </Button>
-                <span className="text-sm font-medium w-8 text-center tabular-nums">{currentCount}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={() => handleCountChange(item.id, categoryIdentifier, 1, tabType)}
-                  disabled={currentCount >= maxCount}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <TaskCardBlock
+        key={item.id}
+        item={{
+          id: String(item.id),
+          title: item.title,
+          description: "",
+        }}
+        currentCount={currentCount}
+        maxCount={maxCount}
+        onDecrement={() => handleCountChange(item.id, categoryIdentifier, -1, tabType)}
+        onIncrement={() => handleCountChange(item.id, categoryIdentifier, 1, tabType)}
+        difficulties={itemDifficulties[item.id] || ["any"]}
+        onDifficultyChange={(id: string) => handleItemDifficultyChange(item.id, [id])}
+        categories={itemCategories[item.id] || availableCategories}
+        onCategoriesChange={(id: string, categories: string[]) => handleCategoriesChange(id, categories)}
+        itemStats={itemStats ? Object.entries(itemStats).reduce((acc, [key, value]) => {
+          acc[key] = typeof value === 'number' ? value : 0;
+          return acc;
+        }, {} as Record<string, number>) : {}}
+        difficultyTiers={difficultyTiers}
+        difficultyDropdown={difficultyDropdown}
+        categoryDropdown={categoryDropdown}
+      />
+    );
+  };
+  
+  // Вспомогательные функции для renderItemRow
+  const createDifficultyDropdown = (item: TestItem, itemStats: TaskDifficultyStats | Record<string, number>) => {
+    const itemId = item.id;
+    const selected = itemDifficulties[itemId] || ["any"];
+    
+    // Преобразуем статистику сложности в объект с числовыми значениями
+    const statsRecord: Record<string, number> = {};
+    
+    // Безопасно преобразуем статистику в объект с числовыми значениями
+    if (itemStats) {
+      Object.entries(itemStats).forEach(([key, value]) => {
+        statsRecord[key] = typeof value === 'number' ? value : 0;
+      });
+    }
+    
+    // Определяем общее количество заданий
+    const totalCount = Object.values(statsRecord).reduce((sum, count) => sum + count, 0);
+    
+    // Создаем опции для дропдауна сложности
+    const options = difficultyTiers.map(tier => ({
+      id: tier.id,
+      label: tier.label,
+      count: statsRecord[tier.id] || 0
+    }));
+    
+    return (
+      <SelectionDropdown
+        options={options}
+        selected={selected}
+        onChange={(newValues) => handleItemDifficultyChange(itemId, newValues)}
+        label="Сложность"
+        allLabel="любая сложность"
+        totalCount={totalCount}
+        className="w-full sm:w-auto"
+      />
+    );
+  };
+  
+  const createCategoryDropdown = (item: TestItem, availableCategories: string[]) => {
+    const itemId = item.id;
+    const selectedCategories = itemCategories[itemId] || [];
+    
+    // Создаем опции для дропдауна категорий
+    const options = availableCategories.map(cat => ({
+      id: cat,
+      label: cat
+    }));
+    
+    return (
+      <SelectionDropdown
+        options={options}
+        selected={selectedCategories.length ? selectedCategories : ["any"]}
+        onChange={(newValue) => handleCategoriesChange(itemId, newValue)}
+        label="Категории"
+        allLabel="все категории"
+        className="w-full sm:w-auto"
+      />
     );
   };
 
@@ -718,20 +689,20 @@ export default function TestGenerator() {
       {/* Fixed bottom panel */}
       <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 py-3 px-4 z-50">
         <div className="container max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <span className="text-sm font-medium text-gray-700">Выбрано заданий:</span>
-              <span className="text-lg font-bold text-teal-600">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Выбрано заданий:</span>
+              <span className="test-counter text-lg font-bold text-teal-600 whitespace-nowrap">
                 {totalSelected} / {totalLimit}
               </span>
             </div>
 
-            <div className="w-full sm:w-1/3 flex-grow">
+            <div className="progress-bar w-full sm:w-1/3 flex-grow">
               <Progress value={progress} className="h-2" />
             </div>
 
             <Button
-              className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white px-8 font-medium"
+              className="create-test-btn w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white px-4 lg:px-8 font-medium"
               variant="default"
               disabled={!testName}
               style={{ opacity: 1 }}
@@ -741,6 +712,33 @@ export default function TestGenerator() {
           </div>
         </div>
       </div>
+      
+      {/* Глобальные стили для фиксированной нижней панели */}
+      <style jsx global>{`
+        @media (max-width: 639px) {
+          .test-counter {
+            font-size: 1rem;
+          }
+          .create-test-btn {
+            font-size: 0.875rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
+        }
+        
+        @media (min-width: 640px) and (max-width: 767px) {
+          .test-counter {
+            font-size: 1.1rem;
+          }
+          .progress-bar {
+            max-width: 33%;
+          }
+          .create-test-btn {
+            white-space: nowrap;
+            font-size: 0.875rem;
+          }
+        }
+      `}</style>
     </div>
   )
 }

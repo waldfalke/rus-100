@@ -1,0 +1,357 @@
+{
+  "changes": [
+    {
+      "id": "change-001",
+      "date": "2025-04-15",
+      "type": "contract_creation",
+      "contract_id": "contract-deduplicator",
+      "description": "Создание контракта Deduplicator",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-002",
+      "date": "2025-04-15",
+      "type": "contract_creation",
+      "contract_id": "contract-converter",
+      "description": "Создание контракта Converter",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-003",
+      "date": "2025-04-15",
+      "type": "contract_update",
+      "contract_id": "contract-converter",
+      "description": "Обновление контракта Converter до версии 1.1.0",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-004",
+      "date": "2025-04-15",
+      "type": "contract_creation",
+      "contract_id": "contract-database-loader",
+      "description": "Создание контракта DatabaseLoader",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-005",
+      "date": "2025-04-15",
+      "type": "contract_creation",
+      "contract_id": "contract-data-analyzer",
+      "description": "Создание контракта DataAnalyzer",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-006",
+      "date": "2025-04-15",
+      "type": "ontology_creation",
+      "description": "Создание проектной онтологии для тестирования контрактов",
+      "related_ids": ["contract-deduplicator", "contract-converter", "contract-database-loader", "contract-data-analyzer"]
+    },
+    {
+      "id": "change-007",
+      "date": "2025-04-15T10:00:00",
+      "type": "contract_creation",
+      "contract_id": "contract-excel-to-json-converter",
+      "description": "Создание контракта ExcelToJsonConverter",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-008",
+      "date": "2025-04-15T10:30:00",
+      "type": "contract_creation",
+      "contract_id": "contract-json-cleaner",
+      "description": "Создание контракта JsonCleaner",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-009",
+      "date": "2025-04-15T11:00:00",
+      "type": "contract_update",
+      "contract_id": "contract-converter",
+      "description": "Обновление контракта Converter с добавлением ссылок на новые контракты",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-010",
+      "date": "2025-04-15T11:30:00",
+      "type": "contract_update",
+      "contract_id": "contract-etl-process",
+      "description": "Обновление контракта ETL-Process с добавлением ссылок на новые контракты",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-011",
+      "date": "2025-04-15T12:00:00",
+      "type": "code_update",
+      "description": "Обновление кода ExcelToJsonConverter с добавлением ссылки на контракт",
+      "related_ids": ["contract-excel-to-json-converter"]
+    },
+    {
+      "id": "change-012",
+      "date": "2025-04-15T12:30:00",
+      "type": "code_update",
+      "description": "Обновление кода JsonCleaner с добавлением ссылки на контракт",
+      "related_ids": ["contract-json-cleaner"]
+    },
+    {
+      "id": "change-013",
+      "date": "2025-04-15T13:00:00",
+      "type": "test_execution",
+      "contract_id": "contract-excel-to-json-converter",
+      "description": "Выполнение онтологического теста уровня 1 для контракта ExcelToJsonConverter",
+      "test_id": "test-excel-to-json-converter-level1"
+    },
+    {
+      "id": "change-014",
+      "date": "2025-04-15T14:00:00",
+      "type": "test_execution",
+      "contract_id": "contract-json-cleaner",
+      "description": "Выполнение онтологического теста уровня 1 для контракта JsonCleaner",
+      "test_id": "test-json-cleaner-level1"
+    },
+    {
+      "id": "change-015",
+      "date": "2025-04-15T15:00:00",
+      "type": "contract_creation",
+      "contract_id": "contract-system",
+      "description": "Создание системного контракта CATMEPIM",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-016",
+      "date": "2025-04-15T15:30:00",
+      "type": "contract_update",
+      "contract_id": "contract-deduplicator",
+      "description": "Обновление контракта Deduplicator с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-017",
+      "date": "2025-04-15T15:35:00",
+      "type": "contract_update",
+      "contract_id": "contract-converter",
+      "description": "Обновление контракта Converter с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-018",
+      "date": "2025-04-15T15:40:00",
+      "type": "contract_update",
+      "contract_id": "contract-database-loader",
+      "description": "Обновление контракта DatabaseLoader с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-019",
+      "date": "2025-04-15T15:45:00",
+      "type": "contract_update",
+      "contract_id": "contract-data-analyzer",
+      "description": "Обновление контракта DataAnalyzer с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-020",
+      "date": "2025-04-15T15:50:00",
+      "type": "contract_update",
+      "contract_id": "contract-excel-to-json-converter",
+      "description": "Обновление контракта ExcelToJsonConverter с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-021",
+      "date": "2025-04-15T15:55:00",
+      "type": "contract_update",
+      "contract_id": "contract-json-cleaner",
+      "description": "Обновление контракта JsonCleaner с добавлением ссылки на системный контракт",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-022",
+      "date": "2025-04-15T16:00:00",
+      "type": "test_execution",
+      "contract_id": "contract-system",
+      "description": "Выполнение онтологического теста уровня 1 для системного контракта CATMEPIM",
+      "test_id": "test-system-contract-level1"
+    },
+    {
+      "id": "change-023",
+      "date": "2025-04-27T10:00:00",
+      "type": "contract_creation",
+      "contract_id": "contract-shop-price-list",
+      "description": "Создание контракта для обработки прайс-листа магазина \"Кот Учёный\"",
+      "before_test": null,
+      "after_test": null
+    },
+    {
+      "id": "change-024",
+      "date": "2025-04-27T11:00:00",
+      "type": "test_execution",
+      "contract_id": "contract-shop-price-list",
+      "description": "Выполнение онтологического теста уровня 1 для контракта обработки прайс-листа",
+      "test_id": "test-shop-price-list-level1"
+    }
+  ],
+  "history": [
+    {
+      "event_id": "event-001",
+      "event_type": "contract_created",
+      "event_date": "2025-04-15",
+      "event_details": {
+        "contract_id": "contract-deduplicator",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-002",
+      "event_type": "contract_created",
+      "event_date": "2025-04-15",
+      "event_details": {
+        "contract_id": "contract-converter",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-003",
+      "event_type": "contract_created",
+      "event_date": "2025-04-15",
+      "event_details": {
+        "contract_id": "contract-database-loader",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-004",
+      "event_type": "contract_updated",
+      "event_date": "2025-04-16",
+      "event_details": {
+        "contract_id": "contract-converter",
+        "contract_version": "1.1.0",
+        "update_description": "Added link to database-loader"
+      }
+    },
+    {
+      "event_id": "event-005",
+      "event_type": "contract_updated",
+      "event_date": "2025-04-16",
+      "event_details": {
+        "contract_id": "contract-deduplicator",
+        "contract_version": "1.1.0",
+        "update_description": "Added link to converter"
+      }
+    },
+    {
+      "event_id": "event-006",
+      "event_type": "contract_created",
+      "event_date": "2025-04-16",
+      "event_details": {
+        "contract_id": "contract-data-analyzer",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-007",
+      "event_type": "code_updated",
+      "event_date": "2025-04-17",
+      "event_details": {
+        "code_module": "ExcelToJsonConverter",
+        "update_description": "Added link to converter contract"
+      }
+    },
+    {
+      "event_id": "event-008",
+      "event_type": "code_updated",
+      "event_date": "2025-04-17",
+      "event_details": {
+        "code_module": "JsonCleaner",
+        "update_description": "Added link to deduplicator contract"
+      }
+    },
+    {
+      "event_id": "event-009",
+      "event_type": "test_executed",
+      "event_date": "2025-04-18",
+      "event_details": {
+        "test_id": "test-excel-to-json-level1",
+        "contract_id": "contract-converter",
+        "test_level": "level1",
+        "test_result": "completed"
+      }
+    },
+    {
+      "event_id": "event-010",
+      "event_type": "test_executed",
+      "event_date": "2025-04-18",
+      "event_details": {
+        "test_id": "test-json-cleaner-level1",
+        "contract_id": "contract-deduplicator",
+        "test_level": "level1",
+        "test_result": "completed"
+      }
+    },
+    {
+      "event_id": "event-011",
+      "event_type": "contract_created",
+      "event_date": "2025-04-27",
+      "event_details": {
+        "contract_id": "contract-shop-price-list",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-012",
+      "event_type": "test_executed",
+      "event_date": "2025-04-27",
+      "event_details": {
+        "test_id": "test-shop-price-list-level1",
+        "contract_id": "contract-shop-price-list",
+        "test_level": "level1",
+        "test_result": "completed"
+      }
+    },
+    {
+      "event_id": "event-013",
+      "event_type": "contract_created",
+      "event_date": "2025-04-27",
+      "event_details": {
+        "contract_id": "contract-shop-price-list",
+        "contract_version": "1.0.0"
+      }
+    },
+    {
+      "event_id": "event-014",
+      "event_type": "test_executed",
+      "event_date": "2025-04-27",
+      "event_details": {
+        "test_id": "test-shop-price-list-level1",
+        "contract_id": "contract-shop-price-list",
+        "status": "completed",
+        "problems_detected": [
+          "problem-shop-price-list-error-handling",
+          "problem-shop-price-list-critical-errors",
+          "problem-shop-price-list-data-lifecycle",
+          "problem-shop-price-list-archive",
+          "problem-shop-price-list-access-rights",
+          "problem-shop-price-list-audit",
+          "problem-shop-price-list-config",
+          "problem-shop-price-list-thresholds"
+        ]
+      }
+    }
+  ]
+}

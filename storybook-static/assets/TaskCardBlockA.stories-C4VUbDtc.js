@@ -1,0 +1,23 @@
+import{j as l}from"./jsx-runtime-DoEZbXM1.js";import{T as u}from"./TaskCardBlock-CiEdU8zU.js";import{r as n}from"./index-DWtqY3O_.js";import"./jsx-runtime-Bw5QeaCk.js";import"./card-CovcHCaV.js";import"./utils-CytzSlOG.js";import"./button-DWZKWoqU.js";import"./index-BghTMhg4.js";import"./index-BwobEAja.js";import"./badge-BhI_kZ9I.js";import"./task-category-selector-CyPtx4Pg.js";import"./popover-C4RQM193.js";import"./index-DHaFAply.js";import"./index-4JJ3X7d3.js";import"./index-C9Cbq-BE.js";import"./index-h8DnG9fi.js";import"./index-DZJH1aMv.js";import"./index-CWNAz4Fr.js";import"./index-BnuSz0lM.js";import"./Combination-Dlu6W2yo.js";import"./index-k2os2MFt.js";import"./index-BAy4v6XH.js";import"./chevron-up-BDhz3SY9.js";import"./createLucideIcon-BySMWYsL.js";import"./dice-3-DukkMB4k.js";const Z={title:"Blocks/TaskCardBlockA",component:u},x={id:1,title:"№1. Средства связи предложений в тексте"},I="Синтаксис",_=["Синтаксис","Орфография","Пунктуация"],T={easiest:2,easy:5,medium:10,hard:6,hardest:1},C=[{id:"easiest",label:"Самые лёгкие"},{id:"easy",label:"Лёгкие"},{id:"medium",label:"Средние"},{id:"hard",label:"Сложные"},{id:"hardest",label:"Самые сложные"}],s={render:()=>{const[i,t]=n.useState(0),[e,m]=n.useState(["any"]),[r,M]=n.useState(_);return l.jsx(u,{item:x,category:I,currentCount:i,maxCount:20,onDecrement:()=>t(o=>Math.max(0,o-1)),onIncrement:()=>t(o=>Math.min(20,o+1)),difficulties:e,onDifficultyChange:o=>m([o]),categories:r,onCategoriesChange:M,itemStats:T,difficultyTiers:C})}},a={render:()=>{const[i,t]=n.useState(0),[e,m]=n.useState(["any"]);return l.jsx(u,{item:x,category:null,currentCount:i,maxCount:20,onDecrement:()=>t(r=>Math.max(0,r-1)),onIncrement:()=>t(r=>Math.min(20,r+1)),difficulties:e,onDifficultyChange:r=>m([r]),categories:[],onCategoriesChange:()=>{},itemStats:T,difficultyTiers:C})}},c={render:()=>{const[i,t]=n.useState(0);return l.jsx(u,{item:{id:2,title:"1. Правописание союзов/омонимичные части речи (чтобы/что бы и тд)"},category:null,currentCount:i,maxCount:20,onDecrement:()=>t(e=>Math.max(0,e-1)),onIncrement:()=>t(e=>Math.min(20,e+1)),difficulties:[],onDifficultyChange:()=>{},categories:[],onCategoriesChange:()=>{},itemStats:null,difficultyTiers:C})}};var f,d,g;s.parameters={...s.parameters,docs:{...(f=s.parameters)==null?void 0:f.docs,source:{originalSource:`{
+  render: () => {
+    const [currentCount, setCurrentCount] = useState(0);
+    const [difficulties, setDifficulties] = useState<string[]>(["any"]);
+    const [categories, setCategories] = useState<string[]>(mockCategories);
+    return <TaskCardBlock item={mockItem} category={mockCategory} currentCount={currentCount} maxCount={20} onDecrement={() => setCurrentCount(c => Math.max(0, c - 1))} onIncrement={() => setCurrentCount(c => Math.min(20, c + 1))} difficulties={difficulties} onDifficultyChange={id => setDifficulties([id])} categories={categories} onCategoriesChange={setCategories} itemStats={mockItemStats} difficultyTiers={mockDifficultyTiers} />;
+  }
+}`,...(g=(d=s.parameters)==null?void 0:d.docs)==null?void 0:g.source}}};var p,y,h;a.parameters={...a.parameters,docs:{...(p=a.parameters)==null?void 0:p.docs,source:{originalSource:`{
+  render: () => {
+    const [currentCount, setCurrentCount] = useState(0);
+    const [difficulties, setDifficulties] = useState<string[]>(["any"]);
+    return <TaskCardBlock item={mockItem} category={null} currentCount={currentCount} maxCount={20} onDecrement={() => setCurrentCount(c => Math.max(0, c - 1))} onIncrement={() => setCurrentCount(c => Math.min(20, c + 1))} difficulties={difficulties} onDifficultyChange={id => setDifficulties([id])} categories={[]} onCategoriesChange={() => {}} itemStats={mockItemStats} difficultyTiers={mockDifficultyTiers} />;
+  }
+}`,...(h=(y=a.parameters)==null?void 0:y.docs)==null?void 0:h.source}}};var k,D,S;c.parameters={...c.parameters,docs:{...(k=c.parameters)==null?void 0:k.docs,source:{originalSource:`{
+  render: () => {
+    const [currentCount, setCurrentCount] = useState(0);
+    return <TaskCardBlock item={{
+      id: 2,
+      title: "1. Правописание союзов/омонимичные части речи (чтобы/что бы и тд)"
+    }} category={null} currentCount={currentCount} maxCount={20} onDecrement={() => setCurrentCount(c => Math.max(0, c - 1))} onIncrement={() => setCurrentCount(c => Math.min(20, c + 1))} difficulties={[]} onDifficultyChange={() => {}} categories={[]} onCategoriesChange={() => {}} itemStats={null} difficultyTiers={mockDifficultyTiers} />;
+  }
+}`,...(S=(D=c.parameters)==null?void 0:D.docs)==null?void 0:S.source}}};const $=["FullCard_A","OnlyDifficulty_A","Minimal_A"];export{s as FullCard_A,c as Minimal_A,a as OnlyDifficulty_A,$ as __namedExportsOrder,Z as default};
+//# sourceMappingURL=TaskCardBlockA.stories-C4VUbDtc.js.map
