@@ -1,0 +1,63 @@
+{
+  "component": {
+    "alert-dialog": {
+      "overlay": {
+        "backgroundColor": { "value": "{component.dialog.overlay.backgroundColor}", "type": "color" },
+        "zIndex": { "value": "{component.dialog.overlay.zIndex}", "type": "other" },
+        "animation": {
+          "in": { "value": "{component.dialog.overlay.animation.in}", "type": "other" },
+          "out": { "value": "{component.dialog.overlay.animation.out}", "type": "other" }
+        }
+      },
+      "content": {
+        "backgroundColor": { "value": "{component.dialog.content.backgroundColor}", "type": "color" },
+        "borderColor": { "value": "{component.dialog.content.borderColor}", "type": "color" },
+        "borderWidth": { "value": "{component.dialog.content.borderWidth}", "type": "borderWidth" },
+        "borderRadius": { "value": "{component.dialog.content.borderRadius}", "type": "borderRadius" },
+        "boxShadow": { "value": "{component.dialog.content.boxShadow}", "type": "boxShadow" },
+        "padding": { "value": "{component.dialog.content.padding}", "type": "spacing" },
+        "gap": { "value": "{component.dialog.content.gap}", "type": "spacing" },
+        "zIndex": { "value": "{component.dialog.content.zIndex}", "type": "other" },
+        "maxWidth": { "value": "{component.dialog.content.maxWidth}", "type": "sizing" },
+        "animation": {
+          "duration": { "value": "{component.dialog.content.animation.duration}", "type": "other" },
+          "in": {
+            "fadeIn": { "value": "{component.dialog.content.animation.in.fadeIn}", "type": "other" },
+            "zoomIn": { "value": "{component.dialog.content.animation.in.zoomIn}", "type": "other" },
+            "slideInFromLeft": { "value": "{component.dialog.content.animation.in.slideInFromLeft}", "type": "other" },
+            "slideInFromTop": { "value": "{component.dialog.content.animation.in.slideInFromTop}", "type": "other" }
+          },
+          "out": {
+            "fadeOut": { "value": "{component.dialog.content.animation.out.fadeOut}", "type": "other" },
+            "zoomOut": { "value": "{component.dialog.content.animation.out.zoomOut}", "type": "other" },
+            "slideOutToLeft": { "value": "{component.dialog.content.animation.out.slideOutToLeft}", "type": "other" },
+            "slideOutToTop": { "value": "{component.dialog.content.animation.out.slideOutToTop}", "type": "other" }
+          }
+        }
+      },
+      "header": {
+        "spacing": { "value": "{component.dialog.header.spacing}", "type": "spacing" },
+        "textAlign": { "value": "{component.dialog.header.textAlign}", "type": "other" }
+      },
+      "footer": {
+        "spacing": { "value": "{component.dialog.footer.spacing}", "type": "spacing" }
+      },
+      "title": {
+        "fontSize": { "value": "{component.dialog.title.fontSize}", "type": "fontSize" },
+        "fontWeight": { "value": "{component.dialog.title.fontWeight}", "type": "fontWeight" }
+      },
+      "description": {
+        "fontSize": { "value": "{component.dialog.description.fontSize}", "type": "fontSize" },
+        "textColor": { "value": "{component.dialog.description.textColor}", "type": "color" }
+      },
+      "actionButton": {
+      },
+      "cancelButton": {
+        "marginTop": { "value": "{theme.space.component.sm}", "type": "spacing" },
+        "sm": {
+          "marginTop": { "value": "0", "type": "spacing" }
+        }
+      }
+    }
+  }
+} 
