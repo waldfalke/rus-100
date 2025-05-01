@@ -19,7 +19,20 @@ const TooltipContent = React.forwardRef<
     ref={ref}
     sideOffset={sideOffset}
     className={cn(
-      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      "z-[var(--component-tooltip-content-z-index)] overflow-hidden",
+      "rounded-[var(--component-tooltip-content-border-radius)]",
+      "border border-[var(--component-tooltip-content-border-color)] border-[var(--component-tooltip-content-border-width)]",
+      "bg-[var(--component-tooltip-content-background-color)]",
+      "text-[var(--component-tooltip-content-text-color)]",
+      "text-[var(--component-tooltip-content-font-size)]",
+      "px-[var(--component-tooltip-content-padding-x)] py-[var(--component-tooltip-content-padding-y)]",
+      "shadow-[var(--component-tooltip-content-box-shadow)]",
+      "animate-in var(--component-tooltip-content-animation-in-fade-in) var(--component-tooltip-content-animation-in-zoom-in)",
+      "data-[state=closed]:animate-out data-[state=closed]:var(--component-tooltip-content-animation-out-fade-out) data-[state=closed]:var(--component-tooltip-content-animation-out-zoom-out)",
+      "data-[side=bottom]:var(--component-tooltip-content-animation-slide-bottom)",
+      "data-[side=left]:var(--component-tooltip-content-animation-slide-left)",
+      "data-[side=right]:var(--component-tooltip-content-animation-slide-right)",
+      "data-[side=top]:var(--component-tooltip-content-animation-slide-top)",
       className
     )}
     {...props}

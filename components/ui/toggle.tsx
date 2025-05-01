@@ -7,18 +7,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const toggleVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 gap-2",
+  "inline-flex items-center justify-center rounded-[var(--component-toggle-default-border-radius)] text-[var(--component-toggle-default-font-size)] font-[var(--component-toggle-default-font-weight)] ring-offset-background transition-colors disabled:pointer-events-none disabled:opacity-[var(--component-toggle-default-disabled-opacity)] gap-[var(--component-toggle-default-gap)] [&_svg]:pointer-events-none [&_svg]:size-[var(--component-toggle-icon-size)] [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-transparent",
+        default: "bg-[var(--component-toggle-default-background-color)] text-[var(--component-toggle-default-text-color)] hover:bg-[var(--component-toggle-default-hover-background-color)] hover:text-[var(--component-toggle-default-hover-text-color)] focus-visible:outline-none focus-visible:ring-[var(--component-toggle-default-focus-ring-width)] focus-visible:ring-[var(--component-toggle-default-focus-ring-color)] focus-visible:ring-offset-[var(--component-toggle-default-focus-ring-offset)] data-[state=on]:bg-[var(--component-toggle-default-on-background-color)] data-[state=on]:text-[var(--component-toggle-default-on-text-color)]",
         outline:
-          "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+          "bg-[var(--component-toggle-outline-background-color)] border border-[var(--component-toggle-outline-border-color)] border-[var(--component-toggle-outline-border-width)] hover:bg-[var(--component-toggle-outline-hover-background-color)] hover:text-[var(--component-toggle-outline-hover-text-color)] focus-visible:outline-none focus-visible:ring-[var(--component-toggle-default-focus-ring-width)] focus-visible:ring-[var(--component-toggle-default-focus-ring-color)] focus-visible:ring-offset-[var(--component-toggle-default-focus-ring-offset)] data-[state=on]:bg-[var(--component-toggle-default-on-background-color)] data-[state=on]:text-[var(--component-toggle-default-on-text-color)]",
       },
       size: {
-        default: "h-10 px-3 min-w-10",
-        sm: "h-9 px-2.5 min-w-9",
-        lg: "h-11 px-5 min-w-11",
+        default: "h-[var(--component-toggle-sizes-default-height)] min-w-[var(--component-toggle-sizes-default-min-width)] px-[var(--component-toggle-sizes-default-padding-x)] py-[var(--component-toggle-default-padding-y)]",
+        sm: "h-[var(--component-toggle-sizes-sm-height)] min-w-[var(--component-toggle-sizes-sm-min-width)] px-[var(--component-toggle-sizes-sm-padding-x)] py-[var(--component-toggle-default-padding-y)]",
+        lg: "h-[var(--component-toggle-sizes-lg-height)] min-w-[var(--component-toggle-sizes-lg-min-width)] px-[var(--component-toggle-sizes-lg-padding-x)] py-[var(--component-toggle-default-padding-y)]",
       },
     },
     defaultVariants: {

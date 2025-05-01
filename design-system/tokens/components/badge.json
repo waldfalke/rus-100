@@ -1,0 +1,48 @@
+{
+  "component": {
+    "badge": {
+      "default": {
+        "backgroundColor": { "value": "{theme.color.primary.default}", "type": "color" },
+        "textColor": { "value": "{theme.color.primary.foreground}", "type": "color" },
+        "borderColor": { "value": "transparent", "type": "color" },
+        "borderWidth": { "value": "1px", "type": "borderWidth" },
+        "borderRadius": { "value": "{radius.base}", "type": "borderRadius" },
+        "fontSize": { "value": "{theme.typography.small.default.fontSize}", "type": "fontSize" },
+        "fontWeight": { "value": "{theme.typography.small.default.fontWeight}", "type": "fontWeight" },
+        "padding": {
+          "x": { "value": "{theme.space.component.xs}", "type": "spacing" },
+          "y": { "value": "{theme.space.component.xxs}", "type": "spacing" }
+        },
+        "hover": {
+          "backgroundColor": { "value": "{theme.color.primary.hover}", "type": "color" }
+        },
+        "focus": {
+          "ringColor": { "value": "{theme.color.ring.default}", "type": "color" },
+          "ringWidth": { "value": "2px", "type": "borderWidth" },
+          "ringOffset": { "value": "2px", "type": "spacing" }
+        }
+      },
+      "secondary": {
+        "backgroundColor": { "value": "{theme.color.secondary.default}", "type": "color" },
+        "textColor": { "value": "{theme.color.secondary.foreground}", "type": "color" },
+        "borderColor": { "value": "transparent", "type": "color" },
+        "hover": {
+          "backgroundColor": { "value": "{theme.color.secondary.hover}", "type": "color" }
+        }
+      },
+      "destructive": {
+        "backgroundColor": { "value": "{theme.color.destructive.default}", "type": "color" },
+        "textColor": { "value": "{theme.color.destructive.foreground}", "type": "color" },
+        "borderColor": { "value": "transparent", "type": "color" },
+        "hover": {
+          "backgroundColor": { "value": "{theme.color.destructive.hover}", "type": "color" }
+        }
+      },
+      "outline": {
+        "backgroundColor": { "value": "transparent", "type": "color" },
+        "textColor": { "value": "{theme.color.foreground.default}", "type": "color" },
+        "borderColor": { "value": "{theme.color.border.default}", "type": "color" }
+      }
+    }
+  }
+} 
