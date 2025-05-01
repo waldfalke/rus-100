@@ -1,0 +1,12 @@
+{
+  "component": {
+    "label": {
+      "fontSize": { "value": "{theme.typography.body.small.fontSize}", "type": "fontSize" },
+      "fontWeight": { "value": "{theme.typography.body.small.fontWeight}", "type": "fontWeight" },
+      "lineHeight": { "value": "none", "type": "lineHeight" },
+      "disabled": {
+        "opacity": { "value": "0.7", "type": "opacity" }
+      }
+    }
+  }
+} 
