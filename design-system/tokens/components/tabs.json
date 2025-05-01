@@ -1,0 +1,102 @@
+{
+  "component": {
+    "tabs": {
+      "list": {
+        "backgroundColor": { "value": "transparent", "type": "color" },
+        "borderBottomWidth": { "value": "1px", "type": "borderWidth" },
+        "borderBottomColor": { "value": "{theme.color.border.default}", "type": "color" },
+        "gap": { "value": "{theme.space.component.sm}", "type": "spacing" }
+      },
+      "trigger": {
+        "default": {
+          "backgroundColor": { "value": "transparent", "type": "color" },
+          "textColor": { "value": "{theme.color.foreground.muted}", "type": "color" },
+          "fontSize": { "value": "{theme.typography.body.default.fontSize}", "type": "fontSize" },
+          "fontWeight": { "value": "{theme.typography.body.default.fontWeight}", "type": "fontWeight" },
+          "padding": {
+            "x": { "value": "{theme.space.component.md}", "type": "spacing" },
+            "y": { "value": "{theme.space.component.sm}", "type": "spacing" }
+          },
+          "borderWidth": { "value": "0", "type": "borderWidth" },
+          "borderBottomWidth": { "value": "2px", "type": "borderWidth" },
+          "borderBottomColor": { "value": "transparent", "type": "color" }
+        },
+        "hover": {
+          "textColor": { "value": "{theme.color.foreground.default}", "type": "color" },
+          "backgroundColor": { "value": "{theme.color.background.subtle}", "type": "color" }
+        },
+        "active": {
+          "textColor": { "value": "{theme.color.primary.default}", "type": "color" },
+          "borderBottomColor": { "value": "{theme.color.primary.default}", "type": "color" },
+          "fontWeight": { "value": "{fontWeight.medium}", "type": "fontWeight" }
+        },
+        "disabled": {
+          "textColor": { "value": "{theme.color.foreground.disabled}", "type": "color" },
+          "opacity": { "value": "0.5", "type": "opacity" }
+        }
+      },
+      "content": {
+        "backgroundColor": { "value": "transparent", "type": "color" },
+        "textColor": { "value": "{theme.color.foreground.default}", "type": "color" },
+        "padding": { 
+          "top": { "value": "{theme.space.component.md}", "type": "spacing" },
+          "x": { "value": "0", "type": "spacing" },
+          "bottom": { "value": "0", "type": "spacing" }
+        }
+      },
+      "sizes": {
+        "sm": {
+          "fontSize": { "value": "{theme.typography.body.small.fontSize}", "type": "fontSize" },
+          "padding": {
+            "x": { "value": "{theme.space.component.sm}", "type": "spacing" },
+            "y": { "value": "{theme.space.component.xs}", "type": "spacing" }
+          }
+        },
+        "md": {
+          "fontSize": { "value": "{theme.typography.body.default.fontSize}", "type": "fontSize" },
+          "padding": {
+            "x": { "value": "{theme.space.component.md}", "type": "spacing" },
+            "y": { "value": "{theme.space.component.sm}", "type": "spacing" }
+          }
+        },
+        "lg": {
+          "fontSize": { "value": "{theme.typography.body.large.fontSize}", "type": "fontSize" },
+          "padding": {
+            "x": { "value": "{theme.space.component.lg}", "type": "spacing" },
+            "y": { "value": "{theme.space.component.md}", "type": "spacing" }
+          }
+        }
+      },
+      "variants": {
+        "underline": {
+          "list": {
+            "borderBottomWidth": { "value": "1px", "type": "borderWidth" },
+            "borderBottomColor": { "value": "{theme.color.border.default}", "type": "color" }
+          },
+          "trigger": {
+            "active": {
+              "borderBottomWidth": { "value": "2px", "type": "borderWidth" },
+              "borderBottomColor": { "value": "{theme.color.primary.default}", "type": "color" }
+            }
+          }
+        },
+        "pills": {
+          "list": {
+            "borderBottomWidth": { "value": "0", "type": "borderWidth" },
+            "gap": { "value": "{theme.space.component.xs}", "type": "spacing" }
+          },
+          "trigger": {
+            "default": {
+              "borderRadius": { "value": "{radius.full}", "type": "borderRadius" }
+            },
+            "active": {
+              "backgroundColor": { "value": "{theme.color.primary.default}", "type": "color" },
+              "textColor": { "value": "{theme.color.primary.foreground}", "type": "color" },
+              "borderBottomWidth": { "value": "0", "type": "borderWidth" }
+            }
+          }
+        }
+      }
+    }
+  }
+} 
