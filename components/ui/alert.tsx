@@ -4,13 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+  "relative w-full rounded-[var(--component-alert-root-border-radius)] border-[var(--component-alert-root-border-width)] p-[var(--component-alert-root-padding)] [&>svg~*]:pl-[var(--component-alert-root-content-padding-left)] [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-[var(--component-alert-root-icon-left)] [&>svg]:top-[var(--component-alert-root-icon-top)]",
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground",
+        default: 
+          "bg-[var(--component-alert-root-default-background-color)] text-[var(--component-alert-root-default-text-color)] border-[var(--component-alert-root-default-border-color)] [&>svg]:text-[var(--component-alert-root-icon-color)]",
         destructive:
-          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+          "text-[var(--component-alert-root-destructive-text-color)] border-[var(--component-alert-root-destructive-border-color)] [&>svg]:text-[var(--component-alert-root-destructive-icon-color)]",
       },
     },
     defaultVariants: {
@@ -38,7 +39,10 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn("mb-1 font-medium leading-none tracking-tight", className)}
+    className={cn(
+      "mb-[var(--component-alert-title-margin-bottom)] font-[var(--component-alert-title-font-weight)] leading-[var(--component-alert-title-line-height)] tracking-[var(--component-alert-title-letter-spacing)]",
+       className
+      )}
     {...props}
   />
 ))
@@ -50,7 +54,7 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm [&_p]:leading-relaxed", className)}
+    className={cn("text-[var(--component-alert-description-font-size)] [&_p]:leading-[var(--component-alert-description-line-height)]", className)}
     {...props}
   />
 ))
