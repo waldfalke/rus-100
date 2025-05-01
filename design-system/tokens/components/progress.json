@@ -1,0 +1,16 @@
+{
+  "component": {
+    "progress": {
+      "root": {
+        "height": { "value": "{theme.size.xs}", "type": "sizing" },
+        "borderRadius": { "value": "9999px", "type": "borderRadius" },
+        "backgroundColor": { "value": "{theme.color.secondary.default}", "type": "color" },
+        "overflow": { "value": "hidden", "type": "other" }
+      },
+      "indicator": {
+        "backgroundColor": { "value": "{theme.color.primary.default}", "type": "color" },
+        "transition": { "value": "all", "type": "other" }
+      }
+    }
+  }
+} 
