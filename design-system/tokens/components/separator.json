@@ -1,0 +1,15 @@
+{
+  "component": {
+    "separator": {
+      "color": { "value": "{theme.color.border.default}", "type": "color" },
+      "horizontal": {
+        "height": { "value": "1px", "type": "sizing" },
+        "width": { "value": "100%", "type": "sizing" }
+      },
+      "vertical": {
+        "height": { "value": "100%", "type": "sizing" },
+        "width": { "value": "1px", "type": "sizing" }
+      }
+    }
+  }
+} 
