@@ -1,0 +1,29 @@
+{
+  "component": {
+    "card": {
+      "default": {
+        "backgroundColor": { "value": "{theme.color.background.card}", "type": "color" },
+        "textColor": { "value": "{theme.color.foreground.default}", "type": "color" },
+        "borderRadius": { "value": "{radius.lg}", "type": "borderRadius" },
+        "borderWidth": { "value": "1px", "type": "borderWidth" },
+        "borderColor": { "value": "{theme.color.border.default}", "type": "color" },
+        "padding": { "value": "{theme.space.component.lg}", "type": "spacing" },
+        "elevation": { "value": "{theme.elevation.low}", "type": "boxShadow" }
+      },
+      "hover": {
+        "elevation": { "value": "{theme.elevation.medium}", "type": "boxShadow" }
+      },
+      "interactive": {
+        "backgroundColor": { "value": "{theme.color.background.card}", "type": "color" },
+        "hover": {
+          "backgroundColor": { "value": "{theme.color.background.subtle}", "type": "color" },
+          "borderColor": { "value": "{theme.color.border.strong}", "type": "color" }
+        }
+      },
+      "selected": {
+        "borderColor": { "value": "{theme.color.primary.default}", "type": "color" },
+        "borderWidth": { "value": "2px", "type": "borderWidth" }
+      }
+    }
+  }
+} 
