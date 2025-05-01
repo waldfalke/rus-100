@@ -1,0 +1,42 @@
+{
+  "component": {
+    "input-otp": {
+      "container": {
+        "gap": { "value": "{theme.space.component.sm}", "type": "spacing" },
+        "disabled": {
+          "opacity": { "value": "0.5", "type": "opacity" }
+        }
+      },
+      "slot": {
+        "height": { "value": "40px", "type": "sizing" },
+        "width": { "value": "40px", "type": "sizing" },
+        "borderColor": { "value": "{theme.color.input.default}", "type": "color" },
+        "borderWidth": { "value": "1px", "type": "borderWidth" },
+        "borderRadius": {
+          "first": { "value": "{radius.base}", "type": "borderRadius" },
+          "last": { "value": "{radius.base}", "type": "borderRadius" }
+        },
+        "fontSize": { "value": "{theme.typography.body.small.fontSize}", "type": "fontSize" },
+        "transition": { "value": "all", "type": "other" },
+        "active": {
+          "zIndex": { "value": "10", "type": "other" },
+          "ringColor": { "value": "{theme.color.ring.default}", "type": "color" },
+          "ringWidth": { "value": "2px", "type": "borderWidth" },
+          "ringOffset": { "value": "2px", "type": "spacing" }
+        },
+        "caret": {
+          "height": { "value": "16px", "type": "sizing" },
+          "width": { "value": "1px", "type": "sizing" },
+          "backgroundColor": { "value": "{theme.color.foreground.default}", "type": "color" },
+          "animation": {
+            "name": { "value": "caret-blink", "type": "other" },
+            "duration": { "value": "1000ms", "type": "other" }
+          }
+        }
+      },
+      "separator": {
+        "color": { "value": "{theme.color.foreground.muted}", "type": "color" }
+      }
+    }
+  }
+} 

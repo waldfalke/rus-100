@@ -13,7 +13,8 @@ const InputOTP = React.forwardRef<
   <OTPInput
     ref={ref}
     containerClassName={cn(
-      "flex items-center gap-2 has-[:disabled]:opacity-50",
+      "flex items-center has-[:disabled]:opacity-[var(--component-input-otp-container-disabled-opacity)]",
+      "gap-[var(--component-input-otp-container-gap)]",
       containerClassName
     )}
     className={cn("disabled:cursor-not-allowed", className)}
@@ -41,8 +42,13 @@ const InputOTPSlot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "relative flex h-10 w-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-        isActive && "z-10 ring-2 ring-ring ring-offset-background",
+        "relative flex items-center justify-center border-y border-r border-[var(--component-input-otp-slot-border-color)] text-[var(--component-input-otp-slot-font-size)] transition-[var(--component-input-otp-slot-transition)]",
+        "h-[var(--component-input-otp-slot-height)] w-[var(--component-input-otp-slot-width)]",
+        "border-[var(--component-input-otp-slot-border-width)]",
+        "first:rounded-l-[var(--component-input-otp-slot-border-radius-first)] first:border-l",
+        "last:rounded-r-[var(--component-input-otp-slot-border-radius-last)]",
+        isActive && 
+          "z-[var(--component-input-otp-slot-active-z-index)] ring-[var(--component-input-otp-slot-active-ring-width)] ring-[var(--component-input-otp-slot-active-ring-color)] ring-offset-[var(--component-input-otp-slot-active-ring-offset)] ring-offset-background",
         className
       )}
       {...props}
@@ -50,7 +56,12 @@ const InputOTPSlot = React.forwardRef<
       {char}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
+          <div 
+            className={cn(
+              "animate-[var(--component-input-otp-slot-caret-animation-name)] bg-[var(--component-input-otp-slot-caret-background-color)] duration-[var(--component-input-otp-slot-caret-animation-duration)]",
+              "h-[var(--component-input-otp-slot-caret-height)] w-[var(--component-input-otp-slot-caret-width)]"
+            )}
+          />
         </div>
       )}
     </div>
@@ -62,7 +73,7 @@ const InputOTPSeparator = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div">
 >(({ ...props }, ref) => (
-  <div ref={ref} role="separator" {...props}>
+  <div ref={ref} role="separator" {...props} className="text-[var(--component-input-otp-separator-color)]">
     <Dot />
   </div>
 ))
