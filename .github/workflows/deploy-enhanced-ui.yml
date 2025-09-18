@@ -88,7 +88,7 @@ jobs:
         run: touch ./out/.nojekyll
       
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: enhanced-ui-build
           path: ./out
@@ -99,13 +99,13 @@ jobs:
     needs: build
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: enhanced-ui-build
           path: ./build-output
       
       - name: Deploy Enhanced UI to GitHub Pages subdirectory
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build-output
