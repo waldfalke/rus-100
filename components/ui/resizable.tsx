@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 "use client"
 
 import { GripVertical } from "lucide-react"

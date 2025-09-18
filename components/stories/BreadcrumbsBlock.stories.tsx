@@ -10,5 +10,8 @@ export default meta;
 type Story = StoryObj<typeof BreadcrumbsBlock>;
 
 export const Default: Story = {
-  render: () => <BreadcrumbsBlock />,
+  render: () => <BreadcrumbsBlock items={[
+    { label: "Главная", href: "/" },
+    { label: "Текущая страница" }
+  ]} />,
 }; 

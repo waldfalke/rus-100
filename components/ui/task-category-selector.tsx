@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+// Code Contracts: PENDING
+// @token-status: COMPLETED
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -56,7 +58,7 @@ export function TaskCategorySelector({
       <PopoverTrigger asChild>
         <Badge
           variant="outline"
-          className="cursor-pointer py-1 px-3 flex items-center gap-1.5 hover:bg-gray-100 transition-colors"
+          className="cursor-pointer py-1 px-3 flex items-center gap-1.5 hover:bg-accent transition-colors"
         >
           <span className="text-xs">
             {formatSelectedText(selectedCategories.length === 0 ? categories : selectedCategories)}
@@ -76,11 +78,11 @@ export function TaskCategorySelector({
         <div className="space-y-2">
           {/* Заголовок на мобильных устройствах */}
           {isMobile && (
-            <div className="flex items-center justify-between pb-2 border-b">
-              <span className="text-sm font-medium">Выберите категории</span>
+            <div className="flex items-center justify-between pb-2 border-b border-border">
+              <span className="font-source-serif-pro text-sm font-medium">Выберите категории</span>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1 hover:bg-gray-100 rounded-full"
+                className="p-1 hover:bg-accent rounded-full"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -88,7 +90,7 @@ export function TaskCategorySelector({
           )}
           
           {/* Подсказка */}
-          <div className="text-xs text-gray-500 mb-2">
+          <div className="text-xs text-muted-foreground mb-2">
             {isMobile ? 
               "Нажмите на категории для выбора" :
               "ESC или клик вне меню для закрытия"
@@ -103,9 +105,9 @@ export function TaskCategorySelector({
                 variant={selectedCategories.includes(category) ? "default" : "outline"}
                 className={`cursor-pointer transition-colors text-xs px-2 py-1.5 ${
                   selectedCategories.includes(category)
-                    ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                } ${isMobile ? "py-2" : ""}`} // Увеличиваем область касания на мобильных
+                    ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                    : "border-border text-foreground hover:bg-accent"
+                } ${isMobile ? "py-2" : ""}`}
                 onClick={() => handleCategoryToggle(category)}
               >
                 {category}

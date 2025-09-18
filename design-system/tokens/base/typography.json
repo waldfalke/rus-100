@@ -1,15 +1,14 @@
 {
   "fontSize": {
-    "xs": { "value": "0.75rem", "type": "fontSize" },
-    "sm": { "value": "0.875rem", "type": "fontSize" },
-    "base": { "value": "1rem", "type": "fontSize" },
-    "lg": { "value": "1.125rem", "type": "fontSize" },
-    "xl": { "value": "1.25rem", "type": "fontSize" },
-    "2xl": { "value": "1.5rem", "type": "fontSize" },
-    "3xl": { "value": "1.875rem", "type": "fontSize" },
-    "4xl": { "value": "2.25rem", "type": "fontSize" },
-    "5xl": { "value": "3rem", "type": "fontSize" },
-    "6xl": { "value": "3.75rem", "type": "fontSize" }
+    "app-h1-mobile": { "value": "2.25rem", "type": "fontSize" },
+    "app-h1": { "value": "3rem", "type": "fontSize" },
+    "app-h2-mobile": { "value": "1.875rem", "type": "fontSize" },
+    "app-h2": { "value": "2.25rem", "type": "fontSize" },
+    "app-h3-mobile": { "value": "1.25rem", "type": "fontSize" },
+    "app-h3": { "value": "1.5rem", "type": "fontSize" },
+    "app-body": { "value": "1rem", "type": "fontSize" },
+    "app-small": { "value": "0.875rem", "type": "fontSize" },
+    "app-caption": { "value": "0.75rem", "type": "fontSize" }
   },
   "fontWeight": {
     "thin": { "value": "100", "type": "fontWeight" },
@@ -43,8 +42,16 @@
       "value": "Arial, Helvetica, sans-serif", 
       "type": "fontFamily" 
     },
+    "inter": {
+      "value": "Inter, Arial, Helvetica, sans-serif",
+      "type": "fontFamily"
+    },
+    "source-serif-pro": {
+      "value": "Source Serif Pro, Georgia, Times New Roman, serif", 
+      "type": "fontFamily" 
+    },
     "serif": { 
-      "value": "Georgia, Times, Times New Roman, serif", 
+      "value": "Source Serif Pro, Georgia, Times New Roman, serif", 
       "type": "fontFamily" 
     },
     "mono": { 

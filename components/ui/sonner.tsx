@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 "use client"
 
 import { useTheme } from "next-themes"

@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 import React from 'react';
 
 export interface MyChipProps {

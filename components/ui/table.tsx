@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

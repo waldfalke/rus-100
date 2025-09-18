@@ -1,6 +1,9 @@
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Dice3 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface DifficultyTier {
   id: string;
@@ -42,19 +45,20 @@ export const DifficultyChipsGroup: React.FC<DifficultyChipsGroupProps> = ({
         key="any"
         variant={value.includes("any") ? "default" : "outline"}
         onClick={() => handleClick("any")}
-        className={`cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 ${
+        className={cn(
+          "cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 font-normal",
           value.includes("any")
-            ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-            : "border-gray-300 text-gray-700 hover:bg-gray-100"
-        }`}
+            ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+            : "border-border text-foreground hover:bg-accent"
+        )}
         role="radio"
         aria-checked={value.includes("any")}
         tabIndex={0}
       >
-        {anyLabel}
+        <span className="font-normal">{anyLabel}</span>
         {renderCount
           ? renderCount(Object.values(stats).reduce((sum, count) => sum + count, 0), value.includes("any"))
-          : <span className="ml-2 text-gray-400">{Object.values(stats).reduce((sum, count) => sum + count, 0)}</span>}
+          : <span className="ml-2 text-muted-foreground">{Object.values(stats).reduce((sum, count) => sum + count, 0)}</span>}
       </Badge>
       {tiers.map((tier) => {
         const count = stats[tier.id] || 0;
@@ -65,22 +69,23 @@ export const DifficultyChipsGroup: React.FC<DifficultyChipsGroupProps> = ({
             key={tier.id}
             variant={isSelected && !isDisabled ? "default" : "outline"}
             onClick={() => !isDisabled && handleClick(tier.id)}
-            className={`cursor-pointer transition-colors text-xs px-2 py-0.5 ${
+            className={cn(
+              "cursor-pointer transition-colors text-xs px-2 py-0.5 font-normal",
               isDisabled
-                ? "cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200"
+                ? "cursor-not-allowed opacity-50 bg-muted text-muted-foreground border-border"
                 : isSelected
-                ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                : "border-gray-300 text-gray-700 hover:bg-gray-100"
-            }`}
+                ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                : "border-border text-foreground hover:bg-accent"
+            )}
             aria-disabled={isDisabled}
             role="radio"
             aria-checked={isSelected && !isDisabled}
             tabIndex={isDisabled ? -1 : 0}
           >
-            {tier.label}
+            <span className="font-normal">{tier.label}</span>
             {renderCount
               ? renderCount(count, isSelected && !isDisabled)
-              : <span className="ml-2 text-gray-400">{count}</span>}
+              : <span className="ml-2 text-muted-foreground">{count}</span>}
           </Badge>
         );
       })}

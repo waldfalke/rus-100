@@ -1,6 +1,9 @@
 const StyleDictionary = require('style-dictionary');
 const path = require('path');
 
+// Регистрация кастомного форматтера
+require('./formatters/css-variables-tailwind');
+
 // Регистрация кастомных трансформеров
 // require('./transformers/custom-transforms');
 
@@ -17,10 +20,10 @@ function getStyleDictionaryConfig(theme) {
         buildPath: 'styles/',
         files: [{
           destination: `tokens.${theme}.css`,
-          format: 'css/variables',
+          format: 'css/variables-tailwind',
           options: {
             selector: theme === 'light' ? ':root' : '.dark',
-            outputReferences: true
+            outputReferences: false
           }
         }]
       },

@@ -2,6 +2,29 @@
 
 This document defines the contract for the TaskCardBlock component and its variants, specifying how different card types should be rendered based on specific conditions.
 
+### Preconditions
+- The `item` prop must be provided and contain at least a `title` field (string).
+- The `currentCount` and `maxCount` props must be non-negative integers, with `currentCount <= maxCount`.
+- Handlers `onDecrement`, `onIncrement`, `onDifficultyChange`, `onCategoriesChange` must be valid functions.
+- If `itemStats` is provided, it should be an object or structure containing difficulty statistics.
+- `difficultyTiers` must be an array of objects, each with at least `id` and `label` properties.
+
+### Postconditions
+- The component renders one of the defined card types (`FullCard_B`, `OnlyDifficulty_B`, `Minimal_B`) based on the logic specified in "Rendering Logic".
+- Correct interactive elements (dropdowns, buttons) are displayed according to the determined card type.
+- User interactions (button clicks, dropdown selections) trigger the corresponding `on...` callback props.
+- The displayed count reflects the `currentCount` prop.
+
+### Invariants
+- The visual structure corresponding to the determined card type remains consistent throughout the component's lifecycle unless input props change.
+- The sum of selected tasks via the counter cannot exceed `maxCount`.
+- The displayed difficulty/category reflects the state derived from `difficulties`/`categories` props or internal selection state.
+
+### Exceptions
+- If required props (`item`, `currentCount`, `maxCount`, handlers) are missing or invalid, the component may render an error state or fail to render.
+- If `item.title` format doesn't match the expected regex for task number extraction, the `hasTaskNumber` condition will evaluate to false.
+- Callbacks (`on...` props) might throw errors if the parent component's implementation is faulty.
+
 ## Card Type Definitions
 
 The TaskCardBlock component has several variants that display different interactive elements based on the data available:

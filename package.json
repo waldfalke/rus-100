@@ -13,7 +13,9 @@
     "start:static:local": "npx serve out -p 3000",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "build:tokens": "node design-system/build.js",
+    "build:tokens:watch": "node design-system/build.js --watch"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -53,7 +55,7 @@
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "my-v0-project": "file:",
-    "next": "15.2.4",
+    "next": "^15.3.1",
     "next-themes": "^0.4.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -82,11 +84,13 @@
     "@types/react-dom": "^19",
     "@vitest/browser": "^3.1.2",
     "@vitest/coverage-v8": "^3.1.2",
+    "chokidar": "^3.6.0",
     "cross-env": "^7.0.3",
     "playwright": "^1.52.0",
     "postcss": "^8",
     "serve": "^14.2.4",
     "storybook": "^8.6.12",
+    "style-dictionary": "^3.9.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5",
     "vitest": "^3.1.2"

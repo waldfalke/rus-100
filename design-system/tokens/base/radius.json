@@ -1,0 +1,5 @@
+{
+  "radius": {
+    "base": { "value": "0.5rem", "type": "dimension", "comment": "Base border radius for elements like cards, inputs, buttons" }
+  }
+} 

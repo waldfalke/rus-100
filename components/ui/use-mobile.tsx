@@ -2,6 +2,8 @@ import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
 
+// Code Contracts: PENDING
+// @token-status: NA (Utility hook)
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 

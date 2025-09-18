@@ -4,7 +4,7 @@
       "root": {
         "height": { "value": "{theme.size.xs}", "type": "sizing" },
         "borderRadius": { "value": "9999px", "type": "borderRadius" },
-        "backgroundColor": { "value": "{theme.color.secondary.default}", "type": "color" },
+        "backgroundColor": { "value": "{theme.color.border.default}", "type": "color" },
         "overflow": { "value": "hidden", "type": "other" }
       },
       "indicator": {

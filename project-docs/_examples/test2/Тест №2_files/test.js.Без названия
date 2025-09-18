@@ -1,0 +1,1085 @@
+let TW_EDIT_PROPS = {
+    btns: [ [ "historyUndo", "historyRedo" ], [ "simpleUnderline", "doubleUnderline", "dashedUnderline", "dottedDashedUnderline", "wavedUnderline", "bold", "foreColorOrange" ], [ "viewHTML", "fullscreen" ] ],
+    btnsDef: {
+        destroy: {
+            fn: "destroy",
+            text: "X",
+            hasIcon: false
+        }
+    },
+    tagsToKeep: [ "font", "strong", "br", "du", "wu", "u", "dtu", "dau", "ddu" ],
+    tagsToRemove: [ "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9" ],
+    keepElements: [ "span.comma", "span.commaWordSpacePoint" ]
+};
+
+jQuery.event.special.touchstart = {
+    setup: function(_, ns, handle) {
+        this.addEventListener("touchstart", handle, {
+            passive: true
+        });
+    }
+};
+
+class Test {
+    initPreceptPointsController() {
+        if (typeof PRECEPT_POINT_DATA !== "undefined" && !window.PRECEPT_POINT_CONTROLLER) {
+            window.PRECEPT_POINT_CONTROLLER = new AllPreceptPointsControllers((element => $(element).closest(".freebirdFormviewerComponentsQuestionBaseRoot").data()), this.findPreceptPointData);
+            window.PRECEPT_POINT_CONTROLLER.setOnChangedCallback(this.onChanged.bind(this));
+        }
+    }
+    onChanged() {
+        if (this.draftController) {
+            this.draftController.onChange();
+        }
+    }
+    findPreceptPointData(questionData) {
+        for (const point of PRECEPT_POINT_DATA.questionPoints) {
+            if (point.questionId === questionData.questionId) {
+                return point;
+            }
+            if (point.questionId === 0 && point.questionNumber === questionData.number) {
+                return point;
+            }
+        }
+        return undefined;
+    }
+    positionTimer() {
+        $("#timerCont").css($(window).scrollTop() > $("#theForm").offset().top - 8 ? {
+            position: "fixed",
+            top: "0px",
+            transform: "unset"
+        } : {
+            position: "",
+            transform: ""
+        });
+    }
+    runTimer() {
+        this.endTime = Date.now() + 90 * 60 * 1e3;
+        this.startTimer();
+    }
+    setRemainingTime(remainingTime) {
+        this.endTime = Date.now() + remainingTime;
+        this.startTimer();
+    }
+    startTimer() {
+        window.setInterval(this.updateTimer.bind(this), 1e3);
+        this.updateTimer();
+        window.addEventListener("pageshow", this.onPageShow.bind(this));
+    }
+    getRemainingTimeMillis() {
+        return this.endTime ? this.endTime - Date.now() : undefined;
+    }
+    onPageShow(event) {
+        if (event.persisted) {
+            console.log("Возврат из кэша");
+            this.endTime = Date.now() + 90 * 60 * 1e3;
+        } else {
+            console.log("Страница снова активна (не из кэша)");
+        }
+    }
+    updateTimer() {
+        let remaining = this.endTime - Date.now();
+        if (remaining <= 0) {
+            this.onTimedOut();
+        } else {
+            $("#remainingTime").text(this.formatTime(remaining));
+        }
+    }
+    formatTime(timeMs) {
+        let timeSec = Math.floor(timeMs / 1e3);
+        let sec = (timeSec % 60).toString();
+        if (sec.length === 1) sec = "0" + sec;
+        let mins = Math.floor(timeSec / 60).toString();
+        if (mins.length === 1) mins = "0" + mins;
+        return mins + ":" + sec;
+    }
+    onTimedOut() {
+        $("#theForm").submit();
+    }
+    initDrafts() {
+        if (TEST_ID) {
+            this.draftController = new LocalDraftController(this, TYPE, TEST_ID);
+            this.draftController.initialize();
+            $("input[type=text]").on("change", this.draftController.onChange.bind(this.draftController));
+        }
+    }
+    btnDownFunction() {
+        $(this).addClass("isActive").removeClass("isDeactivating");
+        $(this).children(".appsMaterialWizButtonPaperbuttonRipple").width($(this).width()).height($(this).height());
+    }
+    btnUpFunction() {
+        $(this).addClass("isDeactivating").removeClass("isActive");
+    }
+    initCommitButton() {
+        let that = this;
+        $("#commitButton").mousedown(this.btnDownFunction).mouseup(this.btnUpFunction).mouseleave(this.btnUpFunction).bind("touchstart", this.btnDownFunction).bind("touchend", this.btnUpFunction).click((function() {
+            var isOk = true;
+            if (!$(this).hasClass("allowEmptyAnswers")) {
+                $(".required").each((function(index, el) {
+                    let $el = $(el);
+                    if ($el.val().length === 0) {
+                        if (isOk) {
+                            bUtil.scrollIntoViewIfNeeded($el.closest(".question-cont"), {
+                                $container: $("html"),
+                                animationOptions: {
+                                    duration: 1e3,
+                                    complete: function() {
+                                        bUtil.scrollIntoViewIfNeeded($el.closest(".question-cont"), {
+                                            $container: $("html")
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                        isOk = false;
+                        $el.parents(".freebirdFormviewerComponentsQuestionBaseRoot").addClass("hasError");
+                    }
+                }));
+            }
+            if (isOk) {
+                if (typeof window.PRECEPT_POINT_CONTROLLER !== "undefined") {
+                    let data = window.PRECEPT_POINT_CONTROLLER.generateSubmitData();
+                    if (data) {
+                        $("#preceptPointDataField").val(JSON.stringify(data));
+                    }
+                    window.PRECEPT_POINT_CONTROLLER.buildExtras();
+                }
+                that.doSubmitAsForm();
+            }
+        }));
+    }
+    doSubmitAsForm() {
+        let that = this;
+        let $form = $("#theForm");
+        $form.find("#jsonReplyField").val("1");
+        const formData = $form.serialize();
+        $.ajax({
+            url: $form.attr("action"),
+            method: $form.attr("method"),
+            data: formData,
+            dataType: "json",
+            success: function(response) {
+                if (response.errorCode === 200) {
+                    that.dropDraftAndRedirect(response.data);
+                } else {
+                    alert("Ошибка отправки результата. Сообщите нам пожалуйста." + JSON.stringify(response));
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Ошибка при отправке результата:" + error);
+            }
+        });
+    }
+    async dropDraftAndRedirect(url) {
+        await this.draftController.removeCurrentDraft();
+        window.location.href = url;
+    }
+}
+
+$(document).ready((function() {
+    var btnDownFunction = function() {
+        $(this).addClass("isActive").removeClass("isDeactivating");
+        $(this).children(".appsMaterialWizButtonPaperbuttonRipple").width($(this).width()).height($(this).height());
+    };
+    var btnUpFunction = function() {
+        $(this).addClass("isDeactivating").removeClass("isActive");
+    };
+    $(".freebirdThemedCheckbox").mousedown(btnDownFunction).mouseup(btnUpFunction).mouseleave(btnUpFunction).bind("touchstart", btnDownFunction).bind("touchend", btnUpFunction).click((function() {
+        var thiz = $(this);
+        if (thiz.hasClass("isChecked")) {
+            thiz.removeClass("isChecked").attr("aria-checked", false);
+        } else {
+            thiz.addClass("isChecked").attr("aria-checked", true);
+        }
+        var result = "";
+        thiz.parents(".freebirdFormviewerComponentsQuestionCheckboxRoot").find(".isChecked").each((function() {
+            result += $(this).attr("data-option") + " ";
+        }));
+        var input = $(thiz.attr("data-inputId"));
+        input.val(result.trim().replaceAll(" ", ","));
+    }));
+    $(".quantumWizTextinputPaperinputInput").focusin((function() {
+        $(this).parents(".freebirdFormviewerComponentsQuestionTextShort").addClass("isFocused");
+    })).focusout((function() {
+        let $this = $(this);
+        $this.parents(".freebirdFormviewerComponentsQuestionTextShort").removeClass("isFocused");
+        $this.removeClass("hasError");
+        $this.closest(".freebirdFormviewerComponentsQuestionBaseRoot").removeClass("hasError");
+    })).on("input", (function() {
+        var parentElement = $(this).parents(".freebirdFormviewerComponentsQuestionBaseRoot").first();
+        if ($(this).val().length > 0) {
+            parentElement.removeClass("hasError").addClass("hasValue");
+        } else {
+            parentElement.removeClass("hasValue");
+        }
+    }));
+    if (!$("body").hasClass("no-collapse")) {
+        $(".freebirdFormviewerComponentsQuestionBaseDescription").each((function() {
+            let item = $(this);
+            if (item.text().length > 1024) {
+                item.addClass("collapsible");
+                if (item.find("textarea").length === 0) {
+                    item.addClass("collapsed");
+                } else {
+                    item.addClass("expanded");
+                }
+            }
+        }));
+        $(".collapsible .more").click((function() {
+            $(this).parents(".collapsible").toggleClass("collapsed expanded");
+        }));
+    }
+    $(".docssharedWizToggleLabeledLabelWrapper").mousedown(btnDownFunction).mouseup(btnUpFunction).mouseleave(btnUpFunction).bind("touchstart", btnDownFunction).bind("touchend", btnUpFunction).click((function() {
+        var thiz = $(this).find(".appsMaterialWizToggleRadiogroupEl");
+        thiz.parents(".freebirdFormviewerComponentsQuestionRadioRoot").find(".isChecked").removeClass("isChecked");
+        thiz.addClass("isChecked").attr("aria-checked", true);
+        var input = $(thiz.attr("data-inputId"));
+        input.val(thiz.attr("data-option"));
+    }));
+    if (!PAGED) {
+        const test = new Test;
+        if (typeof PRECEPT_POINT_DATA !== "undefined") {
+            test.initPreceptPointsController();
+            window.PRECEPT_POINT_CONTROLLER.buildUI($(".question-message"));
+        }
+        if (timeUnlimited) {
+            $("#timerCont").remove();
+        } else {
+            test.positionTimer();
+            test.runTimer();
+        }
+        test.initDrafts();
+        test.initCommitButton();
+    }
+    $("textarea.richEditable").trumbowyg(TW_EDIT_PROPS);
+}));
+
+class PagedTestParams {}
+
+class PagedTest extends Test {
+    constructor(params) {
+        super();
+        let continueIndex = params.continueIdx;
+        if (typeof params.id === "undefined" || typeof Promise === "undefined") return;
+        if (params.myUrl && history && history.replaceState) {
+            history.replaceState({}, "", params.myUrl);
+        }
+        this.showCta = params.showCta;
+        this.initPreceptPointsController();
+        this.testResultId = params.id;
+        this.parser = new TestPageParser;
+        this.resultPresenter = new PartialUpdateResultPresenter;
+        this.testResultUrl = undefined;
+        this.sending = false;
+        $(".freebirdFormviewerViewItemList").addClass("only-printer-visible");
+        $(".freebirdFormviewerViewNavigationNavControls").addClass("hidden");
+        this.$tempPageCont = $("<div class='hidden' style='display: none' id='tempPageCont'></div>");
+        $("body").append(this.$tempPageCont);
+        let questionDataMap = this.buildQuestions();
+        this.fillExtras(questionDataMap);
+        this.pages = Array.from(questionDataMap.values()).sort(((d1, d2) => d1.number - d2.number));
+        let $cont = $($("#question-pager")[0]);
+        this.pager = new Pager($cont[0], new FoldUnfoldPageAnimator);
+        this.buildPages();
+        $(".nextPageButton").click(this.onNextPageClick.bind(this)).addClass("hidden");
+        $(".sendPageButton").click(this.onSendPageClick.bind(this));
+        let currentPage = continueIndex > 0 && continueIndex < this.pages.length ? continueIndex : 0;
+        this.setCurrentPage(currentPage, false);
+        this.progress = new ProgressBar($("#progressbar-cont"), this.getPageNumbers());
+        this.progress.setCurrentStep(currentPage);
+        this.getPositivePlayer();
+        this.currentPage.startTimestamp = Date.now();
+        if (timeUnlimited) {
+            $("#timerCont").remove();
+        } else {
+            this.positionTimer();
+            if (params.remaining === undefined) {
+                this.runTimer();
+            } else {
+                this.setRemainingTime(params.remaining);
+            }
+        }
+        let style = getComputedStyle(document.body);
+        this.scale = style.getPropertyValue("--scale");
+        if (params.candidate && params.candidate.id && params.candidate.id > 0) {
+            new AskContinueDialog(params.candidate, $(".question-cont").length).show();
+        }
+    }
+    async getPositivePlayer() {
+        if (bUtil.isLandscape()) {
+            if (!this.positivePlayerLandscape) {
+                let $animCont = $("#question-pager-animations-cont");
+                this.positivePlayerLandscape = new LottieAnimator($animCont, LOTTIE_POSITIVE);
+                await this.positivePlayerLandscape.awaitLoaded(1e3);
+            }
+            return this.positivePlayerLandscape;
+        } else {
+            if (!this.positivePlayerPoirrait) {
+                let $animCont = $("#question-pager-animations-cont");
+                this.positivePlayerPoirrait = new LottieAnimator($animCont, LOTTIE_POSITIVE_PORTRAIT);
+                await this.positivePlayerPoirrait.awaitLoaded(1e3);
+            }
+            return this.positivePlayerPoirrait;
+        }
+    }
+    getPageNumbers() {
+        let numbers = [];
+        for (const page of this.pages) {
+            numbers.push($(page.questions[0]).data("question-number"));
+        }
+        return numbers;
+    }
+    onSendPageClick() {
+        if (!this.parser.checkPageFilled(this.currentPage)) {
+            return;
+        }
+        let data = this.parser.parseQuestions(this.currentPage, this.testResultId);
+        data.remainingTimeMs = this.getRemainingTimeMillis();
+        this.postPartialAnswer(data, false);
+    }
+    async onNextPageClick() {
+        if (this.testResultUrl) {
+            window.location = this.testResultUrl;
+        } else {
+            let scrollDistance = this.progress.getScrollIntoViewDistance();
+            if (scrollDistance > 0) {
+                this.progress.scrollIntoView();
+                await bUtil.asyncTimeout(scrollDistance > 400 ? 600 : 300);
+            }
+            this.progress.advance();
+            this.nextPage();
+        }
+    }
+    postPartialAnswer(data, forceMoveToResult) {
+        if (this.sending) return;
+        let url = `/api2/addTestAnswer`;
+        let that = this;
+        that.sending = true;
+        this.onSendResultStart();
+        jQuery.ajax({
+            url: url,
+            type: "POST",
+            data: JSON.stringify(data),
+            timeout: 1e4,
+            cache: false
+        }).done((reply => {
+            const replyTDO = JSON.parse(reply);
+            this.sending = false;
+            this.onSendResultEnd();
+            if (forceMoveToResult) {
+                window.location = replyTDO.resultUri;
+            } else {
+                that.onPartialAnswerSent(replyTDO);
+            }
+        })).fail((() => {
+            this.sending = false;
+            this.onSendResultEnd();
+            setTimeout((() => alert("Ошибка отправки данных")), 100);
+        }));
+    }
+    onSendResultStart() {
+        $(".sendPageButton").addClass("sending");
+    }
+    onSendResultEnd() {
+        $(".sendPageButton").removeClass("sending");
+    }
+    getQuestionViewHeight() {
+        return $("#question-pager .question-cont").height();
+    }
+    async onPartialAnswerSent(result) {
+        let [sum, maxSum] = this.getResultSums(result);
+        if (maxSum > 0) {
+            this.showResultAnimation(sum >= maxSum);
+        }
+        this.progress.completeStep(sum >= maxSum);
+        let $el = $(this.currentPage.element);
+        $el.find("input").attr("disabled", "disabled");
+        let $nextBtn = $el.find(".nextPageButton");
+        let $sendBtn = $el.find(".sendPageButton");
+        if (result.resultUri) {
+            this.testResultUrl = result.resultUri;
+            $nextBtn.find("span").text("Завершить");
+        }
+        this.resultPresenter.presentResult(this.currentPage, result);
+        await VIEW_ANIMATOR.setCssNoTransition($nextBtn, {});
+        $nextBtn.removeClass("hidden");
+        let p1 = VIEW_ANIMATOR.expandWidth($nextBtn, undefined, $nextBtn[0].scrollWidth + "px");
+        let p2 = VIEW_ANIMATOR.collapseWidth($sendBtn);
+        await Promise.all([ p1, p2 ]);
+        $sendBtn.addClass("hidden");
+    }
+    async showResultAnimation(isPositive) {
+        if (isPositive) {
+            let player = await this.getPositivePlayer();
+            player.playOnce("100vw");
+        }
+    }
+    isResultUpdateFine(result) {
+        for (const ans of result.answers) {
+            if (ans.score < ans.maxScore) return false;
+        }
+        return true;
+    }
+    getResultSums(result) {
+        let totalScore = 0;
+        let totalMaxScore = 0;
+        for (const ans of result.answers) {
+            totalScore += ans.score;
+            totalMaxScore += ans.maxScore;
+        }
+        return [ totalScore, totalMaxScore ];
+    }
+    buildQuestions() {
+        let questionDataMap = new Map;
+        let $questions = $(".question-cont");
+        $questions.each(((idx, el) => {
+            let n = Number.parseInt($(el).data("question-number"));
+            let page = questionDataMap.get(n);
+            if (!page) {
+                page = new QuestionPage(n);
+                questionDataMap.set(n, page);
+            }
+            page.addQuestion(el);
+        }));
+        return questionDataMap;
+    }
+    fillExtras(questionDataMap) {
+        let $questionExtras = $(".extraTextBefore-cont");
+        $questionExtras.each(((idx, el) => {
+            let numbers = $(el).data("question-numbers").toString().split(",");
+            for (const n of numbers) {
+                let page = questionDataMap.get(Number.parseInt(n));
+                if (page) {
+                    page.addExtra(el);
+                }
+            }
+        }));
+    }
+    buildPages() {
+        for (const page of this.pages) {
+            const $cont = $(`<div class="pager-page" id="pager-page-${page.number}"></div>`);
+            this.$tempPageCont.append($cont);
+            for (const el of page.extras) {
+                $cont.append($(el).clone());
+            }
+            for (const el of page.questions) {
+                $cont.append(el);
+                let questionN = $(el).data("question-number");
+                $cont.append(`<div class='result-cont' id="result-cont-${questionN}"></div>`);
+            }
+            let $pageButtonsHolder = $("<div class='pageButtonsHolder'></div>");
+            $cont.append($pageButtonsHolder);
+            let $pageButtons = $("<div class='pageButtons'></div>");
+            $pageButtonsHolder.append($pageButtons);
+            $pageButtons.append("<div class='accentButton sendPageButton'><span>Отправить ответ</span></div>");
+            $pageButtons.append("<div class='accentButton nextPageButton'><span>Далее</span></div>");
+            if (this.showCta) {
+                $pageButtonsHolder.append('<a href="https://russkij100.ru/egetests" class="cta-button"><span>Узнать больше о веб-приложении</span></a>');
+            }
+            page.element = $cont[0];
+        }
+    }
+    async nextPage() {
+        await this.setCurrentPage(this.currentPageIdx + 1, true);
+    }
+    async setCurrentPage(next, isAnimate) {
+        if (next >= this.pages.length) return;
+        let nextPage = this.pages[next];
+        const $nextEl = $(nextPage.element);
+        $nextEl.find(".sendPageButton").removeClass("hidden");
+        $nextEl.find(".nextPageButton").addClass("hidden");
+        $nextEl.find("input").removeAttr("disabled");
+        this.addMoreToBigText($nextEl);
+        $nextEl.find(".more").click(this.toggleMore.bind(this));
+        let oldPageElement;
+        if (window.PRECEPT_POINT_CONTROLLER) {
+            window.PRECEPT_POINT_CONTROLLER.buildUI($nextEl.find(".question-message"));
+        }
+        if (isAnimate) {
+            oldPageElement = await this.pager.show(nextPage.element, true);
+        } else {
+            oldPageElement = this.pager.showNoAnimation(nextPage.element);
+        }
+        if (oldPageElement) {
+            this.$tempPageCont.append(oldPageElement);
+            this.pager.cleanupAnimationStyles(oldPageElement);
+        }
+        this.currentPageIdx = next;
+        this.currentPage = nextPage;
+        this.currentPage.startTimestamp = Date.now();
+    }
+    async toggleMore(e) {
+        let $item = $(e.target).closest(".collapsible");
+        $item.css("overflow", "hidden");
+        if ($item.hasClass("collapsed")) {
+            await VIEW_ANIMATOR.expand($item, ":not(.more)", undefined, undefined, undefined, undefined);
+        } else {
+            await VIEW_ANIMATOR.collapse($item, ":not(.more)", "", 200 * this.scale);
+        }
+        $item.css("overflow", "");
+        $item.toggleClass("collapsed expanded");
+    }
+    addMoreToBigText($nextEl) {
+        let $bigText = $nextEl.find(".bigTextMessage");
+        if ($bigText.length < 1) return;
+        $nextEl.css({
+            overflow: "hidden",
+            height: 0
+        });
+        let $cont = $(this.pager.container);
+        $cont.append($nextEl);
+        $bigText.each(((idx, el) => {
+            let $el = $(el);
+            if ($el.height() > 250) {
+                $el.addClass("collapsible collapsed");
+            }
+        }));
+        this.$tempPageCont.append($nextEl);
+        $nextEl.css({
+            overflow: "",
+            height: ""
+        });
+    }
+    onTimedOut() {
+        let data = this.parser.parseQuestions(this.currentPage, this.testResultId);
+        data.remainingTimeMs = 0;
+        data.forceFinish = true;
+        this.postPartialAnswer(data, true);
+    }
+}
+
+class Pager {
+    constructor(container, pageAnimator) {
+        this.container = container;
+        this.pageAnimator = pageAnimator;
+    }
+    async show(element, isForward) {
+        const old = this.container.firstElementChild;
+        const $cont = $(this.container);
+        if (isForward) {
+            $cont.append(element);
+        } else {
+            $cont.prepend(element);
+        }
+        this.pageAnimator.allocateNewPage(element, isForward);
+        await this.pageAnimator.animateSwitchPage(old, element, isForward);
+        return old;
+    }
+    showNoAnimation(element) {
+        const old = this.container.firstElementChild;
+        $(this.container).append(element);
+        return old;
+    }
+    cleanupAnimationStyles(element) {
+        this.pageAnimator.cleanupAnimationStyles(element);
+    }
+}
+
+class PageAnimator {
+    allocateNewPage(element, isForward) {}
+    animateSwitchPage(pageToRemove, pageToShow, isForward) {}
+    cleanupAnimationStyles(element) {}
+}
+
+class FoldUnfoldPageAnimator extends PageAnimator {
+    async animateSwitchPage(pageToRemove, pageToShow, isForward) {
+        const $old = $(pageToRemove);
+        const $new = $(pageToShow);
+        await VIEW_ANIMATOR.setCssNoTransition($new, {
+            "max-height": "0",
+            opacity: 0
+        });
+        $old.css("opacity", 0);
+        $old.addClass("animatingSize");
+        $new.addClass("animatingSize");
+        VIEW_ANIMATOR.collapseHeight($old);
+        $new.css("opacity", 1);
+        await VIEW_ANIMATOR.expandHeight($new);
+        $old.css("opacity", "");
+        $new.css("opacity", "");
+        $old.removeClass("animatingSize");
+        $new.removeClass("animatingSize");
+    }
+    cleanupAnimationStyles(element) {
+        $(element).css({
+            "max-height": ""
+        });
+    }
+}
+
+class QuestionPage {
+    constructor(number) {
+        this.number = number;
+        this.questions = [];
+        this.extras = [];
+        this.element = undefined;
+        this.startTimestamp = undefined;
+    }
+    addQuestion(el) {
+        this.questions.push($(el).clone());
+    }
+    addExtra(el) {
+        this.extras.push(el);
+    }
+}
+
+class QuestionAnswerTDO {
+    constructor(number, answer, extraAnswer, pointAnswer) {
+        this.number = number;
+        this.answer = answer;
+        this.extraAnswer = extraAnswer;
+        this.pointAnswer = pointAnswer;
+    }
+}
+
+class PartialTestReplyDTO {
+    constructor(startTimestamp, endTimestamp, testResultId) {
+        this.startTimestamp = startTimestamp;
+        this.endTimestamp = endTimestamp;
+        this.testResultId = testResultId;
+        this.answers = [];
+        this.forceFinish = false;
+    }
+}
+
+class CheckedAnswerDTO {}
+
+class TestResultUpdatedDTO {}
+
+class TestPageParser {
+    parseQuestions(page, testResultId) {
+        if (!testResultId) {
+            testResultId = TEST_RESULT_ID;
+        }
+        if (!testResultId) {
+            var isSafari = !!window.GestureEvent;
+            let message = `Произошла ошибка testResultId=0. Помогите нам разобраться с ней. Сообщите пожалуйста в поддержку (или передайте через своего учителя) следующее:\n1. Название и версию браузера.\n2. Шаги для воспроизведения ошибки. Что именно вы делали перед тем как возникла ошибка. Какие шаги привели к такому результату.\n3. Если можете, приложите скриншот с данными из консоли JS. Здесь могут быть важные сообщения об ошибках. Консоль открывается только на компьютере.\n  Как открыть консоль? Chrome/Firefox: нажать F12, в появившемся блоке выбрать в табах "Console", в Chrome с списке пунктов выбрать messages или Errors\n  В Safari: Меню -> Safari -> Настройки -> Дополнительно -> поставить галочку "Показывать пункт меню «Разработка» в строке меню.\n    Далее, Меню -> Разработка -> показать консоль Javascript. \n  В консоли выводятся ошибки javascript. Приложите пожалуйста скриншот консоли к сообщению об ошибке.`;
+            if (isSafari) {
+                message += "\n4. Пожалуйста, проверьте, воспроизводится ли проблема в другом браузере.";
+            }
+            alert(message);
+        }
+        let result = new PartialTestReplyDTO(page.startTimestamp, Date.now(), testResultId);
+        for (const questionEl of page.questions) {
+            result.answers.push(this.parseQuestion(questionEl));
+        }
+        return result;
+    }
+    parseQuestion(element) {
+        const $el = $(element);
+        let number = Number.parseInt($el.data("question-number"));
+        let $input = $el.find(`input[name='question${number}']`);
+        $input.trigger("change");
+        $input.trigger("input");
+        let answer = $input.val();
+        let preceptPoint;
+        let extra = undefined;
+        if (window.PRECEPT_POINT_CONTROLLER) {
+            preceptPoint = window.PRECEPT_POINT_CONTROLLER.buildQuestionPointsAnswer($el);
+            extra = window.PRECEPT_POINT_CONTROLLER.buildQuestionExtra(element);
+        }
+        if (!extra) {
+            let $extraTextArea = $el.find(`textarea[name='questionExtra${number}']`);
+            if ($extraTextArea.length) {
+                extra = $extraTextArea.val();
+            }
+        }
+        return new QuestionAnswerTDO(number, answer, extra, preceptPoint);
+    }
+    checkPageFilled(page) {
+        for (const el of page.questions) {
+            const $el = $(el);
+            const type = $el.data("question-type");
+            const textInputs = $el.find(".required");
+            for (const input of textInputs) {
+                if ($(input).val().length === 0) {
+                    $(input).parents(".freebirdFormviewerComponentsQuestionBaseRoot").addClass("hasError");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+class PartialUpdateResultPresenter {
+    presentResult(page, result) {
+        let $root = $(page.element);
+        for (const ans of result.answers) {
+            let $cont = $root.find(`#result-cont-${ans.questionNumber}`).empty();
+            let ansClass = this.getAnswerClass(ans);
+            if (ans.maxScore > 0) {
+                $cont.append(`<div class="user-score">Результат: <span class="${ansClass}">${ans.score}/${ans.maxScore}</span></div>`);
+            }
+            if (ans.correctAnswer) {
+                $cont.append(`<div class="correct-answer">Правильный ответ: <span class="theKey">${ans.correctAnswer}</span></div>`);
+            }
+            if (ans.score < ans.maxScore && ans.areAllPreceptPointsCorrect) {
+                $cont.append(`<div class="guessedAllLetters">Записывай ответ внимательнее</div>`);
+            }
+            $cont.css("max-height", 0);
+            VIEW_ANIMATOR.expandHeight($cont);
+        }
+    }
+    getAnswerClass(answer) {
+        if (answer.score == 0) return "failed";
+        if (answer.score === answer.maxScore) return "perfect";
+        return "partial";
+    }
+}
+
+class LottieAnimation {
+    constructor(id, speed, aspectRatio, durationMs, isPortrait) {
+        this.id = id;
+        this.speed = speed;
+        this.aspectRatio = aspectRatio;
+        this.durationMs = durationMs;
+        this.isPortrait = isPortrait;
+    }
+}
+
+const LOTTIE_POSITIVE = new LottieAnimation("35c55292-5c26-4246-8f1a-f6d9701f0d3e/KXDeuaPf6a.lottie", 1, 1.5, 1e3, false);
+
+const LOTTIE_POSITIVE_PORTRAIT = new LottieAnimation("6ca60db5-df68-4280-aa42-1f9163a2eb01/ZLgQ2K76Nq.lottie", 1, 1, 1200, true);
+
+class LottieAnimator {
+    constructor($container, animation) {
+        this.$container = $container;
+        this.animation = animation;
+        this.$container.addClass("hidden");
+        this.running = false;
+    }
+    async initialise() {
+        await bUtil.loadScript("https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs", true);
+        let $player = $(`<dotlottie-player src="https://lottie.host/${this.animation.id}" background="transparent" speed="${this.animation.speed}"></dotlottie-player>`);
+        $player.addClass("hidden vertical-center");
+        this.$container.append($player);
+        this.player = $player[0];
+    }
+    setMarginTop(margin) {
+        this.$container.css("top", bUtil.toCssSize(margin));
+    }
+    awaitLoaded(timeoutMs) {
+        let that = this;
+        return new Promise((resolve => {
+            let listener = () => {
+                if (that.player) {
+                    that.player.removeEventListener("load", listener);
+                }
+                resolve();
+            };
+            if (timeoutMs) {
+                setTimeout(listener, timeoutMs);
+            }
+            that.initialise().then((() => {
+                that.player.addEventListener("load", listener);
+            }));
+        }));
+    }
+    async playOnce(width, height) {
+        try {
+            if (!this.player.play) {
+                return;
+            }
+            let $player = $(this.player);
+            this.running = true;
+            $player.removeClass("hidden");
+            this.$container.removeClass("hidden");
+            if (width !== undefined) {
+                $player.css("width", bUtil.toCssSize(width));
+            }
+            if (height !== undefined) {
+                $player.css("height", bUtil.toCssSize(height));
+            }
+            $player.css({
+                transition: "opacity 0.2s",
+                opacity: 1
+            });
+            this.player.play();
+            await bUtil.asyncTimeout(this.animation.durationMs / this.animation.speed);
+            $player.css({
+                transition: "opacity 0.7s",
+                opacity: 0
+            });
+            await bUtil.asyncTimeout(400);
+            this.player.stop();
+            this.player.reset();
+            $player.addClass("hidden");
+            this.$container.addClass("hidden");
+            this.running = false;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+}
+
+class ContinueResultDTO {}
+
+class AskContinueDialog extends SimpleDialog {
+    constructor(continueCandidate, currentSize) {
+        super();
+        this.continueCandidate = continueCandidate;
+        this.currentSize = currentSize;
+    }
+    show() {
+        let message;
+        let name;
+        if (this.continueCandidate.type === "workout") {
+            name = this.continueCandidate.title ? `задание "${this.continueCandidate.title}"` : "задание №" + this.continueCandidate.workoutNum;
+            message = `У вас есть незавершенное ${name}`;
+            if (this.continueCandidate.size > 0 && this.continueCandidate.size !== this.currentSize) {
+                message += ` из ${this.continueCandidate.size} вопросов.`;
+            }
+        }
+        if (this.continueCandidate.type === "test") {
+            name = this.continueCandidate.title;
+            message = `У вас есть незавершенный тест "${name}"`;
+        }
+        let template = `<div>\n    <div class="dialog-body">\n      <p>${message}</p>\n      <p>Хотите его продолжить?</p>\n      <p class="help" style="margin-bottom: 0;">*Незавершенные тесты и задания можно найти на странице "Результаты" и продолжить в любое время.</p>\n    </div>\n  </div>`;
+        this.showWithTemplate(template, `Доделать ${name}`, "600px");
+    }
+    buildButtons() {
+        return {
+            "Продолжить": this.doContinue.bind(this),
+            "Как-нибудь потом": this.onClose.bind(this)
+        };
+    }
+    doContinue() {
+        window.location.replace(this.continueCandidate.url);
+    }
+}
+
+class Draft {
+    constructor(type, id, itemId, instanceId, data) {
+        this.id = id;
+        this.type = type;
+        this.itemId = itemId;
+        this.instanceId = instanceId;
+        this.data = data;
+    }
+}
+
+Draft.TYPES = Object.freeze({
+    TEST: "test",
+    WORKOUT: "workout"
+});
+
+class TestResultDraftData {}
+
+class LocalDraftController {
+    constructor(testController, type, testId) {
+        this.testController = testController;
+        this.type = type;
+        this.testId = testId;
+        this.parser = new TestPageParser;
+        this._lastSaveTime = 0;
+        this._pendingSaveTimeout = null;
+        this.draftLoader = new DraftLoader;
+    }
+    async initialize() {
+        try {
+            let db = new LocalDraftDb;
+            await db.initDb();
+            this.DB = db;
+        } catch (error) {
+            console.error(error);
+        }
+        this.initDraftData();
+    }
+    async initDraftData() {
+        if (!this.DB) {
+            return;
+        }
+        try {
+            let latestDaft = await this.DB.getLatestDraft(this.type, this.testId);
+            if (latestDaft) {
+                this.instanceId = latestDaft.instanceId + 1;
+                let draftTime = latestDaft.data.saveTimestamp ? latestDaft.data.saveTimestamp : latestDaft.data.startTimestamp;
+                if (Date.now() - draftTime <= 2 * 864e5) {
+                    await this.askLoadDraft(latestDaft);
+                }
+            } else {
+                this.instanceId = 0;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    async askLoadDraft(latestDaft) {
+        let result = await (new SimpleYesNoDialog).showAsync("Продолжить тест?", "Обнаружен черновик этого теста. Загрузить?", "да", "нет");
+        if (result) {
+            this.loadDraft(latestDaft);
+        }
+    }
+    onChange() {
+        if (this.blockChanges) return;
+        if (this._pendingSaveTimeout) return;
+        const now = Date.now();
+        if (now - this._lastSaveTime >= 2e3) {
+            this.saveTestDraft();
+        } else {
+            const timeUntilNextSave = 2e3 - (now - this._lastSaveTime);
+            this._pendingSaveTimeout = setTimeout((() => {
+                this._pendingSaveTimeout = null;
+                this.saveTestDraft();
+            }), timeUntilNextSave);
+        }
+    }
+    loadDraft(draft) {
+        this.blockChanges = true;
+        new DraftLoader(draft).loadDraft();
+        this.blockChanges = false;
+        this.draftId = draft.id;
+        this.instanceId = draft.instanceId;
+    }
+    async saveTestDraft() {
+        if (!this.DB) {
+            return;
+        }
+        this._lastSaveTime = Date.now();
+        this.blockChanges = true;
+        let data = {
+            questions: this.parseQuestionData(),
+            startTimestamp: this.startTimestamp,
+            saveTimestamp: Date.now()
+        };
+        this.blockChanges = false;
+        let draft = new Draft(this.type, this.draftId, this.testId, this.instanceId, data);
+        console.log("saving draft:" + JSON.stringify(new Draft(this.type, this.draftId, this.testId, this.instanceId, undefined)));
+        await this.DB.saveDraft(draft);
+        this.draftId = draft.id;
+    }
+    parseQuestionData() {
+        let result = [];
+        $(".question-cont").each(((i, el) => {
+            let data = this.parser.parseQuestion(el);
+            if (data) {
+                data.questionId = $(el).find(".freebirdFormviewerComponentsQuestionBaseRoot").data("questionId");
+                result.push(data);
+            }
+        }));
+        return result;
+    }
+    async removeCurrentDraft() {
+        if (!this.DB) {
+            return;
+        }
+        await this.DB.deleteDrafts(this.type, this.testId, this.instanceId);
+    }
+}
+
+class LocalDraftDb {
+    constructor() {
+        this.db = null;
+        this.savingDrafts = new Map;
+    }
+    async initDb() {
+        if (!window.Dexie) {
+            await bUtil.loadScript("/js/lib/dexie@4.0.8.min.js");
+        }
+        let db = new Dexie("BSavedDrafts");
+        db.version(1).stores({
+            drafts: "++id, type, itemId, instanceId"
+        });
+        this.db = db;
+    }
+    async getLatestDraft(type, itemId) {
+        return this.db.drafts.where({
+            type: type,
+            itemId: itemId
+        }).reverse().sortBy("instanceId").then((items => items.length ? items[0] : null));
+    }
+    async deleteDrafts(type, itemId, instanceId) {
+        if (instanceId !== undefined) {
+            return this.db.drafts.where({
+                type: type,
+                itemId: itemId,
+                instanceId: instanceId
+            }).delete();
+        } else {
+            return this.db.drafts.where({
+                type: type,
+                itemId: itemId
+            }).delete();
+        }
+    }
+    async saveDraft(draft) {
+        const key = `${draft.type}-${draft.instanceId}-${draft.itemId}`;
+        if (this.savingDrafts.has(key)) {
+            const {savingPromise: savingPromise, nextDraft: nextDraft} = this.savingDrafts.get(key);
+            this.savingDrafts.set(key, {
+                savingPromise: savingPromise,
+                nextDraft: draft
+            });
+            return savingPromise;
+        }
+        let savingPromise = this.executeSave(draft, key);
+        this.savingDrafts.set(key, {
+            savingPromise: savingPromise,
+            nextDraft: null
+        });
+        return savingPromise;
+    }
+    async executeSave(draft, key) {
+        try {
+            await this.db.drafts.put(draft);
+            const {savingPromise: savingPromise, nextDraft: nextDraft} = this.savingDrafts.get(key);
+            if (nextDraft) {
+                nextDraft.id = draft.id;
+                this.savingDrafts.set(key, {
+                    savingPromise: savingPromise,
+                    nextDraft: null
+                });
+                return this.executeSave(nextDraft, key);
+            }
+        } finally {
+            this.savingDrafts.delete(key);
+        }
+        return draft;
+    }
+}
+
+class DraftLoader {
+    constructor(draft) {
+        this.draft = draft;
+    }
+    loadDraft() {
+        $(".question-cont").each(((i, el) => {
+            let $el = $(el);
+            let data = $el.find(".freebirdFormviewerComponentsQuestionBaseRoot").data();
+            let id = data.questionId;
+            let questionNumber = data.questionNumber;
+            let questionData = this.findQuestionData(id, questionNumber);
+            let type = $el.data("questionType");
+            if (questionData) {
+                this.fillQuestion($el, questionData, type);
+            }
+        }));
+    }
+    findQuestionData(questionId, questionNumber) {
+        if (!questionId) {
+            return undefined;
+        }
+        for (const question of this.draft.data.questions) {
+            if (question.questionId === questionId) {
+                return question;
+            }
+        }
+        return undefined;
+    }
+    fillQuestion($el, questionData, type) {
+        this.fillQuestionAnswer($el, questionData, type);
+        this.fillQuestionExtrasAndPreceptPoints($el, questionData, type);
+    }
+    fillQuestionAnswer($el, questionData, type) {
+        if (questionData.answer) {
+            $el.find("input[type=text]").val(questionData.answer);
+            $el.find(".freebirdFormviewerComponentsQuestionBaseRoot").addClass("hasValue");
+        }
+    }
+    fillQuestionExtrasAndPreceptPoints($el, questionData, type) {
+        if (window.PRECEPT_POINT_CONTROLLER) {
+            window.PRECEPT_POINT_CONTROLLER.fillQuestionExtrasAndPreceptPoints($el, questionData, type);
+        }
+    }
+}

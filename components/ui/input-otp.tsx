@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 "use client"
 
 import * as React from "react"
@@ -58,7 +60,9 @@ const InputOTPSlot = React.forwardRef<
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div 
             className={cn(
-              "animate-[var(--component-input-otp-slot-caret-animation-name)] bg-[var(--component-input-otp-slot-caret-background-color)] duration-[var(--component-input-otp-slot-caret-animation-duration)]",
+              "absolute inset-0 flex items-center justify-center animate-caret-blink pointer-events-none",
+              "text-[var(--component-input-otp-slot-caret-color, var(--primary))]",
+              "bg-[var(--component-input-otp-slot-caret-background-color)] duration-\[var(--component-input-otp-slot-caret-animation-duration)\]",
               "h-[var(--component-input-otp-slot-caret-height)] w-[var(--component-input-otp-slot-caret-width)]"
             )}
           />

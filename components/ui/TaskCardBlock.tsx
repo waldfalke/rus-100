@@ -1,3 +1,4 @@
+// Code Contracts: PENDING
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ export interface TaskCardBlockProps {
   maxCount?: number;
   onIncrement?: () => void;
   onDecrement?: () => void;
+  noWrapper?: boolean;
 }
 
 export const TaskCardBlock: React.FC<TaskCardBlockProps> = ({
@@ -47,6 +49,7 @@ export const TaskCardBlock: React.FC<TaskCardBlockProps> = ({
   maxCount = 10,
   onIncrement,
   onDecrement,
+  noWrapper = false,
 }) => {
   // Извлекаем номер задания из заголовка
   const taskNumber = item.title.match(/№\s*(\d+)/)?.[1];
@@ -55,63 +58,79 @@ export const TaskCardBlock: React.FC<TaskCardBlockProps> = ({
   const hasDropdowns = categoryDropdown || difficultyDropdown;
   const hasControls = (onIncrement && onDecrement) || onSolveClick;
 
-  return (
-    <Card className="border border-gray-200 mb-2">
-      <CardContent className="p-3 sm:p-4">
-        {/* Основной контейнер с прогрессивными брейкпоинтами */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-3">
-          {/* Название задания - отдельный блок */}
-          <div className="text-sm text-gray-800 flex-shrink-0 mb-2 lg:mb-0 lg:mr-3 min-w-0">{item.title}</div>
+  const content = (
+    <div className={`p-3 sm:p-4 ${noWrapper ? 'border-b-0 p-0' : 'border-b'}`}>
+      {/* Основной контейнер с прогрессивными брейкпоинтами */}
+      <div className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-between gap-2 lg:gap-3">
+        {/* Название задания - отдельный блок, updated styling */}
+        <div className="font-inter text-app-body font-normal leading-cyr-text text-foreground mb-2 lg:mb-0 lg:mr-3 min-w-0 break-words">{item.title}</div>
 
-          {/* Контейнер для всех контроллов с компактным расположением */}
-          <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto lg:ml-auto ${!hasDropdowns && 'sm:justify-end'} ${controlsClassName}`}>
-            {/* Контейнер для дропдаунов - горизонтальный на планшетах, но может переноситься */}
-            {hasDropdowns && (
-              <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto sm:flex-grow">
-                {/* Категории */}
-                {categoryDropdown && (
-                  <div className="w-full sm:w-auto flex-shrink-0 min-w-[140px] max-w-full">
-                    {categoryDropdown}
-                  </div>
-                )}
+        {/* Контейнер для всех контроллов с компактным расположением */}
+        <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto lg:ml-auto ${!hasDropdowns && 'sm:justify-end'} ${controlsClassName}`}>
+          {/* Контейнер для дропдаунов - горизонтальный на планшетах, но может переноситься */}
+          {hasDropdowns && (
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto sm:flex-grow">
+              {/* Категории */}
+              {categoryDropdown && (
+                <div className="w-full sm:w-auto flex-shrink-0 min-w-[140px] max-w-full">
+                  {categoryDropdown}
+                </div>
+              )}
 
-                {/* Сложность */}
-                {difficultyDropdown && (
-                  <div className="w-full sm:w-auto flex-shrink-0 min-w-[140px] max-w-full">
-                    {difficultyDropdown}
-                  </div>
-                )}
-              </div>
-            )}
+              {/* Сложность */}
+              {difficultyDropdown && (
+                <div className="w-full sm:w-auto flex-shrink-0 min-w-[140px] max-w-full">
+                  {difficultyDropdown}
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Счетчик с уменьшенным отступом для более плотного расположения */}
-            {hasControls && (
-              <div className={`flex flex-row items-center gap-2 sm:ml-auto ${hasDropdowns ? 'mt-2 sm:mt-0' : ''}`}>
-                {/* Счетчик с кнопками */}
-                {onDecrement && onIncrement && (
-                  <CounterControlBlock
-                    value={currentCount}
-                    min={0}
-                    max={maxCount}
-                    onDecrement={onDecrement}
-                    onIncrement={onIncrement}
-                  />
-                )}
+          {/* Счетчик с уменьшенным отступом для более плотного расположения */}
+          {hasControls && (
+            <div className={`flex flex-row items-center gap-2 sm:ml-auto ${hasDropdowns ? 'mt-2 sm:mt-0' : ''}`}>
+              {/* Счетчик с кнопками */}
+              {onDecrement && onIncrement && (
+                <CounterControlBlock
+                  value={currentCount}
+                  min={0}
+                  max={maxCount}
+                  onDecrement={onDecrement}
+                  onIncrement={onIncrement}
+                />
+              )}
 
-                {/* Кнопка решения */}
-                {onSolveClick && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onSolveClick(item.id)}
-                  >
-                    Решить
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
+              {/* Кнопка решения */}
+              {onSolveClick && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onSolveClick(item.id)}
+                >
+                  Решить
+                </Button>
+              )}
+            </div>
+          )}
         </div>
+      </div>
+    </div>
+  );
+
+  return noWrapper ? (
+    <>{content}
+     {/* Глобальные стили для обеспечения плавного перехода между разными размерами экрана */}
+      <style jsx global>{`
+        /* Правило для предотвращения переполнения текста в бейджах */
+        .selection-dropdown-badge span {
+          display: inline-block;
+        }
+      `}</style>
+    </>
+  ) : (
+    <Card className="border border-border mb-2">
+      <CardContent className="p-0">
+        {content}
       </CardContent>
       
       {/* Глобальные стили для обеспечения плавного перехода между разными размерами экрана */}
@@ -123,4 +142,4 @@ export const TaskCardBlock: React.FC<TaskCardBlockProps> = ({
       `}</style>
     </Card>
   );
-}; 
+};

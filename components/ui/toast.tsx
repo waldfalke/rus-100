@@ -7,6 +7,8 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Code Contracts: PENDING
+
 const ToastProvider = ToastPrimitives.Provider
 
 const ToastViewport = React.forwardRef<
@@ -116,7 +118,11 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn("text-[var(--component-toast-title-font-size)] font-[var(--component-toast-title-font-weight)]", className)}
+    className={cn(
+      "font-source-serif-pro",
+      "text-[var(--component-toast-title-font-size)] font-[var(--component-toast-title-font-weight)]", 
+      className
+    )}
     {...props}
   />
 ))

@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 "use client";
 
 import React from 'react';

@@ -1,22 +1,23 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-[var(--component-badge-default-border-radius)] border-[var(--component-badge-default-border-width)] text-[var(--component-badge-default-font-size)] font-[var(--component-badge-default-font-weight)] px-[var(--component-badge-default-padding-x)] py-[var(--component-badge-default-padding-y)] transition-colors focus:outline-none focus:ring-[var(--component-badge-default-focus-ring-width)] focus:ring-[var(--component-badge-default-focus-ring-color)] focus:ring-offset-[var(--component-badge-default-focus-ring-offset)]",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-app-small transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 badge font-normal",
   {
     variants: {
       variant: {
         default:
-          "border-[var(--component-badge-default-border-color)] bg-[var(--component-badge-default-background-color)] text-[var(--component-badge-default-text-color)] hover:bg-[var(--component-badge-default-hover-background-color)]",
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
         secondary:
-          "border-[var(--component-badge-secondary-border-color)] bg-[var(--component-badge-secondary-background-color)] text-[var(--component-badge-secondary-text-color)] hover:bg-[var(--component-badge-secondary-hover-background-color)]",
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
-          "border-[var(--component-badge-destructive-border-color)] bg-[var(--component-badge-destructive-background-color)] text-[var(--component-badge-destructive-text-color)] hover:bg-[var(--component-badge-destructive-hover-background-color)]",
-        outline: 
-          "border-[var(--component-badge-outline-border-color)] bg-[var(--component-badge-outline-background-color)] text-[var(--component-badge-outline-text-color)]",
-      },
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+      }
     },
     defaultVariants: {
       variant: "default",
@@ -30,7 +31,10 @@ export interface BadgeProps
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div 
+      className={cn(badgeVariants({ variant }), className)} 
+      {...props} 
+    />
   )
 }
 

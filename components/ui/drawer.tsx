@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 "use client"
 
 import * as React from "react"
@@ -84,6 +86,7 @@ const DrawerTitle = React.forwardRef<
   <DrawerPrimitive.Title
     ref={ref}
     className={cn(
+      "font-source-serif-pro",
       "text-lg font-semibold leading-none tracking-tight",
       className
     )}

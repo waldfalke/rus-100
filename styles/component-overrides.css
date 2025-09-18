@@ -1,0 +1,127 @@
+/* 
+ * component-overrides.css
+ * Высокоспецифичные селекторы для переопределения стилей компонентов
+ * Импортируется после всех других стилей в globals.css
+ */
+
+/* Tabs component overrides - extremely specific selector to ensure override */
+html body [role="tablist"] [role="tab"][data-state="active"],
+[data-radix-popper-content-wrapper] [role="tab"][data-state="active"] {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  box-shadow: none !important;
+}
+
+/* Pills variant - extremely specific selector */
+html body [role="tablist"] .rounded-full[role="tab"][data-state="active"] {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border-color: hsl(var(--primary)) !important;
+}
+
+/* TabsList container border fix - restore border that gets removed by box-shadow: none */
+html body [role="tablist"] {
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: none !important;
+}
+
+/* Tabs block structure fixes */
+/* Sticky header with tabs - create complete card appearance */
+.sticky.top-0.bg-muted.rounded-t-xl.border-b.border-border {
+  border: 1px solid hsl(var(--border)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.75rem 0.75rem 0 0 !important; /* rounded-t-xl */
+}
+
+/* Content area - separate from sticky header */
+.sticky.top-0 + [role="tablist"] + [data-ui="card"] {
+  border-top: none !important;
+  border-radius: 0 0 0.75rem 0.75rem !important; /* rounded-b-xl */
+}
+
+/* Alternative selector for content cards when they follow sticky navigation */
+[role="tabpanel"] [data-ui="card"] {
+  border-radius: 0.75rem !important; /* full rounded corners for standalone cards */
+}
+
+/* Progress component overrides */
+[role="progressbar"] {
+  background-color: hsl(var(--border)) !important;
+}
+
+[role="progressbar"] > div {
+  background-color: hsl(var(--primary)) !important;
+}
+
+/* Progress Panel Block (fixed bottom panel) */
+.progress-panel-block {
+  background-color: hsl(var(--card)) !important;
+  border-top: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Button overrides, if needed */
+button.bg-primary {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Card overrides, if needed */
+.bg-card {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* TopNavBlock overrides for consistent spacing */
+nav.bg-muted {
+  padding: 0.5rem 1rem !important;
+  margin-bottom: 2rem !important;
+}
+
+nav.bg-muted > div {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+nav.bg-muted .lg\:flex.flex-wrap a,
+nav.bg-muted .bg-card {
+  margin: 0.25rem !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* TopNavBlock dark mode specific styles */
+html.dark nav.bg-muted {
+  background-color: hsl(var(--muted)) !important;
+}
+
+html.dark nav.bg-muted .bg-card {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* Global font overrides for elements that need fine-tuning */
+/* For medium weights */
+.font-medium {
+  font-weight: 500 !important;
+}
+
+/* For semibold weights */
+.font-semibold {
+  font-weight: 600 !important;
+}
+
+/* For bold weights */
+.font-bold {
+  font-weight: 700 !important;
+}
+
+/* Targeted Chevron badge overrides */
+html body [class*="dropdown-badge"] svg path,
+html body [class*="dropdown"] svg path,
+html body [class*="popover"] svg path {
+  stroke: currentColor !important;
+}
+
+/* Other common components overrides can be added below */

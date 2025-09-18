@@ -1,0 +1,1435 @@
+class StatsJsonData {}
+
+class StatsByUserJsonData extends StatsJsonData {}
+
+class StatsByTestJsonData extends StatsJsonData {}
+
+class RowDTO {}
+
+class UserDTO extends RowDTO {}
+
+class TestRowDTO extends RowDTO {}
+
+class LinkDTO {}
+
+class ResultStatsDTO {
+    constructor(src) {
+        this.i = src.i;
+        this.s = src.s;
+        this.m = src.m;
+        this.d = src.d;
+        this.t = src.t;
+        this.s = src.s;
+    }
+}
+
+class TestListDTO {}
+
+class TestDTO {}
+
+class PreceptDTO {}
+
+class PreceptStatsDTO {}
+
+class PreceptStats {
+    constructor(p) {
+        if (p instanceof PreceptStats) {
+            this.id = p.id;
+            this.number = p.number;
+            this.egeNumber = p.egeNumber;
+            this.name = p.name;
+            this.total = p.total;
+            this.failed = p.failed;
+        } else {
+            this.id = p.i;
+            this.number = p.n;
+            this.egeNumber = p.e;
+            this.name = p.t;
+            this.total = 0;
+            this.failed = 0;
+        }
+    }
+    rate() {
+        return (this.total - this.failed) / this.total;
+    }
+    orderBy() {
+        return this.failed * Math.pow(this.failed, .5) / this.total;
+    }
+    add(other) {
+        this.failed += other.failed;
+        this.total += other.total;
+    }
+    addDto(dto) {
+        this.failed += dto.f;
+        this.total += dto.t;
+    }
+}
+
+class TestResults {
+    constructor(user, test, baseDay) {
+        this.user = user;
+        this.test = test;
+        this.baseDay = baseDay;
+        if (test) {
+            this.setResults(user.getStats(test.id));
+        }
+    }
+    setResults(results) {
+        this.testResults = results.filter((r => !r.d));
+        this.duplicateResults = results.filter((r => r.d));
+    }
+    getLink(testResult) {
+        return `/testResult/${testResult.i}/`;
+    }
+    getLevel(testResult) {
+        if (testResult.m === 0) return 0;
+        let success = testResult.s / testResult.m;
+        if (success < .5) {
+            return 1;
+        }
+        if (success < .8) {
+            return 2;
+        }
+        return 3;
+    }
+    getDate(testResult) {
+        let timestamp = (this.baseDay + testResult.t) * 864e5;
+        return new Date(timestamp).toLocaleDateString();
+    }
+}
+
+const DISPLAY_MODE = Object.freeze({
+    Table: "Table",
+    Cards: "Cards",
+    GroupedCards: "GroupedCards"
+});
+
+class SortingCycleStep {
+    constructor(isAscending, type, classes, cycleId) {
+        this.isAscending = isAscending;
+        this.type = type;
+        this.classes = classes;
+        this.classesArr = classes.split(/\s+/g);
+        this.cycleId = cycleId;
+    }
+    isMatchesClasses(classes) {
+        if (typeof classes === "string") {
+            classes = classes.split(/\s+/g);
+        }
+        for (const cls of this.classesArr) {
+            if (classes.indexOf(cls) < 0) return false;
+        }
+        return true;
+    }
+}
+
+class SortingCycle {
+    constructor(id) {
+        this.steps = [];
+        this.allClasses = [];
+        this.id = id;
+    }
+    addStep(isAscending, type, classes) {
+        let step = new SortingCycleStep(isAscending, type, classes, this.id);
+        this.steps.push(step);
+        for (let stepClass of step.classesArr) {
+            if (this.allClasses.indexOf(stepClass) < 0) {
+                this.allClasses.push(stepClass);
+            }
+        }
+        return this;
+    }
+    getStepIndex($el) {
+        let classes = $el.attr("class").split(" ");
+        for (let i = 0; i < this.steps.length; ++i) {
+            if (this.steps[i].isMatchesClasses(classes)) return i;
+        }
+        return -1;
+    }
+    getNextStep($el) {
+        let current = this.getStepIndex($el);
+        let next = ++current % this.steps.length;
+        return this.steps[next];
+    }
+}
+
+class SortingCycles {
+    constructor() {
+        this.sortingCycles = new Map;
+        this.allClasses = "";
+    }
+    add(cycle) {
+        this.sortingCycles.set(cycle.id, cycle);
+        let allClasses = this.allClasses.split(/\s+/g);
+        for (let cls of cycle.allClasses) {
+            if (allClasses.indexOf(cls) < 0) allClasses.push(cls);
+        }
+        this.allClasses = allClasses.join(" ");
+        return this;
+    }
+    getNextStepOf($el) {
+        for (const cls of this.sortingCycles.keys()) {
+            if ($el.hasClass(cls)) {
+                return this.sortingCycles.get(cls).getNextStep($el);
+            }
+        }
+        return undefined;
+    }
+}
+
+class CellData {
+    constructor(col, globalCol, stats) {
+        this.stats = stats;
+        this.col = col;
+        this.globalCol = globalCol;
+    }
+    getKey() {
+        return undefined;
+    }
+}
+
+class StatsSum {
+    constructor(source) {
+        this.count = 0;
+        this.score = 0;
+        this.maxScore = 0;
+        this.questionCount = 0;
+        this.source = source;
+    }
+    add(stat) {
+        if (stat.d || stat.e) return;
+        ++this.count;
+        this.score += stat.s;
+        this.maxScore += stat.m;
+        this.questionCount += stat.c;
+    }
+    setStats(stats, latestCount = 2) {
+        this.score = 0;
+        this.maxScore = 0;
+        this.count = 0;
+        this.questionCount = 0;
+        this.trend = null;
+        for (const stat of stats) {
+            this.add(stat);
+        }
+        if (stats.length > latestCount && latestCount > 0) {
+            let sum = 0;
+            let max = 0;
+            for (let i = stats.length - latestCount; i < stats.length; ++i) {
+                sum += stats[i].s;
+                max += stats[i].m;
+            }
+            let latestAvg = sum / max;
+            let avg = this.score / this.maxScore;
+            this.trend = latestAvg - avg;
+        }
+    }
+    setTestListStats(stats, testList, user, latestCount = 2) {
+        this.setStats(stats, 0);
+        let trendSum = 0;
+        let trendCount = 0;
+        for (let test of testList.tests) {
+            let testStats = user.getTestStats(test);
+            if (testStats.trend) {
+                trendSum += testStats.trend;
+                ++trendCount;
+            }
+        }
+        this.trend = trendCount > 0 ? trendSum : null;
+    }
+    getTrend() {
+        if (this.trend === null) return "unk";
+        if (Math.abs(this.trend) < .05) {
+            return "st";
+        }
+        return this.trend > 0 ? "up" : "dn";
+    }
+    getSuccessLevel() {
+        if (this.maxScore === 0) return 0;
+        let success = this.score / this.maxScore;
+        if (success < .5) {
+            return 1;
+        }
+        if (success < .8) {
+            return 2;
+        }
+        return 3;
+    }
+    ratePercent() {
+        return this.maxScore <= 0 ? 0 : Math.round(this.score / this.maxScore * 100);
+    }
+    rate() {
+        return this.maxScore === 0 ? -1 : this.score / this.maxScore;
+    }
+}
+
+class BStatsRow {
+    constructor(rowDTO, controller) {
+        this.dto = rowDTO;
+        this.controller = controller;
+        this.testStatsByTestId = {};
+        this.testListStatsByTestListIdx = {};
+    }
+    getStats(testId) {
+        if (!this.dto.s) {
+            return [];
+        }
+        let result = this.dto.s[testId];
+        return result ? result : [];
+    }
+    getTestStats(test) {
+        if (!this.testStatsByTestId[test.id]) {
+            let sum = new StatsSum(test);
+            sum.setStats(this.getStats(test.id));
+            this.testStatsByTestId[test.id] = sum;
+        }
+        return this.testStatsByTestId[test.id];
+    }
+    getTestListStats(testList) {
+        if (!this.testListStatsByTestListIdx[testList.idx]) {
+            let sum = new StatsSum(testList);
+            let stats = [];
+            for (const test of testList.tests) {
+                $.merge(stats, this.getStats(test.id));
+            }
+            stats.sort(((a, b) => a.i - b.i));
+            sum.setTestListStats(stats, testList, this, 2);
+            this.testListStatsByTestListIdx[testList.idx] = sum;
+        }
+        return this.testListStatsByTestListIdx[testList.idx];
+    }
+    getTotalStats() {
+        if (!this.totalStats) {
+            let sum = new StatsSum(this);
+            if (this.dto.s) {
+                for (const key of Object.keys(this.dto.s)) {
+                    for (const stat of this.dto.s[key]) {
+                        sum.add(stat);
+                    }
+                }
+            }
+            this.totalStats = sum;
+        }
+        return this.totalStats;
+    }
+    getPrecepts(source, limit = -1) {
+        let result = [];
+        if (source && source.id) {
+            result = this.getPreceptsOfTest(source);
+        } else if (source) {
+            result = this.sumPreceptsOfColGroup(source);
+        } else {
+            result = this.sumAllPrecepts();
+        }
+        result = result.filter((a => a.failed > 0)).sort(((a, b) => b.orderBy() - a.orderBy()));
+        if (limit > 0 && result.length > limit) {
+            result.length = limit;
+        }
+        return result;
+    }
+    sumPreceptsOfColGroup(colGroup) {
+        if (!this.dto.p) {
+            return [];
+        }
+        let result = new PreceptStatsBuilder(this.controller);
+        for (let test of colGroup.tests) {
+            result.add(this.dto.p[test.id]);
+        }
+        return Array.from(result.result.values());
+    }
+    sumAllPrecepts() {
+        if (!this.dto.p) {
+            return [];
+        }
+        let result = new PreceptStatsBuilder(this.controller);
+        for (let testId of Object.keys(this.dto.p)) {
+            result.add(this.dto.p[testId]);
+        }
+        return Array.from(result.result.values());
+    }
+    getPreceptsOfTest(test) {
+        if (!this.dto.p) {
+            return [];
+        }
+        let result = [];
+        let testPreceptStats = this.dto.p[test.id];
+        if (testPreceptStats) {
+            for (let preceptId of Object.keys(testPreceptStats)) {
+                let precept = this.controller.data.precepts[preceptId];
+                let statsDTO = testPreceptStats[preceptId];
+                if (precept) {
+                    let stat = new PreceptStats(precept);
+                    stat.failed = statsDTO.f;
+                    stat.total = statsDTO.t;
+                    result.push(stat);
+                }
+            }
+        }
+        return result;
+    }
+    getId() {
+        return undefined;
+    }
+}
+
+class PreceptStatsBuilder {
+    constructor(controller) {
+        this.controller = controller;
+        this.result = new Map;
+    }
+    add(testPreceptStats) {
+        if (testPreceptStats) {
+            for (let preceptId of Object.keys(testPreceptStats)) {
+                let prId = Number.parseInt(preceptId);
+                let statItem = this.getStatsForPreceptId(prId);
+                if (statItem) {
+                    statItem.addDto(testPreceptStats[prId]);
+                }
+            }
+        }
+    }
+    getStatsForPreceptId(preceptId) {
+        let statItem = this.result.get(Number.parseInt(preceptId));
+        if (!statItem) {
+            let precept = this.controller.data.precepts[preceptId];
+            if (precept) {
+                statItem = new PreceptStats(precept);
+                this.result.set(precept.i, statItem);
+            }
+        }
+        return statItem;
+    }
+}
+
+class User extends BStatsRow {
+    constructor(userDto, controller) {
+        super(userDto, controller);
+        this.dto = userDto;
+        this.email = this.dto.e.toLowerCase();
+    }
+    getName() {
+        return this.dto.n;
+    }
+    getEmail() {
+        return this.email;
+    }
+    getTgLink() {
+        return this.dto.t;
+    }
+    getGcLink() {
+        return this.dto.g;
+    }
+    getId() {
+        return this.dto.i;
+    }
+}
+
+class TestRow extends BStatsRow {
+    constructor(userDto, controller) {
+        super(userDto, controller);
+        this.dto = userDto;
+    }
+    getName() {
+        return this.dto.name;
+    }
+    getLink() {
+        return this.dto.link;
+    }
+    getId() {
+        return this.dto.id;
+    }
+    buildRowTestResults(baseDay) {
+        let results = new Map;
+        if (this.dto.s) {
+            for (let colId of Object.keys(this.dto.s)) {
+                for (let colResult of this.dto.s[colId]) {
+                    let result = results.get(colResult.i);
+                    if (!result) {
+                        result = new ResultStatsDTO(colResult);
+                        results.set(colResult.i, result);
+                    } else {
+                        result.s += colResult.s;
+                        result.m += colResult.m;
+                        result.c += colResult.c;
+                    }
+                }
+            }
+        }
+        let result = new TestResults(this, undefined, baseDay);
+        result.setResults(Array.from(results.values()));
+        return result;
+    }
+}
+
+class CellAllocator {
+    constructor(mainController, $cont) {
+        this.mainController = mainController;
+        this.testListGap = $cont[0].computedStyleMap ? $cont[0].computedStyleMap().get("--test-list-gap")[0] : "1rem";
+        this.testColumnGridTemplateWithMargin = ` calc(200px + ${this.testListGap})`;
+        this.statsColumnGridTemplate = ` calc(200px + ${this.testListGap})`;
+    }
+    getRootViewClass() {}
+    allocateHeaderTotalColGridArea(el) {
+        el.style.setProperty("grid-area", "1/1/3/3");
+    }
+    allocateHeaderColGroupGridArea(el, colGroup) {
+        el.style.setProperty("grid-area", `1/${colGroup.colStart}/1/${colGroup.colEnd}`);
+    }
+    allocateHeaderColGroupTotalGridArea(el, colGroup) {
+        el.style.setProperty("grid-area", `2/${colGroup.colStart}`);
+    }
+    allocateHeaderColTitleGrigArea(el, testList, idx) {
+        let col = this.getTestColIdx(testList, idx);
+        el.style.setProperty("grid-area", `2/${col}`);
+    }
+    getTestColIdx(colGroup, testIndex) {
+        return colGroup.colStart + 1 + testIndex;
+    }
+    allocateRow(el, row, idx = undefined) {}
+    allocateRowCell(el, data) {
+        el.style.setProperty("grid-area", `2/${data.col}`);
+    }
+    buildGridTemplateRows() {
+        return "";
+    }
+    buildGridTemplateColumns() {
+        return "";
+    }
+}
+
+class GroupedCellLeadCellController extends TemplatedPresenter {
+    addTestListStats($container, idx, testList, user) {}
+}
+
+class CellControllerBase extends TemplatedPresenter {
+    addTestStats($container, user, testList, idx) {}
+}
+
+class StatsHeaderControllerBase {
+    buildHeader() {}
+}
+
+class TotalRowControllerBase {
+    build() {}
+}
+
+class StatsControllerBase extends TemplatedPresenter {
+    constructor(keyGetters, data, $cont, rowTemplate) {
+        super(keyGetters, rowTemplate, $cont);
+        this.initiallyCollapsed = true;
+        this.hoverCellSelector = ".user-info, .user-total-stats, .statsCell";
+        this.columns = data.columns;
+        for (let i = 0; i < data.columns.length; ++i) {
+            data.columns[i].idx = i;
+        }
+        this.data = data;
+        this.$cont = $cont;
+        this.sortingCycles = this.buildSortingCycles();
+    }
+    initialise() {
+        this.$cont.addClass(this.cellAllocator.getRootViewClass());
+        this.popupController.onCellsCreated();
+        this.addElementCallbacks();
+        if (this.data.columns.length < 4) {
+            for (let i = 0; i < this.data.columns.length; i++) {
+                const testList = this.data.columns[i];
+                let $el = $(`.colH-${testList.colStart}`);
+                this.toggleTestListCollapsed(testList, i, $el);
+            }
+        }
+        this.addHoverStyles();
+    }
+    addElementCallbacks() {
+        this.$cont.find(".test-list-header .collapser").click(this.onCollapseTestListClick.bind(this));
+        this.$cont.find(".test-list-header, .testList-stats, .tl-total").click(this.onCollapseTestListClick.bind(this));
+        this.$cont.find(".stats-table-header .sort").click(this.onSortClick.bind(this));
+    }
+    buildSortingCycles() {
+        return (new SortingCycles).add(new SortingCycle("name-header").addStep(true, "name", "sortByName ascending").addStep(false, "name", "sortByName descending").addStep(false, "rate", "sortByRate descending").addStep(true, "rate", "sortByRate ascending")).add(new SortingCycle("test-list-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending")).add(new SortingCycle("test-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending"));
+    }
+    buildHeader() {
+        this.headerController.buildHeader();
+        this.$cont.css({
+            "grid-template-columns": this.cellAllocator.buildGridTemplateColumns(),
+            "grid-template-rows": this.cellAllocator.buildGridTemplateRows()
+        });
+    }
+    onCollapseTestListClick(e) {
+        e.stopPropagation();
+        let $el = getEventTargetOfSelector(e, ".test-list-header, .testList-stats, .tl-total");
+        let testList;
+        let tlIdx = $el.data("tl-idx");
+        if (tlIdx !== undefined) {
+            testList = this.data.columns[tlIdx];
+        } else if ($el.is(".test-list-header")) {
+            testList = $el.data("testList");
+        } else if ($el.is(".testList-stats")) {
+            testList = this.groupedCellLeadCellController.getItemData($el[0]).testList;
+            $el.removeClass("selected");
+            $el = $(`.colH-${testList.colStart}`);
+        }
+        this.toggleTestListCollapsed(testList, tlIdx, $el);
+        return true;
+    }
+    toggleTestListCollapsed(testList, tlIdx, $el) {
+        if (testList) {
+            testList.collapsed = !testList.collapsed;
+            this.$cont.css("grid-template-columns", this.cellAllocator.buildGridTemplateColumns());
+            let $testItems = $(`.tlCol-${testList.colStart}`);
+            if (testList.collapsed) {
+                $testItems.addClass("transparent");
+            } else {
+                $testItems.removeClass("transparent");
+            }
+            this.popupController.deselectCol(testList.colStart, testList.colEnd);
+            let $header;
+            if ($el.is(".test-list-header")) {
+                $header = $el;
+            } else {
+                tlIdx = tlIdx === undefined ? this.data.columns.indexOf(testList) : tlIdx;
+                $header = this.$cont.find(`.test-list-header[data-tl-idx="${tlIdx}"]`);
+            }
+            $header.toggleClass("collapsed");
+        }
+    }
+    buildGridTemplateColumns() {
+        let result = "50px 150px";
+        for (let colGroup of this.columns) {
+            if (colGroup.collapsed) {
+                result += this.statsColumnGridTemplate;
+                for (let i in colGroup.tests) {
+                    result += " 0";
+                }
+            } else {
+                result += this.testColumnGridTemplateWithMargin;
+                for (let i in colGroup.tests) {
+                    let test = colGroup.tests[i];
+                    if (test.name && test.name.length > 8) {
+                        result += " 150px";
+                    } else {
+                        result += " 120px";
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    getMaxTestTitleLength() {
+        let length = 0;
+        for (const colGroup of this.data.columns) {
+            for (const test of colGroup.tests) {
+                if (test.name.length > length) {
+                    length = test.name.length;
+                }
+            }
+        }
+        return length;
+    }
+    getTestColIdx(testList, testIndex) {
+        return this.cellAllocator.getTestColIdx(testList, testIndex);
+    }
+    onElementCreated(element, user) {
+        this.cellAllocator.allocateRow(element, user);
+        let $el = $(element);
+        for (let idx = 0; idx < this.columns.length; ++idx) {
+            let $groupCont = $el;
+            let colGroup = this.columns[idx];
+            this.groupedCellLeadCellController.addTestListStats($groupCont, idx, colGroup, user);
+            for (let i = 0; i < colGroup.tests.length; ++i) {
+                this.cellController.addTestStats($groupCont, user, colGroup, i);
+            }
+        }
+    }
+    onSortClick(e) {
+        let $el = $(e.target).closest(".name-header, .test-list-header, .test-header");
+        if ($el.length === 0) return;
+        e.stopPropagation();
+        let nextStep = this.sortingCycles.getNextStepOf($el);
+        if (!nextStep) return true;
+        if (nextStep.cycleId === "name-header") {
+            if (nextStep.type === "name") {
+                this.sortByName(nextStep.isAscending);
+            } else {
+                this.sortByOverallRate(nextStep.isAscending);
+            }
+        } else if (nextStep.cycleId === "test-list-header") {
+            this.sortByTestList(nextStep.isAscending, $el.data("tl-idx"));
+        } else if (nextStep.cycleId === "test-header") {
+            this.sortByTest(nextStep.isAscending, $el.data("test-id"));
+        } else {
+            return true;
+        }
+        this.$cont.find(".stats-table-header .ascending, .stats-table-header .descending").removeClass(this.sortingCycles.allClasses);
+        $el.addClass(nextStep.classes);
+        this.applyRowSortOrder();
+        this.reorder();
+        return true;
+    }
+    sortByName(sortAscending) {}
+    sortByOverallRate(sortAscending) {
+        let mul = sortAscending ? 1 : -1;
+        this.items.sort(((o1, o2) => (o1.data.getTotalStats().rate() - o2.data.getTotalStats().rate()) * mul));
+    }
+    applyRowSortOrder() {
+        for (let idx = 0; idx < this.items.length; ++idx) {
+            this.cellAllocator.allocateRow(this.items[idx].element, undefined, idx);
+        }
+    }
+    getMaxColIdx() {
+        return this.data.columns[this.data.columns.length - 1].colEnd;
+    }
+    addHoverStyles() {
+        let n = this.getMaxColIdx();
+        const style = document.createElement("style");
+        style.type = "text/css";
+        let css = "";
+        for (let i = 0; i <= n; i++) {
+            css += `body:has(.col-${i}:hover) .colH-${i}`;
+            if (i < n) {
+                css += ", \n";
+            }
+        }
+        css += "{background-color: #ccc;}";
+        style.textContent = css;
+        document.head.appendChild(style);
+    }
+    sortByTestList(sortAscending, tlIdx) {
+        let mul = sortAscending ? 1 : -1;
+        let items = this.groupedCellLeadCellController.getItemsData().filter((tl => tl.idx === tlIdx));
+        let sortedRows = items.sort(((o1, o2) => (o1.stats.rate() - o2.stats.rate()) * mul)).map((it => it.user));
+        this.setItemOrderAccordingTo(sortedRows);
+    }
+    sortByTest(sortAscending, testId) {
+        let mul = sortAscending ? 1 : -1;
+        let items = this.cellController.items.filter((it => it.data.test.id === testId)).map((it => it.data));
+        let sortedRows = items.sort(((o1, o2) => (o1.stats.rate() - o2.stats.rate()) * mul)).map((it => it.user));
+        this.setItemOrderAccordingTo(sortedRows);
+    }
+}
+
+class CellAllocatorSparse extends CellAllocator {
+    constructor(mainController, $cont) {
+        super(mainController, $cont);
+    }
+    getRootViewClass() {
+        return "aSparse";
+    }
+    allocateRow(el, row, idx = undefined) {
+        if (typeof idx === "undefined") {
+            idx = this.mainController.rows.indexOf(row);
+        }
+        let startRow = 4 + idx * 2;
+        el.style.setProperty("grid-area", `${startRow}/1/${startRow + 2}/-1`);
+    }
+    buildGridTemplateRows() {
+        let maxTitleLength = this.mainController.getMaxTestTitleLength();
+        let result;
+        if (maxTitleLength < 15) {
+            result = "1.78rem 1.78rem ";
+        } else if (maxTitleLength <= 30) {
+            result = "1.78rem 4.08rem ";
+        } else if (maxTitleLength <= 40) {
+            result = "1.78rem 5.58rem ";
+        } else {
+            result = "1.78rem 6.55rem ";
+        }
+        result += "2.8rem ";
+        for (let i = 0; i < this.mainController.data.rows.length; ++i) {
+            result += "1.9rem 2.8rem ";
+        }
+        return result;
+    }
+    buildGridTemplateColumns() {
+        let result = "50px 150px";
+        for (let colGroup of this.mainController.columns) {
+            if (colGroup.collapsed) {
+                result += this.statsColumnGridTemplate;
+                for (let i in colGroup.tests) {
+                    result += " 0";
+                }
+            } else {
+                result += this.testColumnGridTemplateWithMargin;
+                for (let i in colGroup.tests) {
+                    let test = colGroup.tests[i];
+                    if (test.name && test.name.length > 8) {
+                        result += " 150px";
+                    } else {
+                        result += " 120px";
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+
+class CellAllocatorCompact extends CellAllocator {
+    constructor(mainController, $cont) {
+        super(mainController, $cont);
+    }
+    getRootViewClass() {
+        return "aCompact";
+    }
+    allocateRow(el, row, idx = undefined) {
+        if (typeof idx === "undefined") {
+            idx = this.mainController.rows.indexOf(row);
+        }
+        let startRow = 4 + idx;
+        el.style.setProperty("grid-area", `${startRow}/1/${startRow + 1}/-1`);
+    }
+    allocateRowCell(el, data) {
+        el.style.setProperty("grid-area", `1/${data.col}`);
+    }
+    buildGridTemplateRows() {
+        let maxTitleLength = this.mainController.getMaxTestTitleLength();
+        let result;
+        if (maxTitleLength < 15) {
+            result = "1.78rem 1.78rem ";
+        } else if (maxTitleLength <= 30) {
+            result = "1.78rem 4.08rem ";
+        } else if (maxTitleLength <= 40) {
+            result = "1.78rem 5.58rem ";
+        } else {
+            result = "1.78rem 6.55rem ";
+        }
+        result += "2.8rem ";
+        for (let i = 0; i < this.mainController.data.rows.length; ++i) {
+            result += "2.7rem ";
+        }
+        return result;
+    }
+    buildGridTemplateColumns() {
+        let result = "200px 4.5rem";
+        for (let colGroup of this.mainController.columns) {
+            if (colGroup.collapsed) {
+                result += this.statsColumnGridTemplate;
+                for (let i in colGroup.tests) {
+                    result += " 0";
+                }
+            } else {
+                result += this.testColumnGridTemplateWithMargin;
+                for (let i in colGroup.tests) {
+                    let test = colGroup.tests[i];
+                    if (test.name && test.name.length > 8) {
+                        result += " 150px";
+                    } else {
+                        result += " 120px";
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+
+class PopupControllerBase {
+    constructor(mainController) {
+        this.preceptListTemplate = this.buildPreceptListTemplate();
+        this.resultListTemplate = this.buildResultListTemplate();
+        this.mainController = mainController;
+        this.hoverCellSelector = ".row-info-sticky, .statsCell, .row-title";
+        this.selectedCellSelector = ".row-info-sticky.selected, .statsCell.selected, .row-title.selected";
+        this.popupHelper = new PopupHelper(".popUpInfo");
+        this.positionHelper = new PopupPositionHelper2;
+        this.questionPlurals = new Plurals("вопрос", "вопроса", "вопросов");
+        this.executedPlurals = new Plurals("Выполнен", "Выполнено", "Выполнено");
+        this.totalTypePlurals = new Plurals(mainController.data.itemPlurals[0], mainController.data.itemPlurals[1], mainController.data.itemPlurals[2]);
+        this.testListPopupClick = function(e) {
+            $(this).closest(".statsCell").addClass("selected");
+            e.stopPropagation();
+            return true;
+        };
+    }
+    onCellsCreated() {
+        this.mainController.$cont.find(this.hoverCellSelector).on("mouseenter", this.onCellHover.bind(this)).on("click", this.toggleSelected.bind(this));
+    }
+    buildPreceptListTemplate() {
+        let template = `\n    <div class='precept-list-cont'>\n        <div class='precept-list-header'><%= it.title %>:</div>\n    <ul class='precept-list'>\n      <% for (let stat of it.stats) { %>\n        <li><span class=statFail><%= stat.failed %></span>/<%= stat.total %> <%= stat.name %></li>\n      <% } %>\n    </ul>\n    </div>`;
+        return Eta.compile(template);
+    }
+    buildResultListTemplate() {
+        let template = `\n    <div class='results-cont'>\n      <div class='results-header'>Результаты:</div>\n      <% for (let testResult of it.testResults) { %>\n      <a href="<%= it.getLink(testResult) %>" target="_blank" class="sl-<%=it.getLevel(testResult)%>">\n        <%= testResult.e?"Упражнение":"Результат"%> \n        <%= testResult.s %>/<%= testResult.m %> от <%=it.getDate(testResult)%> </a>\n      <% } %>\n\n      <% if (it.duplicateResults.length > 0) { %>\n      <div class='duplicates-header'>Повторы результатов</div>\n      <% for(let testResult of it.duplicateResults) { %>\n      <a href="<%= it.getLink(testResult) %>" target="_blank" class="sl-<%=it.getLevel(testResult)%>">\n        Результат <%= testResult.s %>/<%= testResult.m %> от <%=it.getDate(testResult)%> </a>\n      <% } %>\n      <% } %>\n    </div>`;
+        return Eta.compile(template);
+    }
+    onCellHover(e) {
+        let $el = this.jq(e);
+        let $popUp = $el.find(".popUpInfo");
+        if ($popUp.length > 0) {
+            this.positionHelper.positionPopup($popUp[0], $el[0]);
+            return;
+        }
+        if ($el.is(".cell-total")) {
+            this.onTotalCellHover(e, $el);
+            return;
+        }
+        let $userEl = $el.closest(".test-stats-row");
+        let rowDataItem = this.mainController.getItemData($userEl[0]);
+        this.onRowCellItemHover(e, $el, rowDataItem);
+    }
+    onRowCellItemHover(e, $el, rowDataItem) {
+        let $popup;
+        if ($el.hasClass("row-info-sticky") || $el.hasClass("row-title")) {
+            $popup = this.onRowHeaderHover(e, $el, rowDataItem);
+        } else if ($el.hasClass("testList-stats")) {
+            $popup = this.buildColGroupCellPopup($el, rowDataItem);
+        } else if ($el.hasClass("test-stats")) {
+            $popup = this.buildSingleColCellPopup($el, rowDataItem);
+        }
+        if ($popup) {
+            this.positionHelper.positionPopup($popup[0], $el[0]);
+        }
+    }
+    onRowHeaderHover(e, $el, rowDataItem) {}
+    onTotalCellHover(e, $el) {
+        let data = $el.data("data");
+        if (!data || data.resultStats.count < 1) return;
+        let count = data.resultStats.count;
+        let name = this.totalTypePlurals.get(count);
+        let executedWord = this.executedPlurals.get(count);
+        let totalHtml = `\n<div class="total-stats">\n    <p>${executedWord} ${count} ${name}.</p>\n    <p>Набрано ${data.resultStats.score} баллов из ${data.resultStats.maxScore} = ${data.resultStats.ratePercent()}%.</p>\n</div>`;
+        if (data.preceptStatsTotal.length > 0) {
+            let preceptsHtml = this.preceptListTemplate.call(Eta, {
+                stats: data.preceptStatsTotal,
+                title: "Правила (неверно/всего)"
+            }, {
+                async: false
+            });
+            totalHtml += preceptsHtml;
+        }
+        $el.append(`<div class='totalPopup popUpInfo'>${totalHtml}</div>`);
+        let $popUp = $el.find(".popUpInfo").click(this.testListPopupClick);
+        this.positionHelper.positionPopup($popUp[0], $el[0]);
+    }
+    buildColGroupCellPopup($cell, rowDataItem) {
+        let data = this.mainController.groupedCellLeadCellController.getItemData($cell[0]);
+        if (data) {
+            let preceptStats = rowDataItem.getPrecepts(data.testList, 16);
+            if (preceptStats.length > 0) {
+                let preceptsHtml = this.preceptListTemplate.call(Eta, {
+                    stats: preceptStats,
+                    title: "Правила (неверно/всего)"
+                }, {
+                    async: false
+                });
+                $cell.append(`<div class='testListPopUp popUpInfo'>${preceptsHtml}</div>`);
+                return $cell.find(".popUpInfo").click(this.testListPopupClick);
+            }
+        }
+    }
+    buildSingleColCellPopup($cell, rowDataItem) {}
+    jq(e) {
+        let $el = $(e.target);
+        return $el.is(this.hoverCellSelector) ? $el : $el.closest(this.hoverCellSelector);
+    }
+    deselectCol(colStart, colEnd = undefined) {
+        let sel = [];
+        if (typeof colStart === "number" || typeof colStart === "string") {
+            if (colEnd) {
+                for (let i = colStart; i < colEnd; ++i) {
+                    sel.push(`.col-${i}.selected`);
+                }
+            } else {
+                sel.push(`.col-${colStart}.selected`);
+            }
+        } else if (colStart instanceof Array) {
+            for (let c of colStart) {
+                sel.push(`.col-${c}.selected`);
+            }
+        }
+        if (sel.length > 0) {
+            $(sel.join(", ")).removeClass("selected");
+        }
+    }
+    toggleSelected(e) {
+        let $el = this.jq(e);
+        if (!$el.hasClass("selected")) {
+            $(this.selectedCellSelector).removeClass("selected");
+        }
+        $el.toggleClass("selected");
+    }
+}
+
+class TestListController extends StatsControllerBase {
+    constructor(data, $cont) {
+        let rowTemplate = `\n    <div class="test-stats-row" data-user-id='<%= it.dto.i %>'>\n      <div class='user-info'>\n        <div class='row-info-sticky'>\n          <span class='user-info-name'><%= it.getName() %></span>\n          <span class='user-info-email'><%= it.getEmail() %></span>\n        </div>\n      </div>\n      <% let rowStats = it.getTotalStats() %>\n      <div class='user-total-stats statsCell'>\n        <%= rowStats.score %> / <%= rowStats.maxScore %>\n      </div>\n    </div>\n        `;
+        super((u => u.dto.i), data, $cont, rowTemplate);
+        this.rows = data.rows.map((u => new User(u, this)));
+        this.popupController = new PopupController(this);
+        this.cellAllocator = new CellAllocatorSparse(this, $cont);
+        this.headerController = new StatsHeaderController(data, $cont, this);
+        this.totalRowController = new TotalRowController(data, $cont, this);
+        this.groupedCellLeadCellController = new TestListStatsController(this);
+        this.cellController = new TestStatsController(this);
+    }
+    initialise() {
+        this.buildHeader();
+        this.totalRowController.build();
+        this.addItemsOptimised(this.rows);
+        super.initialise();
+    }
+    buildSortingCycles() {
+        return (new SortingCycles).add(new SortingCycle("name-header").addStep(true, "name", "sortByName ascending").addStep(false, "name", "sortByName descending").addStep(false, "rate", "sortByRate descending").addStep(true, "rate", "sortByRate ascending")).add(new SortingCycle("test-list-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending")).add(new SortingCycle("test-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending"));
+    }
+    sortByName(sortAscending) {
+        let mul = sortAscending ? 1 : -1;
+        this.items.sort(((o1, o2) => o1.data.getEmail().localeCompare(o2.data.getEmail()) * mul));
+    }
+}
+
+class ColGroupCell extends CellData {
+    constructor(idx, testList, user) {
+        super(testList.colStart, testList.colStart, user.getTestListStats(testList));
+        this.idx = idx;
+        this.testList = testList;
+        this.user = user;
+    }
+    getKey() {
+        return this.user.getId() + ":" + this.idx;
+    }
+}
+
+class TestListStatsController extends GroupedCellLeadCellController {
+    constructor(mainController) {
+        let template = `\n<div class='testList-stats statsCell col-<%= it.globalCol %> trend-<%=it.stats.getTrend()%> lvl-<%=it.stats.getSuccessLevel()%>'\n      data-trend="<%=it.stats.trend%>"'>\n  <span class='stats'>\n    <span class='score'><%= it.stats.score%>/<%= it.stats.maxScore%> = </span>\n    <span class='percent'><%= it.stats.ratePercent() %>%<span>\n  </span>\n</div>\n`;
+        template = Eta.compile(template);
+        super((tl => tl.getKey()), template, undefined);
+        this.mainController = mainController;
+    }
+    addTestListStats($container, idx, testList, user) {
+        super.add(new ColGroupCell(idx, testList, user), $container);
+    }
+    onElementCreated(element, data, oldElement = undefined) {
+        super.onElementCreated(element, data, oldElement);
+        this.mainController.cellAllocator.allocateRowCell(element, data);
+    }
+}
+
+class OneColumnCell extends CellData {
+    constructor(user, test, col, globalCol, tlCol) {
+        super(col, globalCol, user.getTestStats(test));
+        this.test = test;
+        this.user = user;
+        this.tlCol = tlCol;
+    }
+    getKey() {
+        return this.user.getId() + ":" + this.test.id;
+    }
+}
+
+class TestStatsController extends CellControllerBase {
+    constructor(mainController) {
+        let template = `\n    <div class='test-stats statsCell col-<%= it.globalCol %> trend-<%=it.stats.getTrend()%> lvl-<%=it.stats.getSuccessLevel()%> tlCol-<%=it.tlCol%> transparent'\n         data-trend="<%=it.stats.trend%>">\n      <span class='stats'><%= it.stats.score%>/<%= it.stats.maxScore%></span>\n    </div>`;
+        template = Eta.compile(template);
+        super((s => s.getKey()), template);
+        this.mainController = mainController;
+    }
+    addTestStats($container, user, testList, idx) {
+        let test = testList.tests[idx];
+        let col = this.mainController.getTestColIdx(testList, idx);
+        super.add(new OneColumnCell(user, test, col, col, testList.colStart), $container);
+    }
+    onElementCreated(element, data, oldElement = undefined) {
+        super.onElementCreated(element, data, oldElement);
+        this.mainController.cellAllocator.allocateRowCell(element, data);
+    }
+}
+
+class StatsHeaderController extends StatsHeaderControllerBase {
+    constructor(data, $cont, mainController) {
+        super();
+        this.data = data;
+        this.$cont = $cont;
+        this.mainController = mainController;
+        this.initiallyCollapsed = true;
+    }
+    buildHeader() {
+        let $header = $("<div class='stats-table-header'></div>");
+        let $nameEl = this.buildCell0();
+        this.mainController.cellAllocator.allocateHeaderTotalColGridArea($nameEl[0]);
+        $header.append($nameEl);
+        $nameEl.append("<span class='sort name'></span>");
+        this.$cont.append($header);
+        this.calculateTestListCols();
+        this.appendHeaderFirstLine($header);
+        this.appendSecondLineHeader($header);
+        $header.find("a").click((e => {
+            e.stopPropagation();
+        }));
+    }
+    buildCell0() {
+        return $(`<div class='name-header'><span class='label'>Ученик и успехи</span></div>`);
+    }
+    calculateTestListCols() {
+        let sum = 3;
+        for (let idx in this.data.columns) {
+            let colGroup = this.data.columns[idx];
+            colGroup.colStart = sum;
+            colGroup.colEnd = sum + colGroup.tests.length + 1;
+            sum = colGroup.colEnd;
+        }
+    }
+    appendHeaderFirstLine($header) {
+        for (let idx in this.data.columns) {
+            let colGroup = this.data.columns[idx];
+            $header.append(this.builtTestListCell(colGroup, idx));
+        }
+    }
+    appendSecondLineHeader($header) {
+        for (let idx in this.data.columns) {
+            let colGroup = this.data.columns[idx];
+            $header.append(this.buildTotalCell(colGroup, idx));
+            for (let i = 0; i < colGroup.tests.length; ++i) {
+                $header.append(this.buildTestCell(colGroup, i));
+            }
+        }
+    }
+    buildTestCell(testList, idx) {
+        let test = testList.tests[idx];
+        let tlCol = testList.colStart;
+        let col = this.mainController.getTestColIdx(testList, idx);
+        let $el = $(`<div class="test-header colH-${col} testIdx-${idx} tlCol-${tlCol} transparent" data-test-id="${test.id}"></div>`);
+        this.mainController.cellAllocator.allocateHeaderColTitleGrigArea($el[0], testList, idx);
+        $el.data("test", test);
+        $el.data("testIdx", idx);
+        $el.data("col", col);
+        if (test.link) {
+            $el.append(`<a href='${test.link}' class="label" target="_blank">${test.name}</a>`);
+        } else {
+            $el.append(`<span class="label">${test.name}</span>`);
+        }
+        $el.append("<span class='sort tl'></span>");
+        return $el;
+    }
+    buildTotalCell(testList, idx) {
+        let col = testList.colStart;
+        let tlCol = testList.colStart;
+        let $el = $(`<div class="tl-total colH-${col} tlCol-${tlCol} transparent" data-tl-idx="${idx}"><span>Всего</span></div>`);
+        this.mainController.cellAllocator.allocateHeaderColGroupTotalGridArea($el[0], testList);
+        return $el;
+    }
+    builtTestListCell(testList, idx) {
+        let $el = $(`<div class="test-list-header colH-${testList.colStart}" data-tl-idx=${idx}></div>`);
+        this.mainController.cellAllocator.allocateHeaderColGroupGridArea($el[0], testList);
+        if (testList.url) {
+            $el.append(`<div class="tl-name"><a href="${testList.url}" target="_blank">${testList.name}</a></div> `);
+        } else {
+            $el.append(`<span class="tl-name">${testList.name}</span>`);
+        }
+        $el.append("<span class='sort tl'></span>");
+        $el.append("<span class='collapser'></span>");
+        $el.data("testList", testList);
+        if (this.initiallyCollapsed) {
+            testList.collapsed = true;
+            $el.addClass("collapsed");
+            $el.css("grid-row-end", "3");
+        }
+        return $el;
+    }
+}
+
+class PopupController extends PopupControllerBase {
+    constructor(mainController) {
+        super(mainController);
+        this.userInfoPopupTemplate = this.buildUserInfoPopupTemplate();
+    }
+    buildUserInfoPopupTemplate() {
+        let userInfoPopupTemplate = `\n    <div class='user-info popUpInfo'>\n      <div class="lnkCont">\n        <a href="/results/m/<%= it.dto.i%>" target="_blank">Результаты</a>\n      </div>\n      <div class="user-name anonymizeIt"><%= it.getName() %></div>\n\n      <% let tgLink = it.getTgLink(); if (tgLink) { %>\n        <div class="tg-contact">\n          Telegram: <a href="<%= tgLink.u %>" target="_blank" class="anonymizeIt"><%= tgLink.t %></a>\n        </div>\n      <% } %>\n\n      <% let gcLink = it.getGcLink(); if (tgLink) { %>\n        <div class="gc-contact">\n          ГетКурс: <a href="<%= gcLink.u %>" target="_blank" class="anonymizeIt"><%= gcLink.t %></a>\n        </div>\n      <% } %>\n\n      <div class='dashLink'>\n      <a href="/dash/?memberId=<%= it.dto.i%>" target="_blank">Дашборд ученика</a>\n      </div>\n      <% if (it.dto.l) { for(let link of it.dto.l) { %>\n      <div class="<%= link.c ? link.c : '' %>">\n        <%= link.b? link.b : '' %><a href="<%= link.u %>" target="_blank"><%= link.t %></a> <%= link.s ? link.s : '' %>\n      </div>\n      <% } } %>\n    </div>`;
+        return Eta.compile(userInfoPopupTemplate);
+    }
+    onRowHeaderHover(e, $el, rowDataItem) {
+        let html = this.userInfoPopupTemplate.call(Eta, rowDataItem, {
+            async: false
+        });
+        let $popUp = $(html);
+        $el.append($popUp);
+        this.popupHelper.addStopPropagation($popUp);
+        $popUp.fadeIn(500);
+        return $popUp;
+    }
+    buildSingleColCellPopup($cell, user) {
+        let data = this.mainController.cellController.getItemData($cell[0]);
+        if (!data) return;
+        let st = data.stats;
+        let head = `<div class='popup-header'><span class="anonymizeIt">${user.getEmail()}</span>, ${data.test.name}</div>`;
+        let label = this.questionPlurals.get(st.questionCount);
+        let headStats = `<div class='q-stats'><span class="noWrap">Выполнено ${st.questionCount} ${label},</span> успешно: <span class="percent">${st.ratePercent()}%</span></div>`;
+        let results = new TestResults(user, data.test, this.mainController.data.baseDay);
+        if (results.testResults.length === 0) return;
+        let resultsHtml = this.resultListTemplate.call(Eta, results, {
+            async: false
+        });
+        let preceptStats = user.getPrecepts(data.test);
+        let preceptsHtml = preceptStats.length === 0 ? "" : this.preceptListTemplate.call(Eta, {
+            stats: preceptStats,
+            title: "Правила (неверно/всего)"
+        }, {
+            async: false
+        });
+        $cell.append(`<div class='testPopUp popUpInfo'>${head}${headStats}<div class="cont">${preceptsHtml}${resultsHtml}</div></div>`);
+        let $popup = $cell.find(".popUpInfo");
+        this.popupHelper.addStopPropagation($popup);
+        return $popup;
+    }
+}
+
+class TotalSum {
+    constructor() {
+        this.preceptStats = new Map;
+        this.resultStats = new StatsSum(0);
+    }
+    addResultStats(stats) {
+        for (let stat of stats) {
+            this.resultStats.add(stat);
+        }
+    }
+    addPreceptStats(preceptStats) {
+        if (preceptStats && preceptStats.length > 0) {
+            for (let stat of preceptStats) {
+                let existing = this.preceptStats.get(stat.id);
+                if (existing) {
+                    existing.add(stat);
+                } else {
+                    this.preceptStats.set(stat.id, new PreceptStats(stat));
+                }
+            }
+        }
+    }
+    summarizePrecepts(limit = -1) {
+        if (this.preceptStats.size === 0) {
+            this.preceptStatsTotal = [];
+        } else {
+            this.preceptStatsTotal = Array.from(this.preceptStats.values());
+            this.preceptStatsTotal = this.preceptStatsTotal.filter((a => a.failed > 0)).sort(((a, b) => b.orderBy() - a.orderBy()));
+            if (limit > 0 && this.preceptStatsTotal.length > limit) {
+                this.preceptStatsTotal.length = limit;
+            }
+        }
+    }
+}
+
+class ColTotal extends TotalSum {
+    constructor(test) {
+        super();
+        this.test = test;
+        this.resultStats.source = test.id;
+    }
+}
+
+class ColGroupTotal extends TotalSum {
+    constructor(colGroup) {
+        super();
+        this.colGroup = colGroup;
+        this.colsTotals = [];
+    }
+}
+
+class TotalRowController extends TotalRowControllerBase {
+    constructor(data, $cont, mainController) {
+        super();
+        this.data = data;
+        this.$cont = $cont;
+        this.mainController = mainController;
+        this.initiallyCollapsed = true;
+    }
+    build() {
+        let $row = $(`<div class='stats-table-total'></div>`);
+        this.$cont.append($row);
+        $row.append(`<div class='row-total-title statsCell' style="grid-area: 1/1/1/3;"><span>Всего:</span></div>`);
+        for (let coLGroup of this.data.columns) {
+            let colGroupTotal = this.buildColGroupTotal(coLGroup);
+            this.appendColGroup(colGroupTotal, $row);
+        }
+    }
+    buildColGroupTotal(testList) {
+        let colGroupTotal = new ColGroupTotal(testList);
+        for (let test of testList.tests) {
+            let colTotal = new ColTotal(test);
+            colGroupTotal.colsTotals.push(colTotal);
+            for (let user of this.mainController.rows) {
+                let rowStats = user.getStats(test.id);
+                colTotal.addResultStats(rowStats);
+                colGroupTotal.addResultStats(rowStats);
+                let precepts = user.getPreceptsOfTest(test);
+                colTotal.addPreceptStats(precepts);
+                colGroupTotal.addPreceptStats(precepts);
+            }
+            colTotal.summarizePrecepts(10);
+        }
+        colGroupTotal.summarizePrecepts(20);
+        return colGroupTotal;
+    }
+    appendColGroup(colGroup, $row) {
+        let $colGroupTotal = this.buildColGroupTotalCell(colGroup);
+        $colGroupTotal.data("data", colGroup);
+        $row.append($colGroupTotal);
+        for (let idx in colGroup.colsTotals) {
+            let $colTotal = this.buildColTotalCell(colGroup, Number.parseInt(idx));
+            $colTotal.data("data", colGroup.colsTotals[idx]);
+            $row.append($colTotal);
+        }
+    }
+    buildColGroupTotalCell(colGroupTotal) {
+        let col = colGroupTotal.colGroup.colStart;
+        let title = `${colGroupTotal.resultStats.count}: ${colGroupTotal.resultStats.ratePercent()}%`;
+        return $(`<div class="cell-total colgroup-total statsCell col-${col}" style="grid-area: 1/${col};"><span class="noWrap">${title}</span></div>`);
+    }
+    buildColTotalCell(colGroupTotal, idx) {
+        let colTotal = colGroupTotal.colsTotals[idx];
+        let col = this.mainController.getTestColIdx(colGroupTotal.colGroup, idx);
+        let colGroupStartCol = colGroupTotal.colGroup.colStart;
+        let title = `${colTotal.resultStats.count}: ${colTotal.resultStats.ratePercent()}%`;
+        let transp = this.initiallyCollapsed ? "transparent" : "";
+        return $(`<div class="cell-total col-total statsCell col-${col} tlCol-${colGroupStartCol} ${transp}" style="grid-area: 1/${col};"><span  class="noWrap">${title}</span></div>`);
+    }
+}
+
+class UserTestFolderStatsController extends StatsControllerBase {
+    constructor(data, $cont) {
+        let rowTemplate = `\n    <div class="test-stats-row" data-row-id='<%= it.dto.id %>'>\n      <div class='row-title'>\n        <span class="test-name"><%= it.dto.name %></span>\n      </div>\n      <% let rowStats = it.getTotalStats() %>\n      <div class='row-total-stats statsCell'>\n        <%= rowStats.score %> / <%= rowStats.maxScore %>\n      </div>\n    </div>\n        `;
+        super((u => u.dto.id), data, $cont, rowTemplate);
+        this.rows = data.rows.map((u => new TestRow(u, this)));
+        this.popupController = new PopupControllerUserTestFolder(this);
+        this.cellAllocator = new CellAllocatorCompact(this, $cont);
+        this.headerController = new StatsHeaderControllerByTest(data, $cont, this);
+        this.totalRowController = new TotalRowController(data, $cont, this);
+        this.groupedCellLeadCellController = new TestListStatsController(this);
+        this.cellController = new TestStatsController(this);
+    }
+    initialise() {
+        this.buildHeader();
+        this.totalRowController.build();
+        this.addItemsOptimised(this.rows);
+        super.initialise();
+    }
+    buildSortingCycles() {
+        return (new SortingCycles).add(new SortingCycle("name-header").addStep(true, "name", "sortByName ascending").addStep(false, "name", "sortByName descending").addStep(false, "rate", "sortByRate descending").addStep(true, "rate", "sortByRate ascending")).add(new SortingCycle("test-list-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending")).add(new SortingCycle("test-header").addStep(false, "rate", "descending").addStep(true, "rate", "ascending"));
+    }
+    sortByName(sortAscending) {
+        let mul = sortAscending ? 1 : -1;
+        this.items.sort(((o1, o2) => o1.data.getName().localeCompare(o2.data.getName()) * mul));
+    }
+}
+
+class PopupControllerUserTestFolder extends PopupControllerBase {
+    constructor(mainController) {
+        super(mainController);
+        this.userInfoPopupTemplate = this.buildUserInfoPopupTemplate();
+    }
+    buildUserInfoPopupTemplate() {
+        let userInfoPopupTemplate = `\n    <div class='row-info popUpInfo'>\n      <div class="popup-header">\n        <a href="<%= it.dto.link%>" target="_blank"><%= it.getName() %></a>\n      </div>\n    </div>`;
+        return Eta.compile(userInfoPopupTemplate);
+    }
+    onRowHeaderHover(e, $el, rowDataItem) {
+        let html = this.userInfoPopupTemplate.call(Eta, rowDataItem, {
+            async: false
+        });
+        let $popUp = $(html);
+        let results = rowDataItem.buildRowTestResults(this.mainController.data.baseDay);
+        if (results.testResults.length > 0) {
+            let resultsHtml = this.resultListTemplate.call(Eta, results, {
+                async: false
+            });
+            let preceptStats = rowDataItem.getPrecepts(undefined, 30);
+            let preceptsHtml = preceptStats.length === 0 ? "" : this.preceptListTemplate.call(Eta, {
+                stats: preceptStats,
+                title: "Правила (неверно / всего)"
+            }, {
+                async: false
+            });
+            $popUp.append(`<div class="cont">${preceptsHtml}${resultsHtml}</div>`);
+        }
+        $el.append($popUp);
+        this.popupHelper.addStopPropagation($popUp);
+        $popUp.fadeIn(500);
+        return $popUp;
+    }
+    buildSingleColCellPopup($cell, rowData) {
+        let data = this.mainController.cellController.getItemData($cell[0]);
+        if (!data) return;
+        let st = data.stats;
+        let head = `<div class='popup-header'><span class="anonymizeIt">${rowData.getName()}</span>, ${data.test.name}</div>`;
+        let label = this.questionPlurals.get(st.questionCount);
+        let headStats = `<div class='q-stats'><span class="noWrap">Выполнено ${st.questionCount} ${label},</span> успешно: <span class="percent">${st.ratePercent()}%</span></div>`;
+        let results = new TestResults(rowData, data.test, this.mainController.data.baseDay);
+        if (results.testResults.length === 0) return;
+        let resultsHtml = this.resultListTemplate.call(Eta, results, {
+            async: false
+        });
+        let preceptStats = rowData.getPrecepts(data.test);
+        let preceptsHtml = preceptStats.length === 0 ? "" : this.preceptListTemplate.call(Eta, {
+            stats: preceptStats,
+            title: "Правила (неверно / всего)"
+        }, {
+            async: false
+        });
+        $cell.append(`<div class='testPopUp popUpInfo'>${head}${headStats}<div class="cont">${preceptsHtml}${resultsHtml}</div></div>`);
+        let $popup = $cell.find(".popUpInfo");
+        this.popupHelper.addStopPropagation($popup);
+        return $popup;
+    }
+}
+
+class StatsHeaderControllerByTest extends StatsHeaderController {
+    buildCell0() {
+        return $(`<div class='name-header'><span class='label'>Тесты</span></div>`);
+    }
+}
+
+class TestStatsUi {
+    constructor(data, $cont) {
+        this.presenter = new TestListController(data, $cont);
+        this.presenter.initialise();
+        this.rows = this.presenter.rows;
+    }
+}
+
+const STATS_TYPE = Object.freeze({
+    UserTestFolder: "UserTestFolder"
+});
+
+class UserTestFolderRequest {}
+
+class LoadableStatsUI {
+    constructor(type, request, $cont) {
+        this.type = type;
+        this.request = request;
+        this.$cont = $cont;
+        this.load();
+    }
+    buildRequest() {
+        switch (this.type) {
+          case STATS_TYPE.UserTestFolder:
+            return new GetUserTestFolderStats(this.request);
+        }
+    }
+    async load() {
+        this.$cont.empty();
+        this.$cont.addClass("loading");
+        let request = this.buildRequest();
+        let result;
+        try {
+            result = await request.exec();
+        } catch (error) {
+            console.log(error);
+            alert("Ошибка: " + JSON.stringify(error));
+            return;
+        }
+        this.$cont.removeClass("loading");
+        this.init(result);
+    }
+    init(data) {
+        if (this.type === STATS_TYPE.UserTestFolder) {
+            this.presenter = new UserTestFolderStatsController(data, this.$cont);
+            this.presenter.initialise();
+        } else {
+            this.presenter = new TestListController(data, this.$cont);
+            this.presenter.initialise();
+        }
+    }
+}
+
+class GetUserTestFolderStats extends JsonApiReplyUseCase {
+    constructor(data) {
+        super("GET", "/api/stats/userFolder", data);
+    }
+}

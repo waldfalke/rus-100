@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind, verify variants)
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -40,6 +42,7 @@ const AlertTitle = React.forwardRef<
   <h5
     ref={ref}
     className={cn(
+      "font-source-serif-pro",
       "mb-[var(--component-alert-title-margin-bottom)] font-[var(--component-alert-title-font-weight)] leading-[var(--component-alert-title-line-height)] tracking-[var(--component-alert-title-letter-spacing)]",
        className
       )}

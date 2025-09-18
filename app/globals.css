@@ -1,29 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Import component overrides after all other styles */
+@import "../styles/component-overrides.css";
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 0%; /* Чистый черный как в Wildberries */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%; /* Чистый черный для карточек */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
 
     --primary: 173 100% 28%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 0 0% 15%; /* Более темный серый для лучшего контраста */
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 0 0% 40%; /* Средний серый вместо светлого */
 
     --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 0 0% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -32,30 +34,36 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 173 100% 28%;
 
+    /* Добавляем цвета Wildberries */
+    --wildberries-primary: 324 65% 43%; /* #ae2573 */
+    --wildberries-secondary: 312 100% 39%; /* #c800a1 */
+    --wildberries-dark: 312 82% 35%; /* #981e97 */
+    --wildberries-darkest: 276 74% 22%; /* #470a68 */
+
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --foreground: 0 0% 98%; /* Почти белый для максимального контраста */
 
     --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 0 0% 98%;
 
     --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 173 100% 28%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 0 0% 90%; /* Светлый серый для контраста */
 
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 0 0% 70%; /* Средне-светлый серый */
 
     --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 0 0% 90%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -133,23 +141,24 @@
 }
 
 /* Style for category-level headers */
-.card-header h3 {
+/* Удаляем этот стиль, так как заголовок карточки стилизуется компонентом CardTitle */
+/* .card-header h3 {
   font-weight: 600;
-}
+} */
 
-/* Replace the existing tab-related styles with these improved styles */
+/* Restore original global tab overrides from deployed version */
 
-/* Improved styles for tabs container */
+/* Original styles for tabs container - NOW THEME AWARE */
 [role="tablist"] {
   border-radius: 0.75rem;
-  overflow: hidden;
+  overflow: visible; /* was hidden: prevent clipping of rounded pills and focus rings */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(229, 231, 235, 0.8);
-  padding: 0.5rem 0.5rem 0.75rem;
-  background-color: white;
+  border: 1px solid hsl(var(--border)); /* Use theme border */
+  padding: 0.5rem 0.5rem 0.75rem; /* Original padding */
+  background-color: hsl(var(--card)); /* Use theme card background */
 }
 
-/* Sticky tab behavior that preserves styling */
+/* Original sticky tab behavior */
 .sticky[role="tablist"] {
   position: sticky;
   top: 0;
@@ -160,29 +169,28 @@
   backdrop-filter: blur(8px);
 }
 
-/* Adjust tab trigger padding and styling */
+/* Original tab trigger padding and styling */
 [role="tablist"] [role="tab"] {
   padding: 0.5rem 1rem;
   height: 2.75rem;
   border-radius: 0.5rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* was hidden: allow inner content/shadow to render */
 }
 
-/* Ensure the active tab background doesn't exceed parent container borders */
+/* Original minimal active tab style (colors/shadow applied via component classes) */
 [role="tab"][data-state="active"] {
   z-index: 1;
   border-radius: 0.5rem;
-  overflow: hidden;
+  overflow: visible; /* was hidden */
 }
 
-/* Fix for content containers */
+/* Original content fixes */
 [role="tabpanel"] > div {
   border-radius: 0.75rem;
   width: 100%;
 }
 
-/* Fix for tab content with width and overflow issues */
 [role="tabpanel"] {
   width: 100%;
   max-width: 100%;
@@ -194,4 +202,28 @@
 .fixed.bottom-0 button {
   opacity: 1 !important;
   font-weight: 500;
+}
+
+/* Override Tailwind CSS reset for typography components */
+/* This ensures our typography classes work correctly */
+h1.text-app-h1-mobile,
+h1.md\:text-app-h1,
+h2.text-app-h2-mobile,
+h2.md\:text-app-h2,
+h3.text-app-h3-mobile,
+h3.md\:text-app-h3 {
+  font-size: revert !important;
+}
+
+/* Apply typography classes properly */
+.text-app-h1-mobile {
+  font-size: 1.875rem !important; /* 30px */
+  line-height: 2.25rem !important; /* 36px */
+}
+
+@media (min-width: 768px) {
+  .md\:text-app-h1 {
+    font-size: 3rem !important; /* 48px */
+    line-height: 1 !important;
+  }
 }

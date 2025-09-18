@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "default": "http://localhost:3025"
+  }
+} 

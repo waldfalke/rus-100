@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+// Code Contracts: COMPLETED
+// @token-status: COMPLETED (Using Tailwind tokens & component styles)
+import React, { useState, useEffect } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { Counter } from "@/components/ui/Counter";
+import { CounterBadge } from "@/components/ui/CounterBadge";
+import { cn } from "@/lib/utils";
 
 export interface SelectionOption {
   id: string;
@@ -57,78 +60,70 @@ export const SelectionDropdown: React.FC<SelectionDropdownProps> = ({
       <PopoverTrigger asChild>
         <Badge
           variant="outline"
-          className={`selection-dropdown-badge cursor-pointer py-1 px-2.5 flex items-center gap-1 hover:bg-gray-100 transition-colors ${className}`}
-          style={{ 
-            width: "auto", 
-            maxWidth: "100%", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between", 
-            overflow: "visible"
-          }}
+          className={cn(
+            "selection-dropdown-badge cursor-pointer py-1 px-2.5 flex items-center gap-1 hover:bg-accent transition-colors",
+            "w-auto max-w-full flex items-center justify-between overflow-visible",
+            className
+          )}
         >
-          <span className="text-sm pr-1">{getLabel()}</span>
+          <span className="text-[14px] pr-1 font-normal">{getLabel()}</span>
           <svg 
             width="14" 
             height="14" 
             viewBox="0 0 16 16" 
             fill="none" 
             xmlns="http://www.w3.org/2000/svg" 
-            className="flex-shrink-0 transition-transform duration-200"
-            style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+            className={cn(
+              "flex-shrink-0 transition-transform duration-200",
+              open ? "rotate-180" : "rotate-0"
+            )}
           >
-            <path d="M4.5 6L8 9.5L11.5 6" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4.5 6L8 9.5L11.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </Badge>
       </PopoverTrigger>
       <PopoverContent 
-        className="selection-dropdown-content w-auto p-2 z-50" 
-        style={{ 
-          minWidth: 200,
-          maxWidth: 320,
-          width: "auto"
-        }}
+        className={cn(
+          "selection-dropdown-content w-auto p-2 z-50",
+          "min-w-[200px] max-w-[320px] w-auto"
+        )}
       >
         <div className="flex flex-wrap gap-1.5">
-          <Badge
+          <CounterBadge
             key="any"
             variant={selected.length === 1 && selected[0] === "any" ? "default" : "outline"}
-            className={`cursor-pointer transition-colors text-sm px-2 py-0.5 flex items-center gap-1 ${
+            className={cn(
+              "cursor-pointer transition-colors text-[14px] px-2 py-0.5",
               selected.length === 1 && selected[0] === "any"
-                ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                : "border-gray-300 text-gray-700 hover:bg-gray-100"
-            }`}
-            onClick={() => handleSelect("any")}
-          >
-            <span>{allLabel}</span>
-            {typeof totalCount === "number" && (
-              <span className="text-sm font-medium">{totalCount}</span>
+                ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                : "border-border text-foreground hover:bg-accent"
             )}
-          </Badge>
+            onClick={() => handleSelect("any")}
+            label={allLabel}
+            count={typeof totalCount === "number" ? totalCount : undefined}
+          />
           {options.map((option) => (
-            <Badge
+            <CounterBadge
               key={option.id}
               variant={selected.includes(option.id) && selected[0] !== "any" ? "default" : "outline"}
-              className={`cursor-pointer transition-colors text-sm px-2 py-0.5 flex items-center gap-1 ${
+              className={cn(
+                "cursor-pointer transition-colors text-[14px] px-2 py-0.5",
                 selected.includes(option.id) && selected[0] !== "any"
-                  ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-              onClick={() => handleSelect(option.id)}
-            >
-              <span>{option.label.toLowerCase()}</span>
-              {typeof option.count === "number" && (
-                <span className="text-sm font-medium">{option.count}</span>
+                  ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                  : "border-border text-foreground hover:bg-accent"
               )}
-            </Badge>
+              onClick={() => handleSelect(option.id)}
+              label={option.label.toLowerCase()}
+              count={typeof option.count === "number" ? option.count : undefined}
+            />
           ))}
         </div>
-        <div className="desktop-close-hint mt-2 text-xs text-gray-500 text-left">
+        <div className="desktop-close-hint mt-2 text-xs text-muted-foreground text-left">
           ESC или клик вне меню для закрытия
         </div>
         <button 
           onClick={() => setOpen(false)} 
-          className="mobile-close-btn hidden w-full mt-2 py-1.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+          className="mobile-close-btn hidden w-full mt-2 py-1.5 bg-muted rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted/80 transition-colors"
         >
           Закрыть
         </button>

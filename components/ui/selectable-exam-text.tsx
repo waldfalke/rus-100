@@ -1,5 +1,7 @@
+// Code Contracts: PENDING
 "use client";
 
+// @token-status: COMPLETED
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -17,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { H2 } from "@/components/ui/typography";
 
 // Data based on FC-001 Selectable Exam Text contract
 const prototypeTexts = [
@@ -165,11 +168,11 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-red-600">Ошибка</CardTitle>
+          <CardTitle className="text-destructive">Ошибка</CardTitle>
           <CardDescription>{error}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center items-center h-[400px] text-red-500">
+          <div className="flex justify-center items-center h-[400px] text-destructive">
             Не удалось загрузить тексты. Пожалуйста, обновите страницу.
           </div>
         </CardContent>
@@ -180,10 +183,12 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>{selectedText?.title || "Выберите текст"}</CardTitle>
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <H2 className="font-source-serif-pro text-app-h2-mobile md:text-app-h2 font-semibold leading-tight">
+            Текст для выполнения заданий ЕГЭ
+          </H2>
           <Select onValueChange={handleValueChange} defaultValue={selectedTextId}>
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-full sm:w-[280px] font-inter text-app-small leading-5 font-normal text-left">
               <SelectValue placeholder="Выбрать текст..." />
             </SelectTrigger>
             <SelectContent>
@@ -195,12 +200,9 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
             </SelectContent>
           </Select>
         </div>
-        <CardDescription>
-          Текст для выполнения заданий ЕГЭ
-        </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[300px] w-full rounded-md border p-4 whitespace-pre-line bg-white text-base">
+        <ScrollArea className="h-[300px] w-full rounded-md border p-4 whitespace-pre-line text-base">
           {selectedText?.content || "Текст не выбран."}
         </ScrollArea>
       </CardContent>

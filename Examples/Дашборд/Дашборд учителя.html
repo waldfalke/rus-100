@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)https://test.russkij100.ru/tdash/ -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="icon" href="data:,">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дашборд учителя</title>
+<link rel="stylesheet" href="./Дашборд учителя_files/jquery-ui.css">
+<link href="./Дашборд учителя_files/styles2.css" rel="stylesheet">
+<script src="./Дашборд учителя_files/jquery@3.6.0.min.js.Без названия"></script>
+<script src="./Дашборд учителя_files/jquery-ui.min.js.Без названия"></script>
+<script src="./Дашборд учителя_files/common.js.Без названия"></script>
+</head>
+<body class="teacher-dashboard">
+<div class="top-menu">
+<span class="menu-item menu-item-root">
+Русский<span class="accentText">_100</span>
+</span>
+<div class="menu-toggle" aria-label="Toggle menu"></div>
+<div class="menu-items">
+<a class="menu-item menu-item-1 selected" href="https://test.russkij100.ru/tdash/">
+Дашборд
+</a>
+<a class="menu-item menu-item-2 " href="https://test.russkij100.ru/workouts/">
+Задания
+</a>
+<a class="menu-item menu-item-3 " href="https://test.russkij100.ru/results/">
+Результаты
+</a>
+<div class="menu-item menu-item-4 menu-item-tests hover-host ">
+<span>Тесты</span>
+<div class="menu-dropdown parent-hover-visible"></div>
+</div>
+<div class="menu-item menu-item-5 menu-item-extras hover-host ">
+<span>Пауза</span>
+<div class="menu-dropdown parent-hover-visible">
+<a href="https://test.russkij100.ru/extras/exercises" class="menu-item-exercises">Разминки</a>
+<a href="https://test.russkij100.ru/extras/psypod" class="menu-item-psypod">Подкасты от психолога</a>
+</div>
+</div>
+<div class="menu-item menu-item-profile">
+<span class="user-icon"></span>
+<div class="user-dropdown">
+<p><span class="user-name">Евгений</span> <span class="user-email">stribojich@gmail.com</span></p>
+<div class="user-dropdown2">
+<p class="noWrap"><a href="https://test.russkij100.ru/acc/info/?acc=1"><i class="fa-solid fa-address-card"></i>
+Оплата</a></p>
+<p class="noWrap"><a href="https://test.russkij100.ru/manual/"><i class="fa-solid fa-circle-question"></i>
+Инструкции</a></p>
+<p class="noWrap"><a href="https://test.russkij100.ru/logout" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i>
+Выйти</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="./Дашборд учителя_files/MainMenu.js.Без названия"></script>
+<script>
+$(() => {
+new MenuController();
+})
+</script>
+<div class="main-cont">
+<div class="header-cont">
+<h1>Дашборд</h1>
+</div>
+<div class="instruments">
+<a class="accentButton2" href="https://test.russkij100.ru/tests/list/?acc="><span>Мои тесты</span><i class="fa mc">T</i></a>
+<a class="accentButton2" href="https://test.russkij100.ru/generate/test/"><span>Сгенерировать тест</span><i class="fa mc">+</i></a>
+<a class="accentButton2" href="https://test.russkij100.ru/ausers/?acc="><span>Наша команда</span><i class="fa mc"></i></a>
+</div>
+<div class="acc-header" data-id="1">
+<h2><span class="rootOnly">1</span>
+<span class="account-name">Курсы Марьям</span>
+</h2>
+</div>
+<div class="items-list-cont">
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, группа 2025 года, default</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/39">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/39">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/39">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=1"> Тесты-24</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=3"> Тесты-25, черновик</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=333"> Речь</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/39?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/39"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, Русский-Годовой, 2025</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/40">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/40">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/40">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/40">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=333"> Речь</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/40?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/40"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, Русский-Полугодовой, 2025</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/49">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/49">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/49">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/49">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=333"> Речь</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/49?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/49"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, Русский, Штольц, 2025</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/290">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/290">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/290">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/290">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=333"> Речь</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/290?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/290"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, Русский, Данко, 2025</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/510">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/510">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/510">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/510">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=333"> Речь</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/510?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/510"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">ЭКСПРЕСС-КУРС "В последний вагон" по русскому языку, 2025</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/647">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/647">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/647">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/647">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=4"> Пунктуация</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=5"> Пунктуация. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=7"> Сочинение</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=8"> Сочинение. Контроль.</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=9"> Грамматика</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=10"> Грамматика контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=29"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=127"> Орфография</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=128"> Орфография. Контроль</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/647?tl=333"> Речь</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/647"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Тесты, группа 2026 года, default</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/702">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/702">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/702">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/702?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/702?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/702?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/702"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">РУС+ЛИТ.ЕГЭ.2026 Годовой курс, тесты</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/712">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/712">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/712">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/712">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/712?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/712?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/712?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/712"></a></div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">РУС.ЕГЭ.2026 Годовой курс, тесты</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/713">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/713">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/713">Статистика по заданиям</a>
+</div>
+<div class="stats-link group-link">
+<a href="https://test.russkij100.ru/gstats/ans/713">💫 Статистика ответов</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/713?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/713?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/713?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/713?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="group-edit"><a href="https://test.russkij100.ru/group/edit/713"></a></div>
+</div>
+<div class="list-item-cont">
+<div class="add-group-link">
+<a href="https://test.russkij100.ru/group/add?acc=1">+<i class="fa mc"></i> Добавить группу</a>
+</div>
+<div class="showArchived" style="margin-top:1rem; cursor:pointer;">
+<a data-id="1"><i class="fa-solid fa-file-zipper mc"></i> <span>Показать архивные</span></a>
+</div>
+</div>
+</div>
+<div class="acc-header" data-id="2">
+<h2><span class="rootOnly">2</span>
+<span class="account-name">Аккаунт Аллы</span>
+</h2>
+</div>
+<div class="items-list-cont">
+<div class="list-item-cont group-item ">
+<div class="group-title">Группа для Аллы 24/25</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/42">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/42">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/42">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=3"> Тесты-25, черновик</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=14"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=15"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=16"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=17"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=1086"> Тесты-2026</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=1098"> Интенсив, лето</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=1139"> Тесты для занятий</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/42?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Группа ЕГЭ-2026</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/692">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/692">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/692">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=14"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=15"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=16"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=17"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=1086"> Тесты-2026</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=1098"> Интенсив, лето</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=1139"> Тесты для занятий</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/692?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">Мои индивидуальные 2026</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/719">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/719">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/719">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=14"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=15"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=16"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=17"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=1086"> Тесты-2026</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=1098"> Интенсив, лето</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=1139"> Тесты для занятий</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/719?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">11 класс, школа</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/1005">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/1005">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/1005">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=14"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=15"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=16"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=17"> Сгенерированные тесты</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=1086"> Тесты-2026</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=1098"> Интенсив, лето</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=1139"> Тесты для занятий</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/1005?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+</div>
+</div>
+<div class="acc-header" data-id="3">
+<h2><span class="rootOnly">3</span>
+<span class="account-name">Аккаунт Марины</span>
+</h2>
+</div>
+<div class="items-list-cont">
+<div class="list-item-cont group-item ">
+<div class="group-title">Группа для Марины, 24/25</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/44">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/44">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/44">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=318"> Орфография </a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1149"> 1</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1187"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1188"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1200"> 17 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/44?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">11 класс</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/53">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/53">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/53">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=318"> Орфография </a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=641"> Тесты в формате ЕГЭ</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=646"> Сложные слова для блока "Орфография"</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1149"> 1</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1187"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1188"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1200"> 17 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/53?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">10_2 </div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/693">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/693">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/693">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=318"> Орфография </a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1149"> 1</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1187"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1188"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1200"> 17 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/693?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+</div>
+<div class="list-item-cont group-item ">
+<div class="group-title">10_3</div>
+<div class="listUsers group-link"><a href="https://test.russkij100.ru/group/users/700">Ученики</a></div>
+<div class="overall-stats fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/overall/700">Статистика по группе</a>
+</div>
+<div class="workout-stats-link fa-b group-link">
+<a href="https://test.russkij100.ru/group/stats/workouts/700">Статистика по заданиям</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=318"> Орфография </a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=6"> Чекапы</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=60"> ЕГКР (от ФИПИ)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=794"> Задание 9</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=795"> Наречия (задание 14)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1149"> 1</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=796"> Задание 4</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1187"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1188"> 16 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1200"> 17 задание</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1241"> Тренировочные варианты (задание 22)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=1243"> Тренировочные варианты (задание 21)</a>
+</div>
+<div class="stats-link chart-magnifier group-link">
+<a href="https://test.russkij100.ru/group/stats/tl/700?tl=255"> Орфография (тексты с пропущенными буквами)</a>
+</div>
+</div>
+</div>
+</div>
+<script>
+const POLICY_VERSION = "2025-08-10";
+const ACCOUNT_ID = 0;
+$(() => {
+const $sel = $('#account-selector');
+if ($sel.length > 0) {
+applyAccountSelector($sel, acc => acc.canManageUsers);
+$sel.on('change', function (e) {
+const selectedValue = Number.parseInt($(e.target).val());
+if (selectedValue !== ACCOUNT_ID) {
+window.location = "/tdash/?acc=" + selectedValue;
+}
+}.bind(this));
+}
+new AccountEditController();
+new UserSearchController();
+new ShowArchivedGroupsUseCase();
+new PolicyAcceptStatus().updateIfNewerOrMissing(1757234362174, POLICY_VERSION);
+}
+);
+</script>
+<script src="./Дашборд учителя_files/Dashboard.js.Без названия"></script>
+<script src="./Дашборд учителя_files/select2.full.min.js.Без названия" integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="./Дашборд учителя_files/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+</body></html>

@@ -1,5 +1,7 @@
 "use client"
 
+// Code Contracts: PENDING
+// @token-status: COMPLETED
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 

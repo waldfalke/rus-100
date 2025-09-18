@@ -1,0 +1,10 @@
+{
+  "size": {
+    "xs": { "value": "640px", "type": "sizing", "comment": "Smallest screen size (Tailwind default)" },
+    "sm": { "value": "640px", "type": "sizing", "comment": "Small tablet breakpoint (Tailwind sm)" },
+    "md": { "value": "768px", "type": "sizing", "comment": "Tablet breakpoint (Tailwind md)" },
+    "lg": { "value": "1024px", "type": "sizing", "comment": "Laptop breakpoint (Tailwind lg)" },
+    "xl": { "value": "1280px", "type": "sizing", "comment": "Desktop breakpoint (Tailwind xl)" },
+    "2xl": { "value": "1400px", "type": "sizing", "comment": "Large desktop breakpoint (Tailwind container 2xl)" }
+  }
+} 

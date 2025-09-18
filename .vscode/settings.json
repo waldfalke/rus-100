@@ -1,0 +1,9 @@
+{
+    "amp.commands.allowlist": [
+        "pnpm dev",
+        "mv components/feature/TariffPaymentCard.tsx.new components/feature/TariffPaymentCard.tsx",
+        "rm components/feature/TariffPaymentCard.tsx",
+        "rm components/feature/ProfileCard.tsx",
+        "mv components/feature/ProfileCard.tsx.new components/feature/ProfileCard.tsx"
+    ]
+}

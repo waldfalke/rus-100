@@ -1,0 +1,123 @@
+class AccountEditController {
+    constructor() {
+        $(".acc-header .edit-account").click(this.onEditAccountClick.bind(this));
+    }
+    onEditAccountClick(e) {
+        let $el = $(e.target).closest(".acc-header");
+        let id = Number.parseInt($el.data("id"));
+        let name = $el.find(".account-name").text();
+        if (!id) return;
+        new OwnerEditAccountUseCase(id, name, this.onUpdated.bind(this)).showDialog();
+    }
+    onUpdated(account) {
+        let $el = $(`.acc-header[data-id='${account.id}']`);
+        $el.find(".account-name").text(account.name);
+    }
+}
+
+class UserSearchController {
+    constructor() {
+        $("#searchBtn").click((() => $(".search-bar").toggleClass("hidden")));
+        let $search = $(".search-input");
+        if ($search.length > 0) {
+            let searchInputLayout = new MaterialTextInput($search[0]);
+            $(searchInputLayout.input).on("change", (e => {
+                $("#doSearchBtn").attr("href", e.target.value ? "/uinfo/?email=" + e.target.value : null);
+            }));
+        }
+    }
+}
+
+class UpdateAccountRequest {}
+
+class OwnerEditAccountUseCase extends JsonApiUseCaseWithDialog {
+    constructor(accountId, name, onUpdatedCallback) {
+        super("POST", "/api/teacher/updateAccount", {
+            id: accountId,
+            title: name
+        });
+        this.accountId = accountId;
+        this.name = name;
+        this.onUpdatedCallback = onUpdatedCallback;
+        this.basicTemplate = `<div>\n    <div class="dialog-body">\n      <div class="form-row text-input-layout" id="account-row">\n        <label class="required" for="account-name">Название аккаунта</label>\n        <input class="validate" id="account-name" name="account-name" placeholder=" " required type="text">\n      </div>\n    </div>\n  </div>`;
+        let $dialog = this.initDefaultDialog("Редактирование названия аккаунта");
+        this.titleInput = new MaterialTextInput($dialog.find("#account-row")[0]);
+        this.titleInput.setValue(name);
+    }
+    async onOkClick() {
+        let newTitle = this.titleInput.getValue();
+        if (!newTitle) {
+            this.titleInput.errorMessage("Необходимо ввести название");
+            return;
+        }
+        this.dto.title = newTitle;
+        let result;
+        try {
+            result = await this.exec();
+        } catch (error) {
+            console.log(error);
+            alert("Ошибка: " + JSON.stringify(error));
+            return;
+        }
+        this.onClose();
+        if (this.onUpdatedCallback) {
+            this.onUpdatedCallback.call(null, result.data);
+        }
+    }
+}
+
+class GroupDTO {}
+
+class GroupLinkDTO {}
+
+class ShowArchivedGroupsUseCase {
+    constructor() {
+        let that = this;
+        $(".showArchived a").on("click", (function(event) {
+            that.onToggleArchivedBtnClick(this, event);
+        }));
+    }
+    onToggleArchivedBtnClick(buttonEl, event) {
+        let $btn = $(buttonEl);
+        if ($btn.hasClass("active")) {
+            this.onHideArchivedBtnClick($btn, event);
+        } else {
+            this.onShowArchivedBtnClick($btn, event);
+        }
+    }
+    onHideArchivedBtnClick($btn, event) {
+        $btn.removeClass("active");
+        $btn.find("span").text("Показать архивные");
+        $btn.closest(".items-list-cont").find(".archived").remove();
+    }
+    async onShowArchivedBtnClick($btn, event) {
+        let accountId = Number.parseInt($btn.data("id"));
+        let groups = await new LoadGroupsUseCase(accountId, true).exec();
+        let $cont = $btn.closest(".items-list-cont");
+        for (const group of groups) {
+            this.showGroup($cont, group);
+        }
+        let $btnCont = $btn.closest(".list-item-cont");
+        $cont.append($btnCont);
+        $btn.addClass("active");
+        $btn.find("span").text("Скрыть архивные");
+    }
+    showGroup($cont, group) {
+        let $element = $(`\n<div class="list-item-cont group-item ${group.archived ? "archived" : ""} ${group.finished ? "finished" : ""}">\n   <div class="group-title">${group.name}</div>\n   <div class="listUsers group-link"><a href="${group.usersLink}">Ученики</a></div>\n   <div class="group-edit"><a href="${group.editLink}"></a></div>\n</div>`);
+        if (group.links && group.links.length > 0) {
+            for (const link of group.links) {
+                $element.append(`\n                    <div class="${link.linkClass} group-link">\n                      ${link.b} <a href="${link.u}">${link.t}</a>\n                    </div>`);
+            }
+        }
+        $cont.append($element);
+    }
+}
+
+class LoadGroupsUseCase extends JsonApiReplyUseCase {
+    constructor(accountId, isArchived) {
+        super("GET", "/api/teacher/getGroups", {
+            acc: accountId,
+            archived: isArchived ? 1 : 0
+        });
+    }
+}

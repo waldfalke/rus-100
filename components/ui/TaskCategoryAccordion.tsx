@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 import React from "react";
 
 interface TaskCategoryAccordionProps {
@@ -19,7 +21,7 @@ export const TaskCategoryAccordion: React.FC<TaskCategoryAccordionProps> = ({
       onClick={onToggle}
       aria-expanded={isOpen}
     >
-      <span>{title}</span>
+      <span className="font-source-serif-pro font-semibold">{title}</span>
       <span>{isOpen ? "▲" : "▼"}</span>
     </button>
     {isOpen && <div className="p-4">{children}</div>}

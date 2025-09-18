@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import React from "react";
 

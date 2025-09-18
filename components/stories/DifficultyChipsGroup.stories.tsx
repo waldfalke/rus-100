@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const difficultyTiers: DifficultyTier[] = [
   { id: "easiest", label: "самые лёгкие" },
@@ -46,12 +47,10 @@ export const CustomCounter: Story = {
         tiers={difficultyTiers}
         renderCount={(count, selected) => (
           <span
-            style={{
-              marginLeft: 8,
-              color: selected ? "#fff" : "#b0b0b0",
-              fontWeight: 400,
-              fontSize: 14,
-            }}
+            className={cn(
+              "ml-2 text-sm font-normal",
+              selected ? "text-primary-foreground" : "text-muted-foreground"
+            )}
           >
             {count}
           </span>
@@ -72,7 +71,12 @@ export const SiteStyle: Story = {
         stats={mockStats}
         tiers={difficultyTiers}
         renderCount={(count, selected) => (
-          <span style={{ marginLeft: 4, color: selected ? "#fff" : "#b0b0b0", fontWeight: 400, fontSize: 14 }}>
+          <span
+            className={cn(
+              "ml-1 text-sm font-normal",
+              selected ? "text-primary-foreground" : "text-muted-foreground"
+            )}
+          >
             ({count})
           </span>
         )}
@@ -123,6 +127,7 @@ export const DropdownChips: Story = {
                   : v
             )
             .join(", ");
+    
     // SVG шеврона
     const Chevron = ({ open }: { open: boolean }) => (
       <svg
@@ -131,49 +136,37 @@ export const DropdownChips: Story = {
         viewBox="0 0 16 16"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{
-          marginLeft: 6,
-          transition: "transform 0.2s",
-          transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        }}
+        className={cn(
+          "ml-1.5 transition-transform duration-200",
+          open ? "rotate-180" : "rotate-0"
+        )}
       >
         <path
           d="M4.5 6L8 9.5L11.5 6"
-          stroke="#888"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
     );
+    
     // Кнопка закрытия для мобильных устройств
     const MobileCloseButton = () => (
       <button
         onClick={() => setOpen(false)}
-        style={{
-          display: "block",
-          width: "100%",
-          marginTop: 10,
-          padding: "8px 0",
-          background: "#f3f3f3",
-          border: "none",
-          borderRadius: 6,
-          color: "#333",
-          fontSize: 14,
-          fontWeight: 500,
-          cursor: "pointer",
-        }}
-        className="mobile-only"
+        className="w-full mt-2.5 py-2 bg-muted rounded-lg text-sm font-normal text-muted-foreground hover:bg-muted/80 transition-colors mobile-only"
       >
         Закрыть
       </button>
     );
+    
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Badge
             variant="outline"
-            className="cursor-pointer py-1 px-3 flex items-center gap-1.5 hover:bg-gray-100 transition-colors difficulty-dropdown-badge"
+            className="cursor-pointer py-1 px-3 flex items-center gap-1.5 hover:bg-accent transition-colors difficulty-dropdown-badge"
             style={{
               minWidth: 0,
               width: "fit-content",
@@ -186,7 +179,7 @@ export const DropdownChips: Story = {
               whiteSpace: "nowrap",
             }}
           >
-            <span className="text-xs" style={{ overflow: "hidden", textOverflow: "ellipsis", fontWeight: 400 }}>
+            <span className="text-xs font-normal" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
               {selectedLabel}
             </span>
             <Chevron open={open} />
@@ -208,12 +201,12 @@ export const DropdownChips: Story = {
             <Badge
               key="any"
               variant={value.length === 1 && value[0] === "any" ? "default" : "outline"}
-              className={`cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 ${
+              className={cn(
+                "cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 font-normal",
                 value.length === 1 && value[0] === "any"
-                  ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-              style={{ fontWeight: 400 }}
+                  ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                  : "border-border text-foreground hover:bg-accent"
+              )}
               onClick={() => handleChange("any")}
             >
               любая сложность
@@ -226,19 +219,19 @@ export const DropdownChips: Story = {
                     ? "default"
                     : "outline"
                 }
-                className={`cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 ${
+                className={cn(
+                  "cursor-pointer transition-colors text-xs px-2 py-0.5 flex items-center gap-1 font-normal",
                   value.includes(tier.id) && value[0] !== "any"
-                    ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                }`}
-                style={{ fontWeight: 400 }}
+                    ? "bg-primary hover:bg-primary/80 text-primary-foreground border-transparent"
+                    : "border-border text-foreground hover:bg-accent"
+                )}
                 onClick={() => handleChange(tier.id)}
               >
                 {tier.label}
               </Badge>
             ))}
           </div>
-          <div className="desktop-close-hint" style={{ marginTop: 10, color: "#888", fontSize: 13, textAlign: "center" }}>
+          <div className="desktop-close-hint text-muted-foreground font-normal" style={{ marginTop: 10, fontSize: 13, textAlign: "center" }}>
             ESC или клик вне меню для закрытия
           </div>
           <div className="mobile-close-btn" style={{ display: "none" }}>
@@ -258,8 +251,10 @@ export const DropdownChips: Story = {
                 min-width: 0 !important;
               }
             }
-            .sb-difficulty-chips-group .badge,
-            .sb-difficulty-chips-group .badge * {
+            
+            /* Глобальный override для font-weight */
+            .difficulty-dropdown-badge *,
+            .difficulty-popover-content * {
               font-weight: 400 !important;
             }
           `}</style>

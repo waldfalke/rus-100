@@ -20,30 +20,38 @@
         "focus": { "value": "{color.primary.400}", "type": "color" }
       },
       "primary": {
-        "default": { "value": "{color.primary.400}", "type": "color" },
-        "hover": { "value": "{color.primary.300}", "type": "color" },
-        "foreground": { "value": "{color.neutral.950}", "type": "color" },
-        "muted": { "value": "rgba({color.primary.400}, 0.2)", "type": "color" }
+        "default": { "value": "{color.teal.500}", "type": "color" },
+        "hover": { "value": "{color.teal.400}", "type": "color" },
+        "foreground": { "value": "{color.teal.950}", "type": "color" },
+        "muted": { "value": "rgba(20, 184, 166, 0.2)", "type": "color" }
+      },
+      "secondary": {
+        "default": { "value": "{color.neutral.800}", "type": "color" },
+        "foreground": { "value": "{color.neutral.50}", "type": "color" }
+      },
+      "accent": {
+        "default": { "value": "{color.neutral.800}", "type": "color" },
+        "foreground": { "value": "{color.neutral.50}", "type": "color" }
       },
       "success": {
         "default": { "value": "{color.success.500}", "type": "color" },
         "foreground": { "value": "{color.neutral.950}", "type": "color" },
-        "muted": { "value": "rgba({color.success.500}, 0.2)", "type": "color" }
+        "muted": { "value": "rgba(34, 197, 94, 0.2)", "type": "color" }
       },
       "warning": {
         "default": { "value": "{color.warning.500}", "type": "color" },
         "foreground": { "value": "{color.neutral.950}", "type": "color" },
-        "muted": { "value": "rgba({color.warning.500}, 0.2)", "type": "color" }
+        "muted": { "value": "rgba(245, 158, 11, 0.2)", "type": "color" }
       },
       "error": {
         "default": { "value": "{color.error.500}", "type": "color" },
         "foreground": { "value": "{color.neutral.950}", "type": "color" },
-        "muted": { "value": "rgba({color.error.500}, 0.2)", "type": "color" }
+        "muted": { "value": "rgba(239, 68, 68, 0.2)", "type": "color" }
       },
       "info": {
         "default": { "value": "{color.info.500}", "type": "color" },
         "foreground": { "value": "{color.neutral.950}", "type": "color" },
-        "muted": { "value": "rgba({color.info.500}, 0.2)", "type": "color" }
+        "muted": { "value": "rgba(59, 130, 246, 0.2)", "type": "color" }
       }
     },
     "elevation": {

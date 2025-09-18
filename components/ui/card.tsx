@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -36,7 +38,10 @@ const CardTitle = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "font-source-serif-pro",
+      "text-app-h2-mobile md:text-app-h2",
+      "font-semibold",
+      "leading-tight",
       className
     )}
     {...props}

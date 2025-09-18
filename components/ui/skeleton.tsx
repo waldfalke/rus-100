@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Implicit via Tailwind)
 import { cn } from "@/lib/utils"
 
 function Skeleton({

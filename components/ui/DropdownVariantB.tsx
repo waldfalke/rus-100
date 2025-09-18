@@ -1,5 +1,7 @@
 "use client";
 
+// Code Contracts: PENDING
+// @token-status: NA (Legacy/Unused?)
 import React, { useState } from 'react';
 
 interface DropdownVariantBProps {

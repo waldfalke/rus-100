@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, Edit2, ArrowLeft, User, FolderPlus, Dice3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,6 +17,10 @@ import { TaskCategorySelector } from "@/components/ui/task-category-selector"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { TaskCardBlock } from "@/components/ui/TaskCardBlock"
 import { SelectionDropdown, SelectionOption } from "@/components/ui/SelectionDropdown"
+import { ProgressPanelBlock } from "@/components/ui/ProgressPanelBlock"
+import { TopNavBlock } from "@/components/ui/TopNavBlock"
+import { H1, P, H2, H3 } from "@/components/ui/typography"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 // Define difficulty types
 // type DifficultyType = "none" | "easy" | "hard" | "both" // Old types - removed
@@ -92,6 +96,14 @@ const taskCategories: Record<string, string[]> = {
   "21": ["запятая", "тире", "двоеточие"],
   "25": ["синонимы", "антонимы", "фразеологизмы", "слово"],
 };
+
+// Define NavLink type mirroring the one in TopNavBlock
+interface NavLink {
+  label: string;
+  href: string;
+  target?: '_blank' | '_self' | '_parent' | '_top';
+  hidden?: 'lg' | 'always';
+}
 
 export default function TestGenerator() {
   // --- Инициализируем состояния пустыми массивами --- 
@@ -303,6 +315,7 @@ export default function TestGenerator() {
         difficultyTiers={difficultyTiers}
         difficultyDropdown={difficultyDropdown}
         categoryDropdown={categoryDropdown}
+        noWrapper={true}
       />
     );
   };
@@ -373,7 +386,7 @@ export default function TestGenerator() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <Progress value={30} className="w-[60%] mx-auto" />
-          <p className="mt-4">Загрузка данных...</p>
+          <p className="mt-4 text-muted-foreground">Загрузка данных...</p>
         </div>
       </div>
     );
@@ -383,8 +396,8 @@ export default function TestGenerator() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-red-600">Ошибка загрузки</h2>
-          <p className="mt-2">Не удалось загрузить данные. Пожалуйста, обновите страницу.</p>
+          <h2 className="font-source-serif-pro text-xl font-bold text-destructive">Ошибка загрузки</h2>
+          <p className="mt-2 text-muted-foreground">Не удалось загрузить данные. Пожалуйста, обновите страницу.</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             Обновить страницу
           </Button>
@@ -393,352 +406,277 @@ export default function TestGenerator() {
     );
   }
 
+  // Define static navLinks for TopNavBlock in this context
+  const staticNavLinks: NavLink[] = [
+    { label: "Дашборд", href: "/dashboard" },
+    { label: "Задания", href: "/tasks" },
+    { label: "Результаты", href: "/results" },
+    { label: "Тесты", href: "/tests" },
+    { label: "Демо", href: "/demo" },
+  ];
+
   return (
-    <div className="bg-gray-100 font-sans pb-24 min-h-screen">
-      {/* Top navigation */}
-      <nav className="max-w-6xl bg-[#434343] rounded-2xl flex items-center p-2 mx-auto mt-5 mb-10 relative">
-        <span className="text-white text-sm font-medium px-3 py-2">
-          Русский<span className="text-teal-400">_100</span>
-        </span>
+    <div className="font-sans min-h-screen bg-background flex flex-col">
+      <TopNavBlock 
+        userName="Евгений" 
+        userEmail="stribojich@gmail.com" 
+        navLinks={staticNavLinks}
+        onUserClick={() => {}} 
+      />
 
-        <div className="hidden lg:flex flex-wrap flex-1 items-center">
-          <a
-            href="#"
-            className="text-white text-sm font-medium bg-[#515151] rounded-xl px-4 py-2 mx-1 my-1 text-center hover:bg-[#616161]"
-          >
-            Дашборд
-          </a>
-          <a
-            href="#"
-            className="text-white text-sm font-medium bg-[#515151] rounded-xl px-4 py-2 mx-1 my-1 text-center hover:bg-[#616161]"
-          >
-            Задания
-          </a>
-          <a
-            href="#"
-            className="text-white text-sm font-medium bg-[#515151] rounded-xl px-4 py-2 mx-1 my-1 text-center hover:bg-[#616161]"
-          >
-            Результаты
-          </a>
-        </div>
-
-        <div className="relative ml-auto mx-1 my-1">
-          <div className="text-white text-sm font-medium bg-[#515151] rounded-xl px-3 py-2 text-center hover:bg-[#616161] cursor-pointer">
-            <User className="inline-block w-5 h-5" />
+      <main className="flex-grow pb-20">
+        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-4">
+            <nav className="breadcrumbs text-sm text-muted-foreground hidden sm:block">
+              <a href="#" className="hover:text-foreground hover:underline">Главная</a> &gt; <span>Генерация теста</span>
+            </nav>
+            <a href="#" className="text-primary hover:underline sm:hidden flex items-center">
+              <ArrowLeft className="w-4 h-4 mr-1" /> Назад
+            </a>
+            <a href="#" className="text-primary hover:underline text-sm sm:text-base">Мои тесты</a>
           </div>
-        </div>
-      </nav>
+          {/* 1. Main Page Title "Генерация теста" - Added mb-2 */}
+          <H1 className="font-source-serif-pro text-app-h1-mobile md:text-app-h1 leading-tight font-semibold text-foreground mb-2">Генерация теста</H1>
+          {/* 2. Page Subtitle/Description "Выберите задания для включения в тест (не более 50), укажите название, аккаунт и группу, затем нажмите {"Создать тест"}. - Removed mt-2 */}
+          <P className="font-inter text-app-body leading-cyr-text font-normal text-muted-foreground mb-6">
+            Выберите задания для включения в тест (не более 50), укажите название, аккаунт и группу, затем нажмите {"Создать тест"}.
+          </P>
 
-      {/* Main content */}
-      <div className="container max-w-6xl mx-auto p-3 sm:p-6">
-        <div className="flex justify-between items-center mb-4">
-          <nav className="breadcrumbs text-sm text-gray-600 hidden sm:block">
-            <a href="#" className="hover:underline">
-              Главная
-            </a>{" "}
-            &gt; <span>Генерация теста</span>
-          </nav>
-          <a href="#" className="text-teal-600 hover:underline sm:hidden flex items-center">
-            <ArrowLeft className="w-4 h-4 mr-1" /> Назад
-          </a>
-          <a href="#" className="text-teal-600 hover:underline text-sm sm:text-base">
-            Мои тесты
-          </a>
-        </div>
-
-        {/* Test generation header */}
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center">
-          <Edit2 className="mr-2 text-teal-600 w-6 h-6" /> Генерация теста
-        </h1>
-        <p className="text-sm text-gray-600 mt-2 mb-6">
-          Выберите задания для включения в тест (не более 50), укажите название, аккаунт и группу, затем нажмите
-          "Создать тест".
-        </p>
-
-        {/* Form */}
-        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm mb-4 sm:mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="test-name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Название теста <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  id="test-name"
-                  value={testName}
-                  onChange={(e) => setTestName(e.target.value)}
-                  placeholder="Введите название теста"
-                  className="w-full"
-                />
+          <div className="bg-card rounded-xl p-4 sm:p-6 shadow-sm border border-border mb-4 sm:mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="test-name" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Название теста <span className="text-destructive">*</span></label>
+                  <Input
+                    id="test-name"
+                    value={testName}
+                    onChange={(e) => setTestName(e.target.value)}
+                    placeholder="Введите название теста"
+                    className="w-full"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="test-group" className="block text-sm font-medium text-gray-700 mb-1">
-                  Группа тестов
-                </label>
-                <div className="flex items-center gap-2">
-                  <Select value={testGroup} onValueChange={setTestGroup}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="-- Выберите --" />
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="test-group" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Группа тестов</label>
+                  <div className="flex items-center gap-2">
+                    <Select value={testGroup} onValueChange={setTestGroup}>
+                      <SelectTrigger className="w-full font-inter text-app-small leading-5 font-normal">
+                        <SelectValue placeholder="-- Выберите --" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="3">Тесты-25</SelectItem>
+                        <SelectItem value="4">Пунктуация</SelectItem>
+                        <SelectItem value="5">Пунктуация. Контроль.</SelectItem>
+                        <SelectItem value="6">Чекапы</SelectItem>
+                        <SelectItem value="7">Сочинение</SelectItem>
+                        <SelectItem value="8">Сочинение. Контроль.</SelectItem>
+                        <SelectItem value="9">Грамматика</SelectItem>
+                        <SelectItem value="10">Грамматика контроль</SelectItem>
+                        <SelectItem value="29">Сгенерированные тесты</SelectItem>
+                        <SelectItem value="60">ЕГКР (от ФИПИ)</SelectItem>
+                        <SelectItem value="127">Орфография</SelectItem>
+                        <SelectItem value="128">Орфография. Контроль</SelectItem>
+                        <SelectItem value="255">Орфография (тексты с пропущенными буквами)</SelectItem>
+                        <SelectItem value="333">Речь</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button variant="outline" size="icon" className="flex-shrink-0">
+                      <FolderPlus className="h-5 w-5 text-primary" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="account-select" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Аккаунт</label>
+                  <Select value={account} onValueChange={setAccount}>
+                    <SelectTrigger className="w-full font-inter text-app-small leading-5 font-normal">
+                      <SelectValue placeholder="-- Выберите аккаунт --" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3">Тесты-25</SelectItem>
-                      <SelectItem value="4">Пунктуация</SelectItem>
-                      <SelectItem value="5">Пунктуация. Контроль.</SelectItem>
-                      <SelectItem value="6">Чекапы</SelectItem>
-                      <SelectItem value="7">Сочинение</SelectItem>
-                      <SelectItem value="8">Сочинение. Контроль.</SelectItem>
-                      <SelectItem value="9">Грамматика</SelectItem>
-                      <SelectItem value="10">Грамматика контроль</SelectItem>
-                      <SelectItem value="29">Сгенерированные тесты</SelectItem>
-                      <SelectItem value="60">ЕГКР (от ФИПИ)</SelectItem>
-                      <SelectItem value="127">Орфография</SelectItem>
-                      <SelectItem value="128">Орфография. Контроль</SelectItem>
-                      <SelectItem value="255">Орфография (тексты с пропущенными буквами)</SelectItem>
-                      <SelectItem value="333">Речь</SelectItem>
+                      <SelectItem value="1">Аккаунт 1</SelectItem>
+                      <SelectItem value="2">Аккаунт 2</SelectItem>
+                      <SelectItem value="3">Аккаунт 3</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" size="icon" className="flex-shrink-0">
-                    <FolderPlus className="h-5 w-5 text-teal-600" />
-                  </Button>
                 </div>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="account-select" className="block text-sm font-medium text-gray-700 mb-1">
-                  Аккаунт
-                </label>
-                <Select value={account} onValueChange={setAccount}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="-- Выберите аккаунт --" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Аккаунт 1</SelectItem>
-                    <SelectItem value="2">Аккаунт 2</SelectItem>
-                    <SelectItem value="3">Аккаунт 3</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
           </div>
 
-          {/* --- УДАЛЕНА ВСТАВКА ГЛОБАЛЬНЫХ ЧИПОВ --- */}
-          {/* <div className="mb-6"> {renderDifficultyChips()} </div> */}
-
-        </div>
-
-        {/* Selectable Exam Text */}
-        <div className="mb-4">
-          <SelectableExamText />
-        </div>
-
-        {/* Tabs */}
-        <Tabs 
-          defaultValue="tasks" 
-          value={selectedTab} 
-          onValueChange={setSelectedTab} 
-          className="w-full max-w-full flex flex-col"
-        >
-          <div className="border-b border-gray-200 sticky top-0 z-30 bg-white shadow-sm overflow-hidden rounded-t-xl">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent shadow-none border-0 h-auto p-0 m-0">
-              <TabsTrigger
-                value="tasks"
-                className="py-3 px-4 text-gray-500 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-none hover:text-gray-700 transition-colors"
-              >
-                По заданиям
-              </TabsTrigger>
-              <TabsTrigger
-                value="ege"
-                className="py-3 px-4 text-gray-500 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-none hover:text-gray-700 transition-colors"
-              >
-                Формат ЕГЭ
-              </TabsTrigger>
-              <TabsTrigger
-                value="exercises"
-                className="py-3 px-4 text-gray-500 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-none hover:text-gray-700 transition-colors"
-              >
-                Упражнения
-              </TabsTrigger>
-            </TabsList>
+          <div className="mb-4">
+            <SelectableExamText />
           </div>
 
-          {/* Общий контейнер для всех вкладок с единым отступом */}
-          <div className="pt-6">
-            {/* Восстановленное содержимое вкладок */}
-            <TabsContent value="tasks" className="w-full max-w-full mt-0">
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Генерация по заданиям</h2>
-                <p className="text-sm text-gray-600 mb-6">
-                  Выберите количество вопросов и уровень сложности для каждого задания:
-                </p>
-                {tasksDataState?.map((category: TestCategory) => {
-                  if (!category) return null;
-                  return (
-                  <div key={category.category} className="mb-6">
-                    <div
-                      className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
-                      onClick={() => toggleCategory(category.category)}
-                    >
-                      <h3 className="font-medium text-gray-800">{category.category}</h3>
-                      {expandedCategories[category.category] ? (
-                        <ChevronUp className="w-5 h-5 text-gray-500" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-gray-500" />
-                      )}
-                    </div>
-                    {expandedCategories[category.category] && (
-                      <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                          {category.items?.map((item: TestItem) => {
-                            if (!item) return null;
-                            return renderItemRow(item, category, "tasks");
-                          })}
-                      </div>
-                    )}
-                  </div>
-                  );
-                })}
-              </div>
-            </TabsContent>
-            <TabsContent value="ege" className="w-full max-w-full mt-0">
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Формат ЕГЭ</h2>
-                <p className="text-sm text-gray-600 mb-6">Выберите параметры для генерации теста в формате ЕГЭ:</p>
-                {egeFormatDataState?.map((section: EGESection) => {
-                  if (!section) return null;
-                  return (
-                  <div key={section.title} className="mb-5 sm:mb-8">
-                    <h3 className="text-lg font-medium text-gray-800 mb-4">{section.title}</h3>
-                      {section.categories?.map((category: EGECategory) => {
-                        if (!category) return null;
-                        return (
-                      <div key={`${section.title}-${category.title}`} className="mb-6">
-                        <div
-                          className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
-                          onClick={() => toggleCategory(`${section.title}-${category.title}`)}
-                        >
-                          <h4 className="font-medium text-gray-800">{category.title}</h4>
-                          {expandedCategories[`${section.title}-${category.title}`] ? (
-                            <ChevronUp className="w-5 h-5 text-gray-500" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-gray-500" />
-                          )}
-                        </div>
-                        {expandedCategories[`${section.title}-${category.title}`] && (
-                          <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                                {category.items?.map((item: TestItem) => {
-                                  if (!item) return null;
-                                  return renderItemRow(item, category, "ege");
-                                })}
-                                        </div>
-                                      )}
-                          </div>
-                        );
-                      })}
-                      </div>
-                  );
-                })}
-              </div>
-            </TabsContent>
-            <TabsContent value="exercises" className="w-full max-w-full mt-0">
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm overflow-hidden">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Упражнения</h2>
-                <p className="text-sm text-gray-600 mb-6">Выберите упражнения для включения в тест:</p>
-                {exercisesDataState?.map((section: EGESection) => {
-                  if (!section) return null;
-                  return (
-                  <div key={section.title} className="mb-5 sm:mb-8">
-                    <h3 className="text-lg font-medium text-gray-800 mb-4">{section.title}</h3>
-                      {section.categories?.map((category: EGECategory) => {
-                        if (!category) return null;
-                        return (
-                      <div key={`${section.title}-${category.title}`} className="mb-6">
-                        <div
-                          className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
-                          onClick={() => toggleCategory(`${section.title}-${category.title}`)}
-                        >
-                          <h4 className="font-medium text-gray-800">{category.title}</h4>
-                          {expandedCategories[`${section.title}-${category.title}`] ? (
-                            <ChevronUp className="w-5 h-5 text-gray-500" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-gray-500" />
-                          )}
-                        </div>
-                        {expandedCategories[`${section.title}-${category.title}`] && (
-                          <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-                                {category.items?.map((item: TestItem) => {
-                                  if (!item) return null;
-                                  return renderItemRow(item, category, "exercises");
-                                })}
-                                        </div>
-                                      )}
-                          </div>
-                        );
-                      })}
-                      </div>
-                  );
-                })}
-              </div>
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
-      {/* Fixed bottom panel */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 py-3 px-4 z-50">
-        <div className="container max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Выбрано заданий:</span>
-              <span className="test-counter text-lg font-bold text-teal-600 whitespace-nowrap">
-                {totalSelected} / {totalLimit}
-              </span>
-            </div>
-
-            <div className="progress-bar w-full sm:w-1/3 flex-grow">
-              <Progress value={progress} className="h-2" />
-            </div>
-
-            <Button
-              className="create-test-btn w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white px-4 lg:px-8 font-medium"
-              variant="default"
-              disabled={!testName}
-              style={{ opacity: 1 }}
+          {/* Sticky navigation tabs - separate from content */}
+          <div className="sticky top-0 z-30 bg-muted rounded-t-xl border-b border-border mb-4">
+            <Tabs 
+              value={selectedTab}
+              onValueChange={setSelectedTab}
+              className="w-full max-w-full"
             >
-              {buttonText}
-            </Button>
+              <TabsList className="grid w-full grid-cols-3 gap-1.5 p-1.5 items-center">
+                  <TabsTrigger
+                    value="tasks"
+                    className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
+                  >
+                    По заданиям
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="ege"
+                    className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
+                  >
+                    Формат ЕГЭ
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="exercises"
+                    className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
+                  >
+                    Упражнения
+                  </TabsTrigger>
+                </TabsList>
+            </Tabs>
           </div>
+
+          {/* Content area - separate from navigation */}
+          <Tabs 
+            value={selectedTab}
+            onValueChange={setSelectedTab}
+            className="w-full max-w-full flex flex-col"
+          >
+            <TabsContent value="tasks" className="w-full max-w-full mt-0">
+                <Card data-ui="card">
+                  <CardContent className="p-4 sm:p-6">
+                   <H2 className="font-source-serif-pro text-app-h2-mobile md:text-app-h2 font-semibold leading-tight text-foreground mb-2">Генерация по заданиям</H2>
+                   <P className="font-inter text-app-small leading-5 font-normal text-muted-foreground mb-6">
+                     Выберите количество вопросов и уровень сложности для каждого задания:
+                   </P>
+                   <Accordion type="multiple" className="w-full">
+                     {tasksDataState?.map((category: TestCategory) => {
+                       if (!category) return null;
+                       const categoryId = category.category;
+                       return (
+                         <AccordionItem value={categoryId} key={categoryId} className="border border-border rounded-lg mb-2 bg-background">
+                           <AccordionTrigger className="font-inter text-app-body font-bold leading-cyr-text no-underline hover:no-underline p-2 sm:p-3 rounded-t-lg data-[state=open]:border-b border-border flex w-full items-center justify-between">
+                             {category.category}
+                           </AccordionTrigger>
+                           <AccordionContent className="p-4">
+                               {category.items?.map((item: TestItem, index: number) => {
+                                 if (!item) return null;
+                                 return (
+                                   <React.Fragment key={item.id}>
+                                     {renderItemRow(item, category, "tasks")}
+                                     {index < category.items.length - 1 && <Separator className="my-2" />}
+                                   </React.Fragment>
+                                 );
+                               })}
+                           </AccordionContent>
+                         </AccordionItem>
+                       );
+                     })}
+                  </Accordion>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="ege" className="w-full max-w-full mt-0">
+                <Card data-ui="card">
+                  <CardContent className="p-4 sm:p-6">
+                   <H2 className="font-source-serif-pro text-app-h2-mobile md:text-app-h2 font-semibold leading-tight text-foreground mb-2">Формат ЕГЭ</H2>
+                   <P className="font-inter text-app-small leading-5 font-normal text-muted-foreground mb-6">Выберите параметры для генерации теста в формате ЕГЭ:</P>
+                   {egeFormatDataState?.map((section: EGESection) => {
+                     if (!section) return null;
+                     return (
+                     <div key={section.title} className="mb-5 sm:mb-8">
+                       <H3 className="font-source-serif-pro text-app-h3-mobile md:text-app-h3 font-medium leading-snug text-foreground mb-4">{section.title}</H3>
+                         <Accordion type="multiple" className="w-full">
+                           {section.categories?.map((category: EGECategory) => {
+                             if (!category) return null;
+                             const categoryId = `${section.title}-${category.title}`;
+                             return (
+                               <AccordionItem value={categoryId} key={categoryId} className="border border-border rounded-lg mb-2 bg-background">
+                                 <AccordionTrigger className="font-inter text-app-body font-bold leading-cyr-text no-underline hover:no-underline p-2 sm:p-3 rounded-t-lg data-[state=open]:border-b border-border flex w-full items-center justify-between">
+                                    {category.title}
+                                 </AccordionTrigger>
+                                 <AccordionContent className="p-4">
+                                       {category.items?.map((item: TestItem, index: number) => {
+                                         if (!item) return null;
+                                         return (
+                                           <React.Fragment key={item.id}>
+                                             {renderItemRow(item, category, "ege")}
+                                             {index < category.items.length - 1 && <Separator className="my-2" />}
+                                           </React.Fragment>
+                                         );
+                                       })}
+                                 </AccordionContent>
+                               </AccordionItem>
+                             );
+                           })}
+                         </Accordion>
+                    </div>
+                  );
+                })}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="exercises" className="w-full max-w-full mt-0">
+                <Card data-ui="card">
+                  <CardContent className="p-4 sm:p-6">
+                   <H2 className="font-source-serif-pro text-app-h2-mobile md:text-app-h2 font-semibold leading-tight text-foreground mb-2">Упражнения</H2>
+                   <P className="font-inter text-app-small leading-5 font-normal text-muted-foreground mb-6">
+                     Выберите упражнения для включения в тест:
+                   </P>
+                   {exercisesDataState?.map((section: EGESection) => {
+                     if (!section) return null;
+                     return (
+                     <div key={section.title} className="mb-5 sm:mb-8">
+                       <H3 className="font-source-serif-pro text-app-h3-mobile md:text-app-h3 font-medium leading-snug text-foreground mb-4">{section.title}</H3>
+                         <Accordion type="multiple" className="w-full">
+                           {section.categories?.map((category: EGECategory) => {
+                             if (!category) return null;
+                             const categoryId = `${section.title}-${category.title}`;
+                             return (
+                               <AccordionItem value={categoryId} key={categoryId} className="border border-border rounded-lg mb-2 bg-background">
+                                 <AccordionTrigger className="font-inter text-app-body font-bold leading-cyr-text no-underline hover:no-underline p-2 sm:p-3 rounded-t-lg data-[state=open]:border-b border-border flex w-full items-center justify-between">
+                                    {category.title}
+                                 </AccordionTrigger>
+                                 <AccordionContent className="p-4">
+                                       {category.items?.map((item: TestItem, index: number) => {
+                                         if (!item) return null;
+                                         return (
+                                           <React.Fragment key={item.id}>
+                                             {renderItemRow(item, category, "exercises")}
+                                             {index < category.items.length - 1 && <Separator className="my-2" />}
+                                           </React.Fragment>
+                                         );
+                                       })}
+                                 </AccordionContent>
+                               </AccordionItem>
+                             );
+                           })}
+                          </Accordion>
+                     </div>
+                   );
+                 })}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+          </Tabs>
         </div>
-      </div>
-      
-      {/* Глобальные стили для фиксированной нижней панели */}
-      <style jsx global>{`
-        @media (max-width: 639px) {
-          .test-counter {
-            font-size: 1rem;
-          }
-          .create-test-btn {
-            font-size: 0.875rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-          }
-        }
-        
-        @media (min-width: 640px) and (max-width: 767px) {
-          .test-counter {
-            font-size: 1.1rem;
-          }
-          .progress-bar {
-            max-width: 33%;
-          }
-          .create-test-btn {
-            white-space: nowrap;
-            font-size: 0.875rem;
-          }
-        }
-      `}</style>
+      </main>
+
+      <ProgressPanelBlock 
+        totalSelected={totalSelected} 
+        totalLimit={totalLimit} 
+        progress={progress} 
+        buttonText={buttonText} 
+        onCreate={() => {
+          console.log("Creating test...");
+          // Add test creation logic here
+        }}
+      />
     </div>
-  )
+  );
 }

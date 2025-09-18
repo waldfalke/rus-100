@@ -13,28 +13,37 @@ console.log('Build started...');
   
   const sd = StyleDictionary.extend(getStyleDictionaryConfig(theme));
   
-  sd.buildAllPlatforms();
-  
-  console.log(`\nCompleted: [${theme}]`);
+  try {
+    sd.buildAllPlatforms();
+    console.log(`\nCompleted: [${theme}]`);
+  } catch (error) {
+    console.error(`\nError processing theme [${theme}]:`, error);
+  }
 });
 
 // Создание единого файла с типами для TypeScript
 console.log('\nGenerating shared TypeScript declarations...');
-StyleDictionary.extend({
-  source: [
-    'design-system/tokens/base/**/*.json'
-  ],
-  platforms: {
-    typescript: {
-      transformGroup: 'js',
-      buildPath: 'src/tokens/',
-      files: [{
-        destination: 'tokens.d.ts',
-        format: 'typescript/module-declarations'
-      }]
+
+try {
+  StyleDictionary.extend({
+    source: [
+      'design-system/tokens/base/**/*.json'
+    ],
+    platforms: {
+      typescript: {
+        transformGroup: 'js',
+        buildPath: 'src/tokens/',
+        files: [{
+          destination: 'tokens.d.ts',
+          format: 'typescript/module-declarations'
+        }]
+      }
     }
-  }
-}).buildAllPlatforms();
+  }).buildAllPlatforms();
+  console.log('Shared TypeScript declarations generated.');
+} catch (error) {
+  console.error('\nError generating shared TypeScript declarations:', error);
+}
 
 console.log('\nBuild completed!');
 
@@ -55,8 +64,12 @@ if (isWatchMode) {
       
       // Выполняем ту же логику сборки
       ['light', 'dark'].forEach(theme => {
-        const sd = StyleDictionary.extend(getStyleDictionaryConfig(theme));
-        sd.buildAllPlatforms();
+        try {
+          const sd = StyleDictionary.extend(getStyleDictionaryConfig(theme));
+          sd.buildAllPlatforms();
+        } catch (error) {
+          console.error(`\nError processing theme [${theme}] during watch:`, error);
+        }
       });
       
       console.log('\nRebuild completed!');

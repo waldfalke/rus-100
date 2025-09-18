@@ -1,3 +1,4 @@
+// Code Contracts: PENDING
 import React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -16,19 +17,19 @@ export const TaskCategoryBlock: React.FC<TaskCategoryBlockProps> = ({
 }) => (
   <div className="mb-6">
     <div
-      className="flex items-center justify-between bg-gray-50 p-2 sm:p-3 rounded-lg cursor-pointer"
+      className="flex items-center justify-between bg-background border border-border p-2 sm:p-3 rounded-lg cursor-pointer"
       onClick={onToggle}
     >
-      <h3 className="font-medium text-gray-800">{category.category}</h3>
+      <h3 className="font-source-serif-pro font-medium text-foreground">{category.category}</h3>
       {expanded ? (
-        <ChevronUp className="w-5 h-5 text-gray-500" />
+        <ChevronUp className="w-5 h-5 text-muted-foreground" />
       ) : (
-        <ChevronDown className="w-5 h-5 text-gray-500" />
+        <ChevronDown className="w-5 h-5 text-muted-foreground" />
       )}
     </div>
     {expanded && (
       <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-3">
-        {category.items?.map((item) => renderItem(item))}
+        {category.items?.map((item, index) => <div key={index}>{renderItem(item)}</div>)}
       </div>
     )}
   </div>
