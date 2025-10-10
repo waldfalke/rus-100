@@ -1,0 +1,3 @@
+[submodule "rnd"]
+	path = rnd
+	url = https://github.com/waldfalke/contract-driven-methodology.git
