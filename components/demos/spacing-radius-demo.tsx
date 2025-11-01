@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTheme } from '../../lib/hooks/useTheme';
 import { getSpacingValues, getBorderRadius, validateSpacingHierarchy } from '../../lib/tokens/spacing';
 import { getBorderRadius as getBorderRadiusFromBorderRadius } from '../../lib/tokens/border-radius';
 import type { SpacingContext, ComponentType, SpacingSize } from '../../lib/tokens/spacing';

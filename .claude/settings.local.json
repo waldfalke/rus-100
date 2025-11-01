@@ -5,7 +5,11 @@
       "Bash(git rm:*)",
       "Bash(git commit:*)",
       "Bash(test:*)",
-      "Bash(rmdir:*)"
+      "Bash(rmdir:*)",
+      "Bash(git push:*)",
+      "Bash(npx vercel:*)",
+      "Bash(xargs -I {} bash -c \"echo ''''=== {} ==='''' && head -20 {}\")",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
