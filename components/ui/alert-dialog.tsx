@@ -1,4 +1,5 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Uses Tailwind tokens & CSS variables)
 "use client"
 
 import * as React from "react"

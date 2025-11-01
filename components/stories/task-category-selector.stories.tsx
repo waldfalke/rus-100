@@ -143,7 +143,7 @@ export const DropdownChips: Story = {
             </Badge>
           </PopoverTrigger>
           <PopoverContent
-            className="w-auto p-2"
+            className="w-auto p-2 z-50"
             style={{
               minWidth: 220,
               maxWidth: 320,
@@ -216,4 +216,4 @@ export const DropdownChips: Story = {
       </div>
     );
   },
-}; 
+};

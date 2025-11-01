@@ -1,4 +1,5 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Minor hardcoded icon sizes, otherwise uses tokens)
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, MoreHorizontal } from "lucide-react"

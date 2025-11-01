@@ -1,6 +1,20 @@
+@import "../styles/tokens.light.css";
+@import "../styles/tokens.dark.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Utility for hiding scrollbars while maintaining scroll functionality */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
 /* Import component overrides after all other styles */
 @import "../styles/component-overrides.css";
 
@@ -41,6 +55,290 @@
     --wildberries-darkest: 276 74% 22%; /* #470a68 */
 
     --radius: 0.5rem;
+
+    /* Component: Toggle (minimal tokens for app) */
+    --component-toggle-default-border-radius: var(--radius);
+    --component-toggle-default-font-size: 0.875rem; /* text-sm */
+    --component-toggle-default-font-weight: 500;
+    --component-toggle-default-disabled-opacity: 0.5;
+    --component-toggle-default-gap: 0.25rem; /* theme.space.component.xs */
+    --component-toggle-icon-size: 1rem; /* 16px */
+
+    --component-toggle-default-background-color: transparent;
+    --component-toggle-default-text-color: hsl(var(--foreground));
+    --component-toggle-default-hover-background-color: hsl(var(--muted));
+    --component-toggle-default-hover-text-color: hsl(var(--muted-foreground));
+
+    --component-toggle-default-focus-ring-width: 2px;
+    --component-toggle-default-focus-ring-color: hsl(var(--ring));
+    --component-toggle-default-focus-ring-offset: 2px;
+
+    --component-toggle-default-on-background-color: hsl(var(--primary));
+    --component-toggle-default-on-text-color: hsl(var(--primary-foreground));
+
+    --component-toggle-outline-background-color: transparent;
+    --component-toggle-outline-border-color: hsl(var(--border));
+    --component-toggle-outline-border-width: 1px;
+    --component-toggle-outline-hover-background-color: hsl(var(--accent));
+    --component-toggle-outline-hover-text-color: hsl(var(--accent-foreground));
+
+    --component-toggle-sizes-default-height: 2.5rem; /* 40px */
+    --component-toggle-sizes-default-min-width: 2.5rem; /* 40px */
+    --component-toggle-sizes-default-padding-x: 0.5rem; /* 8px */
+    --component-toggle-default-padding-y: 0.5rem; /* 8px */
+
+    --component-toggle-sizes-sm-height: 2rem; /* 32px */
+    --component-toggle-sizes-sm-min-width: 2rem; /* 32px */
+    --component-toggle-sizes-sm-padding-x: 0.25rem; /* 4px */
+
+    --component-toggle-sizes-lg-height: 2.75rem; /* 44px */
+    --component-toggle-sizes-lg-min-width: 2.75rem; /* 44px */
+    --component-toggle-sizes-lg-padding-x: 0.75rem; /* 12px */
+
+    /* Component: Tooltip (content) */
+    --component-tooltip-content-background-color: hsl(var(--popover));
+    --component-tooltip-content-text-color: hsl(var(--popover-foreground));
+    --component-tooltip-content-border-color: hsl(var(--border));
+    --component-tooltip-content-border-width: 1px;
+    --component-tooltip-content-border-radius: var(--radius);
+    --component-tooltip-content-font-size: 0.875rem; /* text-sm */
+    --component-tooltip-content-padding-x: 0.5rem; /* 8px */
+    --component-tooltip-content-padding-y: 0.25rem; /* 4px */
+    --component-tooltip-content-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --component-tooltip-content-z-index: 50;
+
+    /* Component: Tooltip (animations) */
+    --component-tooltip-content-animation-in-fade-in: fade-in-0;
+    --component-tooltip-content-animation-in-zoom-in: zoom-in-95;
+    --component-tooltip-content-animation-out-fade-out: fade-out-0;
+    --component-tooltip-content-animation-out-zoom-out: zoom-out-95;
+    --component-tooltip-content-animation-slide-bottom: slide-in-from-top-2;
+    --component-tooltip-content-animation-slide-left: slide-in-from-right-2;
+    --component-tooltip-content-animation-slide-right: slide-in-from-left-2;
+    --component-tooltip-content-animation-slide-top: slide-in-from-bottom-2;
+
+    /* Typography aliases (bridge non-prefixed to theme-) */
+    --typography-heading-xlarge-fontSize: var(--theme-typography-heading-h1-fontSize);
+    --typography-heading-xlarge-fontWeight: var(--theme-typography-heading-h1-fontWeight);
+    --typography-heading-large-fontSize: var(--theme-typography-heading-h2-fontSize);
+    --typography-heading-large-fontWeight: var(--theme-typography-heading-h2-fontWeight);
+    --typography-heading-medium-fontSize: var(--theme-typography-heading-h3-fontSize);
+    --typography-heading-medium-fontWeight: var(--theme-typography-heading-h3-fontWeight);
+    --typography-heading-small-fontSize: var(--theme-typography-heading-h4-fontSize);
+    --typography-heading-small-fontWeight: var(--theme-typography-heading-h4-fontWeight);
+
+    --typography-body-large-fontSize: var(--theme-typography-body-large-fontSize);
+    --typography-body-medium-fontSize: var(--theme-typography-body-default-fontSize);
+    --typography-body-medium-fontWeight: var(--theme-typography-body-default-fontWeight);
+    --typography-body-small-fontSize: var(--theme-typography-body-small-fontSize);
+
+    /* Bridge aliases for GroupCard and legacy token names */
+    --theme-typography-body-sm-fontSize: var(--theme-typography-body-small-fontSize);
+    --theme-typography-body-lg-fontSize: var(--theme-typography-body-large-fontSize);
+    
+    --theme-color-text-primary: hsl(var(--foreground));
+    --theme-color-text-muted: hsl(var(--muted-foreground));
+    --theme-color-primary-default: hsl(var(--primary));
+    --theme-color-primary-foreground: hsl(var(--primary-foreground));
+    --theme-color-border-default: hsl(var(--border));
+    
+    /* Surface/background alias used by GroupCard */
+    --theme-color-surface-primary: hsl(var(--card));
+    
+    /* Border radius aliases used by GroupCard */
+    --theme-size-border-radius-sm: 0.375rem;
+    --theme-size-border-radius-md: 0.5rem;
+    
+    /* Spacing alias used by GroupCard */
+    --theme-space-md: 1rem;
+    --theme-color-neutral-0: #ffffff;
+    --color-error-600: var(--color-error-500);
+
+    /* Demo color aliases used by Layout */
+    --colors-background-primary: hsl(var(--background));
+    --colors-background-secondary: hsl(var(--muted));
+    --colors-background-tertiary: hsl(var(--card));
+    --colors-border-primary: hsl(var(--border));
+    --colors-brand-primary: hsl(var(--primary));
+    --colors-text-inverse: hsl(var(--primary-foreground));
+    --colors-text-primary: hsl(var(--foreground));
+    --colors-text-secondary: hsl(var(--muted-foreground));
+    --spacing-xs: 0.25rem;
+
+    /* Component: Avatar */
+    --component-avatar-size: 2.5rem; /* 40px */
+    --component-avatar-border-radius: 9999px;
+    --component-avatar-fallback-background-color: hsl(var(--muted));
+    --component-avatar-fallback-text-color: hsl(var(--muted-foreground));
+    --component-avatar-fallback-font-size: 0.875rem; /* text-sm */
+    --component-avatar-fallback-font-weight: 500;
+
+    /* Component: Alert */
+    --component-alert-root-border-radius: var(--radius);
+    --component-alert-root-border-width: 1px;
+    --component-alert-root-padding: 1rem;
+    --component-alert-root-content-padding-left: 2.5rem;
+    --component-alert-root-default-background-color: hsl(var(--background));
+    --component-alert-root-default-text-color: hsl(var(--foreground));
+    --component-alert-root-default-border-color: hsl(var(--border));
+    --component-alert-root-destructive-border-color: hsl(var(--destructive) / 0.5);
+    --component-alert-root-destructive-text-color: hsl(var(--destructive));
+    --component-alert-root-destructive-icon-color: hsl(var(--destructive));
+    --component-alert-root-icon-color: hsl(var(--foreground));
+    --component-alert-root-icon-left: 1rem;
+    --component-alert-root-icon-top: 1rem;
+
+    --component-alert-title-margin-bottom: 0.5rem;
+    --component-alert-title-font-weight: 600;
+    --component-alert-title-line-height: 1.25rem;
+    --component-alert-title-letter-spacing: -0.025em;
+
+    --component-alert-description-font-size: 0.875rem;
+    --component-alert-description-line-height: 1.625;
+
+    /* Layout tokens */
+    --sidebar-width: 18rem; /* 288px */
+    --sidebar-width-icon: 4rem; /* 64px */
+
+    /* Component: Toast (minimal tokens for app) */
+    --component-toast-viewport-z-index: 50;
+    --component-toast-viewport-padding: 0.5rem;
+    --component-toast-viewport-max-width: 380px;
+
+    --component-toast-root-overflow: hidden;
+    --component-toast-root-border-radius: var(--radius);
+    --component-toast-root-border-width: 1px;
+    --component-toast-root-padding: 0.75rem;
+    --component-toast-root-padding-right: 1rem;
+    --component-toast-root-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --component-toast-root-transition: all;
+    --component-toast-root-space: 0.5rem;
+    --component-toast-root-animation-in: fade-in 0.2s ease-in-out;
+    --component-toast-root-animation-out: fade-out 0.2s ease-in-out;
+
+    --component-toast-root-default-border-color: hsl(var(--border));
+    --component-toast-root-default-background-color: hsl(var(--card));
+    --component-toast-root-default-text-color: hsl(var(--foreground));
+    --component-toast-root-destructive-border-color: hsl(var(--destructive));
+    --component-toast-root-destructive-background-color: hsl(var(--destructive));
+    --component-toast-root-destructive-text-color: hsl(var(--destructive-foreground));
+
+    --component-toast-action-border-radius: var(--radius);
+    --component-toast-action-border-width: 1px;
+    --component-toast-action-background-color: hsl(var(--secondary));
+    --component-toast-action-padding-x: 0.75rem;
+    --component-toast-action-font-size: 0.875rem;
+    --component-toast-action-font-weight: 500;
+    --component-toast-action-transition: all 0.2s ease-in-out;
+    --component-toast-action-height: 2.25rem;
+    --component-toast-action-hover-background-color: hsl(var(--accent));
+    --component-toast-action-focus-ring-width: 2px;
+    --component-toast-action-focus-ring-color: hsl(var(--ring));
+    --component-toast-action-focus-ring-offset: 2px;
+    --component-toast-action-disabled-opacity: 0.5;
+    --component-toast-action-destructive-border-color: hsl(var(--destructive));
+    --component-toast-action-destructive-hover-border-color: hsl(var(--destructive));
+    --component-toast-action-destructive-hover-background-color: hsl(var(--destructive));
+    --component-toast-action-destructive-hover-text-color: hsl(var(--destructive-foreground));
+    --component-toast-action-destructive-focus-ring-color: hsl(var(--destructive));
+
+    --component-toast-close-border-radius: 0.375rem;
+    --component-toast-close-padding: 0.25rem;
+    --component-toast-close-opacity: 0.7;
+    --component-toast-close-transition: opacity 0.2s ease-in-out;
+    --component-toast-close-right: 0.5rem;
+    --component-toast-close-top: 0.5rem;
+    --component-toast-close-text-color: hsl(var(--muted-foreground));
+    --component-toast-close-hover-text-color: hsl(var(--foreground));
+    --component-toast-close-focus-opacity: 1;
+    --component-toast-close-focus-ring-width: 2px;
+    --component-toast-close-group-hover-opacity: 1;
+    --component-toast-close-destructive-text-color: hsl(var(--destructive-foreground));
+    --component-toast-close-destructive-hover-text-color: hsl(var(--destructive-foreground));
+    --component-toast-close-destructive-focus-ring-color: hsl(var(--destructive));
+    --component-toast-close-destructive-focus-ring-offset-color: hsl(var(--background));
+    --component-toast-close-icon-size: 1rem;
+
+    --component-toast-title-font-size: 1rem;
+    --component-toast-title-font-weight: 600;
+    --component-toast-description-font-size: 0.875rem;
+    --component-toast-description-opacity: 0.9;
+
+    /* Component: Input OTP */
+    --component-input-otp-container-gap: 0.5rem;
+    --component-input-otp-container-disabled-opacity: 0.5;
+
+    --component-input-otp-slot-height: 40px;
+    --component-input-otp-slot-width: 40px;
+    --component-input-otp-slot-border-color: hsl(var(--input));
+    --component-input-otp-slot-border-width: 1px;
+    --component-input-otp-slot-border-radius-first: var(--radius);
+    --component-input-otp-slot-border-radius-last: var(--radius);
+    --component-input-otp-slot-font-size: 0.875rem;
+    --component-input-otp-slot-transition: all;
+    --component-input-otp-slot-active-z-index: 10;
+    --component-input-otp-slot-active-ring-color: hsl(var(--ring));
+    --component-input-otp-slot-active-ring-width: 2px;
+    --component-input-otp-slot-active-ring-offset: 2px;
+    --component-input-otp-slot-caret-height: 16px;
+    --component-input-otp-slot-caret-width: 1px;
+    --component-input-otp-slot-caret-background-color: hsl(var(--foreground));
+    --component-input-otp-slot-caret-animation-duration: 1000ms;
+    --component-input-otp-slot-caret-color: hsl(var(--foreground));
+
+    --component-input-otp-separator-color: hsl(var(--muted-foreground));
+
+    /* Component: Label */
+    --component-label-font-size: 0.875rem;
+    --component-label-font-weight: 500;
+    --component-label-line-height: 1;
+    --component-label-disabled-opacity: 0.7;
+
+    /* Component: Separator */
+    --component-separator-color: hsl(var(--border));
+    --component-separator-horizontal-height: 1px;
+    --component-separator-horizontal-width: 100%;
+    --component-separator-vertical-height: 100%;
+    --component-separator-vertical-width: 1px;
+
+    /* Component: Switch */
+    --component-switch-root-height: 24px;
+    --component-switch-root-width: 44px;
+    --component-switch-root-border-radius: 9999px;
+    --component-switch-root-border-width: 2px;
+    --component-switch-root-border-color: transparent;
+    --component-switch-root-transition: colors;
+    --component-switch-root-focus-ring-color: hsl(var(--ring));
+    --component-switch-root-focus-ring-width: 2px;
+    --component-switch-root-focus-ring-offset: 2px;
+    --component-switch-root-disabled-opacity: 0.5;
+    --component-switch-root-checked-background-color: hsl(var(--primary));
+    --component-switch-root-unchecked-background-color: hsl(var(--input));
+
+    --component-switch-thumb-height: 20px;
+    --component-switch-thumb-width: 20px;
+    --component-switch-thumb-border-radius: 9999px;
+    --component-switch-thumb-background-color: hsl(var(--background));
+    --component-switch-thumb-box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --component-switch-thumb-transition: transform;
+    --component-switch-thumb-checked-translate-x: 20px;
+    --component-switch-thumb-unchecked-translate-x: 0px;
+
+    /* Component: Textarea */
+    --component-textarea-min-height: 80px;
+    --component-textarea-border-radius: var(--radius);
+    --component-textarea-border-color: hsl(var(--input));
+    --component-textarea-border-width: 1px;
+    --component-textarea-background-color: hsl(var(--background));
+    --component-textarea-padding-x: 0.5rem;
+    --component-textarea-padding-y: 0.25rem;
+    --component-textarea-font-size: 1rem;
+    --component-textarea-placeholder-text-color: hsl(var(--muted-foreground));
+    --component-textarea-focus-ring-color: hsl(var(--ring));
+    --component-textarea-focus-ring-width: 2px;
+    --component-textarea-focus-ring-offset: 2px;
+    --component-textarea-disabled-opacity: 0.5;
+    --component-textarea-sizes-md-font-size: 0.875rem;
   }
 
   .dark {

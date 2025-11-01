@@ -81,22 +81,22 @@
       "body": {
         "font": { "value": "{fontFamily.sans}", "type": "fontFamily" },
         "large": {
-          "fontSize": { "value": "{fontSize.app-h3}", "type": "fontSize" },
+          "fontSize": { "value": "{fontSize.lg}", "type": "fontSize" },
           "fontWeight": { "value": "{fontWeight.normal}", "type": "fontWeight" },
           "lineHeight": { "value": "{lineHeight.normal}", "type": "lineHeight" }
         },
         "default": {
-          "fontSize": { "value": "{fontSize.app-body}", "type": "fontSize" },
+          "fontSize": { "value": "{fontSize.base}", "type": "fontSize" },
           "fontWeight": { "value": "{fontWeight.normal}", "type": "fontWeight" },
           "lineHeight": { "value": "{lineHeight.normal}", "type": "lineHeight" }
         },
         "small": {
-          "fontSize": { "value": "{fontSize.app-small}", "type": "fontSize" },
+          "fontSize": { "value": "{fontSize.sm}", "type": "fontSize" },
           "fontWeight": { "value": "{fontWeight.normal}", "type": "fontWeight" },
           "lineHeight": { "value": "{lineHeight.normal}", "type": "lineHeight" }
         },
         "tiny": {
-          "fontSize": { "value": "{fontSize.app-caption}", "type": "fontSize" },
+          "fontSize": { "value": "{fontSize.xs}", "type": "fontSize" },
           "fontWeight": { "value": "{fontWeight.normal}", "type": "fontWeight" },
           "lineHeight": { "value": "{lineHeight.normal}", "type": "lineHeight" }
         }

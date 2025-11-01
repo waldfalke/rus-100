@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Автоматическое обновление тестов перед коммитом
+echo "🔍 Checking for component and token changes..."
+
+# Проверяем изменения в компонентах
+if git diff --cached --name-only | grep -E "src/components/|src/app/"; then
+  echo "📦 Components changed, updating tests..."
+  npm run update:tests
+  git add tests/e2e/steps.ts tests/e2e/*.feature
+fi
+
+# Проверяем изменения в токенах
+if git diff --cached --name-only | grep "design-system/tokens/"; then
+  echo "🎨 Design tokens changed, syncing tests..."
+  npm run sync:tokens
+  git add tests/e2e/design-tokens.spec.ts
+fi
+
+# Регенерируем BDD тесты
+echo "🥒 Regenerating BDD tests..."
+npx bddgen
+
+echo "✅ Pre-commit checks complete!"

@@ -199,7 +199,6 @@ interface FeedStatistics {
 }
 
 export default function AnswersFeedPage() {
-  const [mounted, setMounted] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<StudentAnswer | null>(null);
   const [filters, setFilters] = useState<FeedFilters>({
@@ -232,20 +231,12 @@ export default function AnswersFeedPage() {
     enableNotifications: true
   });
 
-  // Handle client-side mounting to prevent hydration issues
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Mock data
   const navLinks: NavLink[] = [
-    { label: "Дашборд", href: "/dashboard" },
-    { label: "Тесты", href: "/tests" },
-    { label: "Результаты", href: "/results" },
-    { label: "Лента ответов", href: "/answers" },
-    { label: "Статистика", href: "/statistics" },
-    { label: "Группы", href: "/groups" },
-    { label: "Задания", href: "/tasks" }
+    { label: 'Главная', href: '/' },
+    { label: 'Тесты', href: '/tests' },
+    { label: 'Все группы', href: '/groups' },
+    { label: 'Профиль', href: '/account' },
   ];
 
   const mockStatistics: FeedStatistics = {
@@ -434,11 +425,6 @@ export default function AnswersFeedPage() {
   };
 
   const formatTimeAgo = (timestamp: string) => {
-    // Prevent hydration mismatch by only calculating on client
-    if (!mounted) {
-      return 'загрузка...';
-    }
-    
     const now = new Date();
     const time = new Date(timestamp);
     const diffInMinutes = Math.floor((now.getTime() - time.getTime()) / (1000 * 60));
@@ -923,26 +909,6 @@ export default function AnswersFeedPage() {
       </div>
     );
   };
-
-  // Prevent hydration mismatch by showing loading state until mounted
-  if (!mounted) {
-    return (
-      <div className="font-sans min-h-screen bg-background flex flex-col">
-        <TopNavBlock 
-          userName="Евгений" 
-          userEmail="stribojich@gmail.com" 
-          navLinks={navLinks}
-          onUserClick={() => {}} 
-        />
-        <main className="flex-grow pb-20 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Загрузка ленты ответов...</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="font-sans min-h-screen bg-background flex flex-col">

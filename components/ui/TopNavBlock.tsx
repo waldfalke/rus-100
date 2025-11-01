@@ -17,6 +17,8 @@ import {
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu"; // Import Dropdown components
 import { useTheme } from 'next-themes'; // Import useTheme for mobile theme toggle
+import { pagePaddingX, containerMaxWidth } from "@/lib/tokens"; // Import pagePaddingX and containerMaxWidth tokens
+import { getContentAlignmentStyles } from "@/lib/tokens/layout"; // Import content alignment
 
 /**
  * @interface NavLink
@@ -32,6 +34,14 @@ interface NavLink {
   target?: '_blank' | '_self' | '_parent' | '_top';
   hidden?: 'lg' | 'always';
 }
+
+// Единый набор пунктов меню по умолчанию для всего сайта
+const DEFAULT_NAV_LINKS: NavLink[] = [
+  { label: 'Главная', href: '/' },
+  { label: 'Тесты', href: '/create-test' },
+  { label: 'Все группы', href: '/groups' },
+  { label: 'Профиль', href: '/account' },
+];
 
 /**
  * @interface TopNavBlockProps
@@ -73,45 +83,42 @@ export const TopNavBlock: React.FC<TopNavBlockProps> = ({
   userEmail = null,
   navLinks = [],
   onUserClick = null,
-  onAccountClick = () => { console.log("Account clicked"); },
-  onLogoutClick = () => { console.log("Logout clicked"); },
+  onAccountClick,
+  onLogoutClick
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, setTheme } = useTheme(); // Get theme context for mobile toggle
+  const { theme, setTheme } = useTheme();
 
-  // Runtime Checks
-  if (!Array.isArray(navLinks)) {
-    console.warn("[Contract Violation][TopNavBlock]: 'navLinks' prop must be an array. Received:", navLinks);
-    navLinks = []; // Fallback to empty array
-  } else {
-    navLinks.forEach((link, index) => {
-      if (!link || typeof link !== 'object') {
-        console.warn(`[Contract Violation][TopNavBlock]: Item at index ${index} in 'navLinks' is not a valid object. Received:`, link);
-        return; // Skip further checks for this invalid item
-      }
-      if (!link.label || typeof link.label !== 'string') {
-        console.warn(`[Contract Violation][TopNavBlock]: Link at index ${index} in 'navLinks' must have a non-empty 'label' string. Received:`, link.label);
-      }
-      if (!link.href || typeof link.href !== 'string') {
-        console.warn(`[Contract Violation][TopNavBlock]: Link at index ${index} in 'navLinks' must have a non-empty 'href' string. Received:`, link.href);
-      }
-    });
-  }
+  // Merge provided navLinks with defaults, allowing overrides
+  const computedNavLinks = navLinks.length > 0 ? navLinks : DEFAULT_NAV_LINKS;
 
-  // Filter visible links based on the 'hidden' property
-  const visibleNavLinks = navLinks.filter(link => link.hidden !== 'always');
+  // Filter out links that should be hidden
+  const visibleNavLinks = computedNavLinks.filter(link => link.hidden !== 'always');
+
+  // Get container styles similar to ResponsiveContainer
+  const containerStyles = {
+    maxWidth: containerMaxWidth.fallback,
+    marginLeft: "auto",
+    marginRight: "auto",
+    paddingLeft: pagePaddingX.fallback,
+    paddingRight: pagePaddingX.fallback,
+    width: "100%",
+  };
 
   return (
-    // Add horizontal padding to the outer container with larger desktop margins
-    <nav className="bg-muted rounded-2xl mt-5 mb-8 mx-4 sm:mx-8 lg:mx-24">
-      {/* Inner container for alignment with proper padding and max-width */}
-      <div className="max-w-6xl w-full mx-auto flex items-center justify-between py-3 px-4 sm:px-6 lg:px-8 relative">
+    // Full width background
+    <nav className="bg-muted rounded-2xl mt-5 mb-8">
+      {/* Inner container for alignment using same styles as ResponsiveContainer */}
+      <div 
+        className="flex items-center justify-between py-3 relative"
+        style={containerStyles}
+      >
         {/* Left Side: Logo, Hamburger (Mobile), Nav Links (Desktop) */}
         <div className="flex items-center gap-3"> {/* Increased gap-3 (12px) for better spacing */}
-          {/* Logo styled consistently as a button */}
-          <div className="bg-card text-sm font-medium rounded-lg px-3 h-9 flex items-center shadow-sm hover:bg-muted transition-colors"> 
+          {/* Logo styled consistently as a button and leading to home */}
+          <Link href="/" className="bg-card text-sm font-medium rounded-lg px-3 h-9 flex items-center shadow-sm hover:bg-muted transition-colors" aria-label="Перейти на главную">
             <span className="text-card-foreground">РУССКИЙ</span><span className="text-primary">_100</span>
-        </div>
+          </Link>
           
           {/* Hamburger Menu Trigger (Mobile Only) */} 
           <div className="lg:hidden"> {/* Show only on mobile */}
@@ -140,7 +147,7 @@ export const TopNavBlock: React.FC<TopNavBlockProps> = ({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-      </div>
+          </div>
 
           {/* Desktop Navigation Links */} 
           <div className="hidden lg:flex flex-wrap items-center gap-1"> {/* Added gap-1 for consistent spacing */}
@@ -200,10 +207,10 @@ export const TopNavBlock: React.FC<TopNavBlockProps> = ({
 
           {/* Theme toggle button */}
           <div> 
-          <ThemeToggle />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
-); 
-}; 
+    </nav>
+  );
+};

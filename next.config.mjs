@@ -3,7 +3,8 @@ const isProd = process.env.NODE_ENV === 'production'
 const isGithubPages = process.env.GITHUB_PAGES === 'true'
 
 const nextConfig = {
-  output: 'export',
+  // Static export только для GitHub Pages, для Vercel используем стандартный режим
+  ...(isGithubPages && { output: 'export' }),
   // Условно устанавливаем basePath только для GitHub Pages
   basePath: isGithubPages ? '/rus-100' : '',
   // Условно устанавливаем assetPrefix только для GitHub Pages

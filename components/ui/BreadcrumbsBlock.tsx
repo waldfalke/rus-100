@@ -1,4 +1,5 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Minor hardcoded margins, otherwise uses tokens)
 import React from 'react';
 import Link from 'next/link'; // Используем Link для навигации
 

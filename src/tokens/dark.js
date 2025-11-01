@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Tue, 06 May 2025 19:25:16 GMT
+ * Generated on Wed, 08 Oct 2025 22:03:44 GMT
  */
 
 export const ColorPrimary50 = "#f0f9ff";

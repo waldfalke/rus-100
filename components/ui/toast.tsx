@@ -8,6 +8,7 @@ import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Fully tokenized using --component-toast-* CSS variables)
 
 const ToastProvider = ToastPrimitives.Provider
 

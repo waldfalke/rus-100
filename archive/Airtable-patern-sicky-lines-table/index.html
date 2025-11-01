@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адаптивная таблица - Современное решение</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <h1>Адаптивная таблица студентов</h1>
+            <p class="subtitle">Современное CSS-решение с автоматическим переключением</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="responsive-table-container">
+                <h2>Успеваемость учеников по русскому языку</h2>
+                
+                <div class="table-wrapper">
+                    <table class="responsive-table">
+                        <thead>
+                            <tr>
+                                <th class="student-column" data-label="Ученик">Ученик</th>
+                                <th data-label="Балл">Балл</th>
+                                <th data-label="Орфография">Орфография</th>
+                                <th data-label="Пунктуация">Пунктуация</th>
+                                <th data-label="Грамматика">Грамматика</th>
+                                <th data-label="Лексика">Лексика</th>
+                                <th data-label="Стилистика">Стилистика</th>
+                                <th data-label="Сочинение">Сочинение</th>
+                                <th data-label="Изложение">Изложение</th>
+                                <th data-label="Диктант">Диктант</th>
+                                <th data-label="Тестирование">Тестирование</th>
+                                <th data-label="Итоговая">Итоговая</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="student-column" data-label="Ученик">
+                                    <div class="student-info">
+                                        <div class="student-name">Иванов Алексей</div>
+                                        <div class="student-email">a.ivanov@school.ru</div>
+                                    </div>
+                                </td>
+                                <td data-label="Балл">85</td>
+                                <td data-label="Орфография">92%</td>
+                                <td data-label="Пунктуация">78%</td>
+                                <td data-label="Грамматика">88%</td>
+                                <td data-label="Лексика">91%</td>
+                                <td data-label="Стилистика">85%</td>
+                                <td data-label="Сочинение">87%</td>
+                                <td data-label="Изложение">83%</td>
+                                <td data-label="Диктант">91%</td>
+                                <td data-label="Тестирование">89%</td>
+                                <td data-label="Итоговая">86%</td>
+                            </tr>
+                            <tr>
+                                <td class="student-column" data-label="Ученик">
+                                    <div class="student-info">
+                                        <div class="student-name">Петрова Мария</div>
+                                        <div class="student-email">m.petrova@school.ru</div>
+                                    </div>
+                                </td>
+                                <td data-label="Балл">92</td>
+                                <td data-label="Орфография">95%</td>
+                                <td data-label="Пунктуация">89%</td>
+                                <td data-label="Грамматика">94%</td>
+                                <td data-label="Лексика">96%</td>
+                                <td data-label="Стилистика">91%</td>
+                                <td data-label="Сочинение">93%</td>
+                                <td data-label="Изложение">90%</td>
+                                <td data-label="Диктант">95%</td>
+                                <td data-label="Тестирование">92%</td>
+                                <td data-label="Итоговая">93%</td>
+                            </tr>
+                            <tr>
+                                <td class="student-column" data-label="Ученик">
+                                    <div class="student-info">
+                                        <div class="student-name">Сидоров Дмитрий</div>
+                                        <div class="student-email">d.sidorov@school.ru</div>
+                                    </div>
+                                </td>
+                                <td data-label="Балл">78</td>
+                                <td data-label="Орфография">82%</td>
+                                <td data-label="Пунктуация">74%</td>
+                                <td data-label="Грамматика">79%</td>
+                                <td data-label="Лексика">81%</td>
+                                <td data-label="Стилистика">76%</td>
+                                <td data-label="Сочинение">80%</td>
+                                <td data-label="Изложение">75%</td>
+                                <td data-label="Диктант">83%</td>
+                                <td data-label="Тестирование">78%</td>
+                                <td data-label="Итоговая">79%</td>
+                            </tr>
+                            <tr>
+                                <td class="student-column" data-label="Ученик">
+                                    <div class="student-info">
+                                        <div class="student-name">Козлова Анна</div>
+                                        <div class="student-email">a.kozlova@school.ru</div>
+                                    </div>
+                                </td>
+                                <td data-label="Балл">88</td>
+                                <td data-label="Орфография">90%</td>
+                                <td data-label="Пунктуация">85%</td>
+                                <td data-label="Грамматика">89%</td>
+                                <td data-label="Лексика">92%</td>
+                                <td data-label="Стилистика">87%</td>
+                                <td data-label="Сочинение">88%</td>
+                                <td data-label="Изложение">86%</td>
+                                <td data-label="Диктант">91%</td>
+                                <td data-label="Тестирование">87%</td>
+                                <td data-label="Итоговая">88%</td>
+                            </tr>
+                            <tr>
+                                <td class="student-column" data-label="Ученик">
+                                    <div class="student-info">
+                                        <div class="student-name">Морозов Игорь</div>
+                                        <div class="student-email">i.morozov@school.ru</div>
+                                    </div>
+                                </td>
+                                <td data-label="Балл">81</td>
+                                <td data-label="Орфография">84%</td>
+                                <td data-label="Пунктуация">79%</td>
+                                <td data-label="Грамматика">82%</td>
+                                <td data-label="Лексика">85%</td>
+                                <td data-label="Стилистика">80%</td>
+                                <td data-label="Сочинение">83%</td>
+                                <td data-label="Изложение">78%</td>
+                                <td data-label="Диктант">86%</td>
+                                <td data-label="Тестирование">81%</td>
+                                <td data-label="Итоговая">82%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

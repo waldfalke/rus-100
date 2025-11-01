@@ -6,6 +6,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { cn } from "@/lib/utils"
 
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Fully tokenized using --component-tooltip-* CSS variables)
 
 const TooltipProvider = TooltipPrimitive.Provider
 

@@ -1,0 +1,149 @@
+# contracts/CONTRACT-TOKENS-EXAMPLE.yml
+# Universal template for design tokens contract
+
+id: CONTRACT-TOKENS-001
+title: "Design Tokens — Canonical Token System"
+type: system
+version: 1.0
+complexity_level: complicated  # Deterministic generation with structure
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "contracts/METACONTRACT.yml"
+
+summary: >
+  Contract to create, validate and maintain design tokens as single source of truth
+  for colors, spacing, typography, shadows, radii and breakpoints.
+
+# --------------------------
+# Inputs / Outputs
+# --------------------------
+inputs:
+  - name: "design-tokens/tokens.json"
+    type: "json"
+    description: "Source tokens file following token schema"
+
+outputs:
+  - path: "design-tokens/tokens.json"
+    type: "json"
+    required: true
+    description: "Canonical tokens in JSON format"
+  
+  - path: "build/css/variables.css"
+    type: "css"
+    required: true
+    description: "Generated CSS custom properties"
+  
+  - path: "build/tokens-flat.json"
+    type: "json"
+    required: true
+    description: "Flattened tokens for consumption"
+
+# --------------------------
+# Token structure
+# --------------------------
+token_categories:
+  - color:        # Colors with semantic naming
+  - spacing:      # Spacing scale (px or rem)
+  - typography:   # Font families, sizes, weights
+  - radius:       # Border radius values
+  - shadow:       # Box shadow definitions
+  - breakpoints:  # Responsive breakpoints
+  - zIndex:       # Z-index scale
+
+# --------------------------
+# Invariants
+# --------------------------
+invariants:
+  - "tokens.json is single source of truth"
+  - "All tokens include type and value fields"
+  - "No hardcoded values in components (use tokens only)"
+  - "Generated outputs must be deterministic"
+  - "No secrets or credentials in tokens"
+
+# --------------------------
+# Anti-Patterns
+# --------------------------
+anti_patterns:
+  - pattern: "Hardcoding colors in components (#3B82F6)"
+    why_bad: "Breaks token system, prevents theming"
+    detect: "grep -r '#[0-9A-Fa-f]{6}' components/"
+    fix: "Use token reference: color.primary"
+    severity: "CRITICAL"
+  
+  - pattern: "Tokens without units (spacing.md = 16 not 16px)"
+    why_bad: "CSS requires units, generates invalid styles"
+    detect: "Validate token schema"
+    fix: "Add explicit unit: 16px or 1rem"
+    severity: "CRITICAL"
+  
+  - pattern: "Manual editing of generated files"
+    why_bad: "Changes overwritten on next build"
+    detect: "Check git history of build/ directory"
+    fix: "Edit source tokens.json only, regenerate"
+    severity: "CRITICAL"
+
+# --------------------------
+# Acceptance criteria
+# --------------------------
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "tokens.json validates against JSON schema"
+    check: "node scripts/validate-tokens.js"
+    validation: "automated"
+  
+  - name: "No Hardcoded Values"
+    description: "Components use tokens, not hardcoded values"
+    check: "node scripts/check-hardcoded-values.js"
+    validation: "automated"
+  
+  - name: "Build Success"
+    description: "Token build generates all outputs"
+    check: "npm run build:tokens"
+    validation: "automated"
+  
+  - name: "Determinism"
+    description: "Build produces identical output given same input"
+    check: "node scripts/check-build-determinism.js"
+    validation: "automated"
+
+# --------------------------
+# Dependencies
+# --------------------------
+dependencies:
+  tools:
+    - "Style Dictionary or similar token transformer"
+  
+  consuming_systems:
+    - "Tailwind configuration"
+    - "Component library"
+    - "Documentation site"
+
+# --------------------------
+# Example token structure
+# --------------------------
+example:
+  color:
+    primary:
+      value: "#00484F"
+      type: "color"
+      comment: "Brand primary color"
+    
+    background:
+      value: "#FFFFFF"
+      type: "color"
+      comment: "Light theme background"
+  
+  spacing:
+    md:
+      value: 16
+      type: "dimension"
+      unit: "px"
+      comment: "Medium spacing"
+  
+  metadata:
+    version: "1.0.0"
+    generated: "2025-10-08T12:00:00Z"
+    generator: "design-tokens-v1"
+
+# End of CONTRACT-TOKENS-EXAMPLE.yml

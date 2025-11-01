@@ -1,0 +1,33 @@
+{
+  "name": "contract-driven-methodology",
+  "version": "1.0.0",
+  "description": "Universal Contract-Driven Development methodology for frontend projects",
+  "main": "index.js",
+  "scripts": {
+    "validate": "echo 'Running validation...' && cd distilled-methodology/scripts && npm install && npm test",
+    "test": "echo 'No tests configured yet'",
+    "postinstall": "echo '✨ Contract-Driven Development methodology installed. Start: README.md → RND-INDEX.md'"
+  },
+  "keywords": [
+    "contract-driven-development",
+    "cdd",
+    "methodology",
+    "design-tokens",
+    "contracts",
+    "frontend",
+    "e2e-testing"
+  ],
+  "author": "Contract-Driven Development Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_ORG/contract-driven-methodology.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_ORG/contract-driven-methodology/issues"
+  },
+  "homepage": "https://github.com/YOUR_ORG/contract-driven-methodology#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

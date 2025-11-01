@@ -1,0 +1,314 @@
+__tests__/accessibility/elevation-a11y.test.tsx(211,68): error TS2353: Object literal may only specify known properties, and 'largeText' does not exist in type '{ highContrast?: boolean | undefined; reducedMotion?: boolean | undefined; prefersReducedData?: boolean | undefined; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(258,9): error TS2741: Property 'accessibility' is missing in type '{ mode: "light"; platform: "web"; contrast: "normal"; motion: "full"; viewport: { width: number; height: number; density: number; }; }' but required in type 'ThemeContext'.
+__tests__/accessibility/elevation-a11y.test.tsx(270,9): error TS2741: Property 'accessibility' is missing in type '{ mode: "light"; platform: "web"; contrast: "normal"; motion: "full"; viewport: { width: number; height: number; density: number; }; }' but required in type 'ThemeContext'.
+__tests__/accessibility/elevation-a11y.test.tsx(465,11): error TS2741: Property 'largeText' is missing in type '{ highContrast: false; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(477,11): error TS2741: Property 'largeText' is missing in type '{ highContrast: false; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(501,11): error TS2741: Property 'largeText' is missing in type '{ highContrast: false; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(513,11): error TS2741: Property 'largeText' is missing in type '{ highContrast: true; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(537,13): error TS2741: Property 'largeText' is missing in type '{ highContrast: false; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(556,13): error TS2741: Property 'largeText' is missing in type '{ highContrast: true; reducedMotion: true; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/accessibility/elevation-a11y.test.tsx(581,13): error TS2741: Property 'largeText' is missing in type '{ highContrast: false; reducedMotion: false; prefersReducedData: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+__tests__/property-based/palette-generation.test.ts(159,28): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(160,28): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(244,28): error TS2339: Property 'l' does not exist on type 'string'.
+__tests__/property-based/palette-generation.test.ts(244,53): error TS2339: Property 'l' does not exist on type 'string'.
+__tests__/property-based/palette-generation.test.ts(334,35): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ success: OKLCHColor[]; warning: OKLCHColor[]; error: OKLCHColor[]; info: OKLCHColor[]; }'.
+  No index signature with a parameter of type 'string' was found on type '{ success: OKLCHColor[]; warning: OKLCHColor[]; error: OKLCHColor[]; info: OKLCHColor[]; }'.
+__tests__/property-based/palette-generation.test.ts(440,66): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(451,48): error TS2339: Property 'h' does not exist on type 'string'.
+__tests__/property-based/palette-generation.test.ts(465,66): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(468,54): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(469,27): error TS2554: Expected 3-4 arguments, but got 1.
+__tests__/property-based/palette-generation.test.ts(471,56): error TS2339: Property 'c' does not exist on type 'string'.
+__tests__/property-based/palette-generation.test.ts(489,50): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(505,67): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(506,67): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(526,52): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(541,66): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(544,26): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(545,26): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(555,66): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(566,35): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(584,64): error TS2554: Expected 1 arguments, but got 2.
+__tests__/property-based/palette-generation.test.ts(590,32): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/property-based/palette-generation.test.ts(593,27): error TS2554: Expected 3-4 arguments, but got 1.
+__tests__/property-based/palette-generation.test.ts(594,27): error TS2554: Expected 3-4 arguments, but got 1.
+__tests__/property-based/palette-generation.test.ts(594,41): error TS2339: Property 'colors' does not exist on type 'GeneratedPalette'.
+__tests__/tokens/elevation.test.ts(8,61): error TS2307: Cannot find module '@jest/testing-library/jest-dom' or its corresponding type declarations.
+__tests__/tokens/elevation.test.ts(15,3): error TS2305: Module '"@/lib/tokens/elevation"' has no exported member 'calculateShadowParameters'.
+__tests__/tokens/elevation.test.ts(19,3): error TS2305: Module '"@/lib/tokens/elevation"' has no exported member 'generateElevationTailwind'.
+__tests__/tokens/elevation.test.ts(21,3): error TS2305: Module '"@/lib/tokens/elevation"' has no exported member 'ELEVATION_SCALE'.
+__tests__/tokens/elevation.test.ts(22,3): error TS2459: Module '"@/lib/tokens/elevation"' declares 'SIZE_MULTIPLIERS' locally, but it is not exported.
+__tests__/tokens/elevation.test.ts(23,3): error TS2459: Module '"@/lib/tokens/elevation"' declares 'VARIANT_MULTIPLIERS' locally, but it is not exported.
+__tests__/tokens/elevation.test.ts(24,3): error TS2459: Module '"@/lib/tokens/elevation"' declares 'PLATFORM_ADJUSTMENTS' locally, but it is not exported.
+__tests__/tokens/elevation.test.ts(25,3): error TS2459: Module '"@/lib/tokens/elevation"' declares 'ACCESSIBILITY_MULTIPLIERS' locally, but it is not exported.
+__tests__/tokens/elevation.test.ts(34,3): error TS2305: Module '"@/lib/theme-contracts/types"' has no exported member 'ElevationShadow'.
+__tests__/tokens/elevation.test.ts(202,15): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(218,11): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(224,11): error TS2353: Object literal may only specify known properties, and 'mode' does not exist in type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(239,53): error TS2345: Argument of type '{ accessibility: { highContrast: false; reducedMotion: false; prefersReducedData: false; }; mode: "light"; platform: "web"; }' is not assignable to parameter of type 'ElevationContext'.
+  Property 'level' is missing in type '{ accessibility: { highContrast: false; reducedMotion: false; prefersReducedData: false; }; mode: "light"; platform: "web"; }' but required in type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(244,59): error TS2345: Argument of type '{ accessibility: { highContrast: true; reducedMotion: false; prefersReducedData: false; }; mode: "light"; platform: "web"; }' is not assignable to parameter of type 'ElevationContext'.
+  Property 'level' is missing in type '{ accessibility: { highContrast: true; reducedMotion: false; prefersReducedData: false; }; mode: "light"; platform: "web"; }' but required in type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(263,54): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(276,46): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(329,43): error TS2345: Argument of type '{ level: number; variant: ElevationVariant; size: "md"; platform: "web"; }[]' is not assignable to parameter of type 'ElevationContext[]'.
+  Type '{ level: number; variant: ElevationVariant; size: "md"; platform: "web"; }' is not assignable to type 'ElevationContext'.
+    Types of property 'level' are incompatible.
+      Type 'number' is not assignable to type 'ElevationLevel'.
+__tests__/tokens/elevation.test.ts(336,60): error TS2345: Argument of type '{ level: number; variant: ElevationVariant; size: "md"; platform: "web"; }[]' is not assignable to parameter of type 'ElevationContext[]'.
+  Type '{ level: number; variant: ElevationVariant; size: "md"; platform: "web"; }' is not assignable to type 'ElevationContext'.
+    Types of property 'level' are incompatible.
+      Type 'number' is not assignable to type 'ElevationLevel'.
+__tests__/tokens/elevation.test.ts(350,42): error TS2345: Argument of type 'number' is not assignable to parameter of type 'ElevationContext'.
+__tests__/tokens/elevation.test.ts(440,31): error TS2339: Property 'shadow' does not exist on type '{ shadowCSS: string; level: ElevationLevel; cssProperties: Record<string, string>; tailwindUtilities: { boxShadow: string; dropShadow: string; }; accessibility: { ...; }; }'.
+__tests__/tokens/elevation.test.ts(474,52): error TS2339: Property 'level' does not exist on type '{ readonly variant: "subtle"; readonly accessibility: {}; } | { readonly variant: "moderate"; readonly accessibility: {}; } | { readonly variant: "prominent"; readonly accessibility: {}; } | { ...; } | { ...; } | { ...; }'.
+  Property 'level' does not exist on type '{ readonly variant: "subtle"; readonly accessibility: {}; }'.
+__tests__/tokens/elevation.test.ts(474,59): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(476,27): error TS2339: Property 'level' does not exist on type '{ readonly variant: "subtle"; readonly accessibility: {}; } | { readonly variant: "moderate"; readonly accessibility: {}; } | { readonly variant: "prominent"; readonly accessibility: {}; } | { ...; } | { ...; } | { ...; }'.
+  Property 'level' does not exist on type '{ readonly variant: "subtle"; readonly accessibility: {}; }'.
+__tests__/tokens/elevation.test.ts(491,46): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(510,31): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(520,31): error TS2554: Expected 1 arguments, but got 2.
+__tests__/tokens/elevation.test.ts(542,31): error TS2554: Expected 1 arguments, but got 2.
+__tests__/visual/elevation-visual.test.ts(165,47): error TS2322: Type 'string' is not assignable to type '"light" | "dark" | undefined'.
+__tests__/visual/elevation-visual.test.ts(287,47): error TS2322: Type 'string' is not assignable to type '"web" | "desktop" | "mobile" | undefined'.
+__tests__/visual/elevation-visual.test.ts(308,47): error TS2322: Type 'string' is not assignable to type '"web" | "desktop" | "mobile" | undefined'.
+app/groups/[id]/GroupPageClient.tsx(429,19): error TS18047: 'params' is possibly 'null'.
+app/results/page.tsx(471,19): error TS2339: Property 'correctAnswers' does not exist on type 'DetailedTestResult'.
+app/results/page.tsx(471,43): error TS2339: Property 'totalQuestions' does not exist on type 'DetailedTestResult'.
+app/results/page.tsx(764,49): error TS2339: Property 'date' does not exist on type '{ id: string; title: string; description: string; icon: string; unlockedAt: string; category: string; }'.
+app/tests/page.tsx(306,78): error TS2322: Type '{ children: string; className: string; size: string; }' is not assignable to type 'IntrinsicAttributes & BadgeProps'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & BadgeProps'.
+app/tests/page.tsx(309,48): error TS2322: Type '{ children: string; variant: "outline"; size: string; }' is not assignable to type 'IntrinsicAttributes & BadgeProps'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & BadgeProps'.
+components/demos/spacing-radius-demo.tsx(4,28): error TS2305: Module '"../../lib/tokens/spacing"' has no exported member 'getBorderRadius'.
+components/demos/spacing-radius-demo.tsx(48,5): error TS2322: Type '"default"' is not assignable to type 'BorderRadiusVariant | undefined'.
+components/demos/spacing-radius-demo.tsx(251,15): error TS2322: Type '"default"' is not assignable to type 'BorderRadiusVariant | undefined'.
+components/demos/spacing-radius-demo.tsx(291,28): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(292,37): error TS2304: Cannot find name 'useTheme'.
+components/demos/spacing-radius-demo.tsx(331,27): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(332,37): error TS2304: Cannot find name 'useTheme'.
+components/demos/spacing-radius-demo.tsx(361,19): error TS2322: Type '"small" | "medium"' is not assignable to type 'SpacingSize | undefined'.
+  Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(361,25): error TS2367: This comparison appears to be unintentional because the types 'SpacingSize' and '"large"' have no overlap.
+components/demos/spacing-radius-demo.tsx(389,28): error TS2322: Type '"large"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(390,37): error TS2304: Cannot find name 'useTheme'.
+components/demos/spacing-radius-demo.tsx(425,23): error TS2304: Cannot find name 'useTheme'.
+components/demos/spacing-radius-demo.tsx(427,33): error TS2322: Type '"small"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(427,42): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(427,52): error TS2322: Type '"large"' is not assignable to type 'SpacingSize'.
+components/demos/spacing-radius-demo.tsx(468,28): error TS2304: Cannot find name 'useTheme'.
+components/demos/spacing-radius-demo.tsx(470,19): error TS2304: Cannot find name 'BorderRadiusVariant'.
+components/demos/spacing-radius-demo.tsx(520,16): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(522,13): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(535,17): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(537,22): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(538,22): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(539,22): error TS2322: Type '"small"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(545,16): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(547,13): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(559,22): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(560,22): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(564,17): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(568,24): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(569,24): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(570,24): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(571,24): error TS2322: Type '"medium"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(578,16): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(580,13): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(595,26): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(596,26): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(602,26): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/demos/spacing-radius-demo.tsx(603,26): error TS2322: Type '"large"' is not assignable to type 'SpacingSize | undefined'.
+components/feature/GroupList.tsx(88,35): error TS2339: Property 'participantCount' does not exist on type 'GroupItem'.
+components/PerformanceMonitor.tsx(93,20): error TS2339: Property 'slowestTokens' does not exist on type 'PerformanceMetrics'.
+components/PerformanceMonitor.tsx(97,26): error TS2339: Property 'slowestTokens' does not exist on type 'PerformanceMetrics'.
+components/PerformanceMonitor.tsx(97,45): error TS7006: Parameter 'token' implicitly has an 'any' type.
+components/PerformanceMonitor.tsx(97,52): error TS7006: Parameter 'index' implicitly has an 'any' type.
+components/PerformanceMonitor.tsx(138,29): error TS2339: Property 'tokenMetrics' does not exist on type 'PerformanceReport'.
+components/PerformanceMonitor.tsx(142,25): error TS2339: Property 'tokenMetrics' does not exist on type 'PerformanceReport'.
+components/PerformanceMonitor.tsx(142,56): error TS7006: Parameter 'metric' implicitly has an 'any' type.
+design-system-standalone/src/color/oklch.ts(239,40): error TS2345: Argument of type '{ baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; } | { baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; } | { ...; } | { ...; } | { ...; } | { ...; }' is not assignable to parameter of type 'ColorPaletteConfig'.
+  Type '{ baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; }' is not assignable to type 'ColorPaletteConfig'.
+    Types of property 'lightnessRange' are incompatible.
+      Type 'number[]' is not assignable to type '[number, number]'.
+        Target requires 2 element(s) but source may have fewer.
+design-system-standalone/src/color/oklch.ts(279,30): error TS7053: Element implicitly has an 'any' type because expression of type '"ios" | "android" | "desktop"' can't be used to index type 'PlatformColorAdjustments'.
+  Property 'desktop' does not exist on type 'PlatformColorAdjustments'.
+design-system-standalone/src/theme-contracts/contracts.ts(9,80): error TS2307: Cannot find module '../accessibility/wcag-validator' or its corresponding type declarations.
+design-system-standalone/src/theme-contracts/contracts.ts(11,48): error TS2307: Cannot find module '../utils/performance' or its corresponding type declarations.
+design-system-standalone/src/theme-contracts/contracts.ts(17,18): error TS2430: Interface 'ExtendedThemeContext' incorrectly extends interface 'ThemeContext'.
+  Types of property 'platform' are incompatible.
+    Type '{ type: "web" | "desktop" | "mobile" | "tv"; os: "ios" | "android" | "windows" | "macos" | "linux" | "unknown"; device: "desktop" | "watch" | "tv" | "phone" | "tablet"; screenSize: "xs" | ... 4 more ... | "xxl"; pixelDensity: number; hasTouch: boolean; hasKeyboard: boolean; hasMouse: boolean; }' is not assignable to type 'Platform'.
+design-system-standalone/src/tokens/contracts/colors.ts(67,5): error TS2353: Object literal may only specify known properties, and 'contrastRequirement' does not exist in type '{ minContrast?: number | undefined; wcagLevel?: "AAA" | "AA" | undefined; }'.
+design-system-standalone/src/tokens/contracts/colors.ts(104,5): error TS2353: Object literal may only specify known properties, and 'contrastRequirement' does not exist in type '{ minContrast?: number | undefined; wcagLevel?: "AAA" | "AA" | undefined; }'.
+design-system-standalone/src/tokens/elevation.ts(357,38): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+design-system-standalone/src/tokens/elevation.ts(358,41): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+design-system-standalone/src/tokens/elevation.ts(359,40): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+design-system-standalone/src/tokens/elevation.ts(390,33): error TS2339: Property 'css' does not exist on type 'ShadowParameters'.
+docs/examples/elevation-examples.tsx(16,3): error TS2305: Module '"@/lib/tokens/elevation"' has no exported member 'generateElevationTailwind'.
+docs/examples/elevation-examples.tsx(93,62): error TS2345: Argument of type '"overlay"' is not assignable to parameter of type '"surface" | "card" | "modal" | "tooltip" | "dropdown" | "fab" | "snackbar"'.
+docs/examples/elevation-examples.tsx(475,46): error TS2345: Argument of type 'number' is not assignable to parameter of type 'ElevationContext'.
+  Type 'number' is not assignable to type 'ElevationContext'.
+lib/accessibility/wcag-validator.ts(360,7): error TS2322: Type '"text-normal" | "text-large"' is not assignable to type '"text" | "ui-component" | "graphical-object"'.
+  Type '"text-normal"' is not assignable to type '"text" | "ui-component" | "graphical-object"'.
+lib/accessibility/wcag-validator.ts(547,11): error TS2367: This comparison appears to be unintentional because the types '"AAA" | "AA"' and '"fail"' have no overlap.
+lib/color/oklch.ts(239,40): error TS2345: Argument of type '{ baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; } | { baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; } | { ...; } | { ...; } | { ...; } | { ...; }' is not assignable to parameter of type 'ColorPaletteConfig'.
+  Type '{ baseHue: number; baseChroma: number; steps: number; lightnessRange: number[]; chromaVariation: number; hueShift: number; }' is not assignable to type 'ColorPaletteConfig'.
+    Types of property 'lightnessRange' are incompatible.
+      Type 'number[]' is not assignable to type '[number, number]'.
+        Target requires 2 element(s) but source may have fewer.
+lib/color/oklch.ts(279,30): error TS7053: Element implicitly has an 'any' type because expression of type '"ios" | "android" | "desktop"' can't be used to index type 'PlatformColorAdjustments'.
+  Property 'desktop' does not exist on type 'PlatformColorAdjustments'.
+lib/components/ContextDemo.tsx(220,13): error TS2322: Type '{ width: number; height: number; density: number; }' is not assignable to type 'string | number | readonly string[] | undefined'.
+lib/components/ContextDemo.tsx(221,56): error TS2352: Conversion of type 'string' to type '{ width: number; height: number; density: number; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+lib/components/ThemeExample.tsx(86,9): error TS2322: Type '"default" | "elevated"' is not assignable to type 'ComponentVariant | undefined'.
+  Type '"default"' is not assignable to type 'ComponentVariant | undefined'.
+lib/components/ThemeExample.tsx(94,18): error TS2304: Cannot find name 'useToken'.
+lib/context/ContextResolver.ts(574,11): error TS2353: Object literal may only specify known properties, and 'chromaMultiplier' does not exist in type '{ contrastBoost?: number | undefined; saturationReduction?: number | undefined; }'.
+lib/context/PlatformDetector.ts(80,7): error TS2322: Type '"macos"' is not assignable to type 'Platform'.
+lib/context/PlatformDetector.ts(84,7): error TS2322: Type '"windows"' is not assignable to type 'Platform'.
+lib/context/PlatformDetector.ts(88,7): error TS2322: Type '"linux"' is not assignable to type 'Platform'.
+lib/context/PlatformDetector.ts(349,9): error TS2353: Object literal may only specify known properties, and 'forcedColors' does not exist in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+lib/context/PlatformDetector.ts(354,9): error TS2322: Type '"medium"' is not assignable to type 'ComponentSize | undefined'.
+lib/context/PlatformDetector.ts(371,40): error TS2322: Type 'string' is not assignable to type '{ width: number; height: number; density: number; }'.
+lib/context/PlatformDetector.ts(375,22): error TS2322: Type 'string' is not assignable to type '{ width: number; height: number; density: number; }'.
+lib/context/PlatformDetector.ts(376,23): error TS2322: Type 'string' is not assignable to type '{ width: number; height: number; density: number; }'.
+lib/context/PlatformDetector.ts(377,5): error TS2322: Type 'string' is not assignable to type '{ width: number; height: number; density: number; }'.
+lib/hooks/use-elevation.ts(131,80): error TS2339: Property 'platform' does not exist on type 'UseThemeReturn'.
+lib/hooks/use-elevation.ts(132,7): error TS2740: Type 'UseThemeReturn' is missing the following properties from type 'ThemeContext': mode, platform, contrast, motion, and 2 more.
+lib/hooks/use-elevation.ts(155,7): error TS2353: Object literal may only specify known properties, and 'offsetX' does not exist in type 'ElevationShadowValues'.
+lib/hooks/use-elevation.ts(204,52): error TS2339: Property 'platform' does not exist on type 'UseThemeReturn'.
+lib/hooks/use-elevation.ts(209,39): error TS2345: Argument of type '{ level: ElevationLevel; size: ComponentSize; variant: ElevationVariant; platform: any; themeContext: UseThemeReturn; accessibility: { ...; }; }[]' is not assignable to parameter of type 'ElevationContext[]'.
+  Type '{ level: ElevationLevel; size: ComponentSize; variant: ElevationVariant; platform: any; themeContext: UseThemeReturn; accessibility: { ...; }; }' is not assignable to type 'ElevationContext'.
+    Types of property 'themeContext' are incompatible.
+      Type 'UseThemeReturn' is missing the following properties from type 'ThemeContext': mode, platform, contrast, motion, and 2 more.
+lib/hooks/use-elevation.ts(219,5): error TS2740: Type 'UseThemeReturn' is missing the following properties from type 'ThemeContext': mode, platform, contrast, motion, and 2 more.
+lib/hooks/usePerformance.ts(92,38): error TS2339: Property 'tokenMetrics' does not exist on type 'PerformanceReport'.
+lib/hooks/usePerformance.ts(92,58): error TS7006: Parameter 'metric' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(100,51): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(100,56): error TS7006: Parameter 'm' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(101,56): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(101,61): error TS7006: Parameter 'm' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(102,47): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(102,52): error TS7006: Parameter 'm' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(103,29): error TS2339: Property 'summary' does not exist on type 'PerformanceReport'.
+lib/hooks/usePerformance.ts(104,9): error TS2353: Object literal may only specify known properties, and 'slowestTokens' does not exist in type 'PerformanceMetrics'.
+lib/hooks/usePerformance.ts(105,18): error TS7006: Parameter 'a' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(105,21): error TS7006: Parameter 'b' implicitly has an 'any' type.
+lib/hooks/usePerformance.ts(107,16): error TS7006: Parameter 'm' implicitly has an 'any' type.
+lib/hooks/useTheme.ts(12,3): error TS2305: Module '"../theme-contracts"' has no exported member 'ComponentSpacingContext'.
+lib/hooks/useTheme.ts(13,3): error TS2305: Module '"../theme-contracts"' has no exported member 'ComponentBorderRadiusContext'.
+lib/hooks/useTheme.ts(14,3): error TS2305: Module '"../theme-contracts"' has no exported member 'SpacingValues'.
+lib/hooks/useTheme.ts(15,3): error TS2305: Module '"../theme-contracts"' has no exported member 'BorderRadiusValues'.
+lib/hooks/useTheme.ts(16,3): error TS2305: Module '"../theme-contracts"' has no exported member 'SpacingSize'.
+lib/hooks/useTheme.ts(17,3): error TS2724: '"../theme-contracts"' has no exported member named 'ComponentType'. Did you mean 'ComponentState'?
+lib/hooks/useTheme.ts(18,3): error TS2305: Module '"../theme-contracts"' has no exported member 'BorderRadiusVariant'.
+lib/hooks/useTheme.ts(19,3): error TS2305: Module '"../theme-contracts"' has no exported member 'BorderRadiusCorner'.
+lib/hooks/useTheme.ts(21,10): error TS2305: Module '"../providers/ThemeProvider"' has no exported member 'ThemeProviderContext'.
+lib/hooks/useTheme.ts(118,11): error TS2339: Property 'context' does not exist on type '{}'.
+lib/hooks/useTheme.ts(118,20): error TS2339: Property 'resolver' does not exist on type '{}'.
+lib/hooks/useTheme.ts(118,30): error TS2339: Property 'updateContext' does not exist on type '{}'.
+lib/hooks/useTheme.ts(175,47): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(178,47): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(181,45): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(184,48): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(191,50): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(194,56): error TS2554: Expected 2 arguments, but got 3.
+lib/hooks/useTheme.ts(197,64): error TS2554: Expected 3 arguments, but got 4.
+lib/hooks/useTheme.ts(213,5): error TS2322: Type '{ getOuter: (size: SpacingSize, component: ComponentType, spacingContext?: ComponentSpacingContext) => string; getInner: (size: SpacingSize, component: ComponentType, spacingContext?: ComponentSpacingContext) => string; getGap: (size: SpacingSize, component: ComponentType, spacingContext?: ComponentSpacingContext) =...' is not assignable to type '{ getOuter: (size: SpacingSize, component: ComponentType, context?: any) => number; getInner: (size: SpacingSize, component: ComponentType, context?: any) => number; getGap: (size: SpacingSize, component: ComponentType, context?: any) => number; getValues: (size: SpacingSize, component: ComponentType, context?: any)...'.
+  The types returned by 'getOuter(...)' are incompatible between these types.
+    Type 'string' is not assignable to type 'number'.
+lib/hooks/useTheme.ts(214,5): error TS2322: Type '{ get: (variant: BorderRadiusVariant, component: ComponentType, radiusContext?: ComponentBorderRadiusContext) => string; getValues: (variant: BorderRadiusVariant, component: ComponentType, radiusContext?: ComponentBorderRadiusContext) => BorderRadiusValues; getCorner: (variant: BorderRadiusVariant, corner: BorderRad...' is not assignable to type '{ get: (variant: BorderRadiusVariant, component: ComponentType, context?: any) => number; getValues: (variant: BorderRadiusVariant, component: ComponentType, context?: any) => BorderRadiusValues; getCorner: (variant: BorderRadiusVariant, corner: BorderRadiusCorner, component: ComponentType, context?: any) => number;...'.
+  The types returned by 'get(...)' are incompatible between these types.
+    Type 'string' is not assignable to type 'number'.
+lib/hooks/useTheme.ts(368,3): error TS2322: Type '{ [x: string]: ...; }' is not assignable to type 'Record<keyof T, string>'.
+lib/hooks/useTheme.ts(386,12): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+lib/hooks/useTheme.ts(404,12): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+lib/index.ts(18,15): error TS2724: '"./providers/ThemeProvider"' has no exported member named 'ThemeProviderProps'. Did you mean 'ThemeProvider'?
+lib/index.ts(44,1): error TS2308: Module './theme-contracts' has already exported a member named 'getContrastRatio'. Consider explicitly re-exporting to resolve the ambiguity.
+lib/index.ts(44,1): error TS2308: Module './theme-contracts' has already exported a member named 'meetsWCAGContrast'. Consider explicitly re-exporting to resolve the ambiguity.
+lib/index.ts(44,1): error TS2308: Module './theme-contracts' has already exported a member named 'oklch'. Consider explicitly re-exporting to resolve the ambiguity.
+lib/overrides/fallback-system.ts(361,26): error TS2339: Property 'contrastRequirements' does not exist on type 'WCAGValidationConfig'.
+lib/overrides/fallback-system.ts(599,42): error TS2339: Property 'mode' does not exist on type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+lib/overrides/fallback-system.ts(617,9): error TS2554: Expected 3-4 arguments, but got 1.
+lib/overrides/fallback-system.ts(622,7): error TS2322: Type 'string | OKLCHColor' is not assignable to type 'OKLCHColor'.
+  Type 'string' is not assignable to type 'OKLCHColor'.
+lib/overrides/fallback-system.ts(745,23): error TS2554: Expected 3-4 arguments, but got 1.
+lib/overrides/fallback-system.ts(746,55): error TS2345: Argument of type 'string' is not assignable to parameter of type 'OKLCHColor'.
+lib/overrides/fallback-system.ts(766,23): error TS2554: Expected 3-4 arguments, but got 1.
+lib/overrides/fallback-system.ts(767,47): error TS2345: Argument of type 'string' is not assignable to parameter of type 'OKLCHColor'.
+lib/overrides/fallback-system.ts(770,66): error TS2345: Argument of type 'string' is not assignable to parameter of type 'OKLCHColor'.
+lib/providers/ThemeProvider.tsx(263,23): error TS2554: Expected 1 arguments, but got 0.
+lib/testing/TokenValidator.ts(8,3): error TS2305: Module '"../theme-contracts"' has no exported member 'TokenPath'.
+lib/testing/TokenValidator.ts(9,3): error TS2305: Module '"../theme-contracts"' has no exported member 'ResolvedTokenValue'.
+lib/testing/TokenValidator.ts(13,3): error TS2305: Module '"../theme-contracts/validation"' has no exported member 'validateThemeContext'.
+lib/testing/TokenValidator.ts(14,3): error TS2305: Module '"../theme-contracts/validation"' has no exported member 'validateCSSColor'.
+lib/testing/TokenValidator.ts(15,3): error TS2305: Module '"../theme-contracts/validation"' has no exported member 'validateCSSValue'.
+lib/testing/TokenValidator.ts(16,3): error TS2305: Module '"../theme-contracts/validation"' has no exported member 'checkWCAGContrast'.
+lib/testing/TokenValidator.ts(205,34): error TS2554: Expected 2 arguments, but got 1.
+lib/testing/TokenValidator.ts(222,57): error TS2339: Property 'value' does not exist on type 'TokenContract<any>'.
+lib/testing/TokenValidator.ts(529,49): error TS2339: Property 'accessibility' does not exist on type 'TokenContract<any>'.
+lib/testing/TokenValidator.ts(530,40): error TS2339: Property 'accessibility' does not exist on type 'TokenContract<any>'.
+lib/theme-contracts/contracts.ts(17,18): error TS2430: Interface 'ExtendedThemeContext' incorrectly extends interface 'ThemeContext'.
+  Types of property 'platform' are incompatible.
+    Type '{ type: "web" | "desktop" | "mobile" | "tv"; os: "ios" | "android" | "windows" | "macos" | "linux" | "unknown"; device: "desktop" | "watch" | "tv" | "phone" | "tablet"; screenSize: "xs" | ... 4 more ... | "xxl"; pixelDensity: number; hasTouch: boolean; hasKeyboard: boolean; hasMouse: boolean; }' is not assignable to type 'Platform'.
+lib/theme-contracts/utils.ts(203,5): error TS2741: Property 'prefersReducedData' is missing in type '{ reducedMotion: false; highContrast: false; largeText: false; }' but required in type '{ reducedMotion: boolean; highContrast: boolean; largeText: boolean; prefersReducedData: boolean; }'.
+lib/tokens/contracts/colors.ts(67,5): error TS2353: Object literal may only specify known properties, and 'contrastRequirement' does not exist in type '{ minContrast?: number | undefined; wcagLevel?: "AAA" | "AA" | undefined; }'.
+lib/tokens/contracts/colors.ts(104,5): error TS2353: Object literal may only specify known properties, and 'contrastRequirement' does not exist in type '{ minContrast?: number | undefined; wcagLevel?: "AAA" | "AA" | undefined; }'.
+lib/tokens/elevation.ts(357,38): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+lib/tokens/elevation.ts(358,41): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+lib/tokens/elevation.ts(359,40): error TS2322: Type 'ElevationLevel' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+  Type '0' is not assignable to type '1 | 2 | 5 | 3 | 4'.
+lib/tokens/elevation.ts(390,33): error TS2339: Property 'css' does not exist on type 'ShadowParameters'.
+lib/utils/batch-processor.ts(131,60): error TS2345: Argument of type 'BatchOperation<T, R>[]' is not assignable to parameter of type '(BatchOperation<T, R> & { resolve: Function; reject: Function; })[]'.
+  Type 'BatchOperation<T, R>' is not assignable to type 'BatchOperation<T, R> & { resolve: Function; reject: Function; }'.
+    Type 'BatchOperation<T, R>' is missing the following properties from type '{ resolve: Function; reject: Function; }': resolve, reject
+lib/utils/performance.ts(28,11): error TS2564: Property 'metrics' has no initializer and is not definitely assigned in the constructor.
+lib/utils/performance.ts(430,35): error TS2673: Constructor of class 'PerformanceMonitor' is private and only accessible within the class declaration.
+pages/demo/comprehensive-showcase.tsx(16,34): error TS2724: '"../../lib/color/oklch"' has no exported member named 'generateColorPalette'. Did you mean 'generateOKLCHPalette'?
+pages/demo/comprehensive-showcase.tsx(74,9): error TS2739: Type '{ mode: "light" | "dark" | "high-contrast"; platform: "web" | "ios" | "android"; accessibility: { mode: "high-contrast" | "standard" | "low-vision"; reducedMotion: false; highContrast: boolean; colorBlindness: null; }; user: { ...; }; environment: { ...; }; }' is missing the following properties from type 'ThemeContext': contrast, motion, viewport
+pages/demo/comprehensive-showcase.tsx(191,37): error TS2554: Expected 3-4 arguments, but got 1.
+pages/demo/comprehensive-showcase.tsx(191,37): error TS2322: Type 'string' is not assignable to type 'OKLCHColor'.
+pages/demo/comprehensive-showcase.tsx(897,19): error TS2353: Object literal may only specify known properties, and 'contrastRequirements' does not exist in type 'WCAGValidationConfig'.
+pages/demo/context.tsx(8,6): error TS2741: Property 'config' is missing in type '{ children: Element; }' but required in type 'ThemeProviderProps'.
+pages/demo/elevation.tsx(3,10): error TS2614: Module '"../../components/Layout"' has no exported member 'Layout'. Did you mean to use 'import Layout from "../../components/Layout"' instead?
+pages/demo/elevation.tsx(5,10): error TS2614: Module '"../../components/demos/elevation-demo"' has no exported member 'ElevationDemo'. Did you mean to use 'import ElevationDemo from "../../components/demos/elevation-demo"' instead?
+pages/demo/elevation.tsx(9,6): error TS2741: Property 'config' is missing in type '{ children: Element; }' but required in type 'ThemeProviderProps'.
+pages/demo/index.tsx(4,10): error TS2305: Module '"../../lib/components/ThemeExample"' has no exported member 'ThemeExample'.
+pages/demo/index.tsx(9,6): error TS2741: Property 'config' is missing in type '{ children: Element; }' but required in type 'ThemeProviderProps'.
+pages/demo/index.tsx(142,20): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(151,21): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(178,20): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(187,21): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(214,20): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(223,21): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(250,20): error TS2304: Cannot find name 'Link'.
+pages/demo/index.tsx(259,21): error TS2304: Cannot find name 'Link'.
+pages/demo/tokens.tsx(3,10): error TS2614: Module '"../../components/Layout"' has no exported member 'Layout'. Did you mean to use 'import Layout from "../../components/Layout"' instead?
+pages/demo/tokens.tsx(7,62): error TS2307: Cannot find module '../../lib/tokens' or its corresponding type declarations.
+pages/demo/tokens.tsx(30,45): error TS2339: Property 'resolveToken' does not exist on type 'ContextResolver'.
+pages/demo/tokens.tsx(42,45): error TS2339: Property 'resolveToken' does not exist on type 'ContextResolver'.
+pages/demo/tokens.tsx(54,45): error TS2339: Property 'resolveToken' does not exist on type 'ContextResolver'.
+pages/demo/tokens.tsx(264,48): error TS2339: Property 'name' does not exist on type 'Platform'.
+  Property 'name' does not exist on type '"web"'.
+pages/demo/tokens.tsx(416,35): error TS2339: Property 'name' does not exist on type 'Platform'.
+  Property 'name' does not exist on type '"web"'.
+pages/demo/tokens.tsx(416,59): error TS2339: Property 'version' does not exist on type 'Platform'.
+  Property 'version' does not exist on type '"web"'.
+pages/demo/tokens.tsx(423,26): error TS2339: Property 'theme' does not exist on type 'ThemeContext'.
+pages/demo/tokens.tsx(487,6): error TS2741: Property 'config' is missing in type '{ children: Element; }' but required in type 'ThemeProviderProps'.
+playwright.config.ts(59,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'mode' does not exist in type '{ animations?: "allow" | "disabled" | undefined; caret?: "initial" | "hide" | undefined; maxDiffPixels?: number | undefined; maxDiffPixelRatio?: number | undefined; scale?: "css" | "device" | undefined; stylePath?: string | ... 1 more ... | undefined; threshold?: number | undefined; pathTemplate?: string | undefined...'.
+      Object literal may only specify known properties, and 'reducedMotion' does not exist in type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.
+playwright.config.ts(127,9): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'mode' does not exist in type '{ animations?: "allow" | "disabled" | undefined; caret?: "initial" | "hide" | undefined; maxDiffPixels?: number | undefined; maxDiffPixelRatio?: number | undefined; scale?: "css" | "device" | undefined; stylePath?: string | ... 1 more ... | undefined; threshold?: number | undefined; pathTemplate?: string | undefined...'.
+      Object literal may only specify known properties, and 'reducedMotion' does not exist in type 'UseOptions<PlaywrightTestOptions & CustomProperties<unknown>, PlaywrightWorkerOptions & CustomProperties<unknown>>'.

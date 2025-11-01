@@ -71,7 +71,7 @@ export function TaskCategorySelector({
         </Badge>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-auto p-2 sm:min-w-[200px]" 
+        className="w-auto p-2 sm:min-w-[200px] z-50" 
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
@@ -118,4 +118,4 @@ export function TaskCategorySelector({
       </PopoverContent>
     </Popover>
   );
-} 
+}

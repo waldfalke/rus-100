@@ -1,3 +1,5 @@
+// Code Contracts: PENDING
+// @token-status: COMPLETED (Minor hardcoded padding/icon sizes, otherwise uses tokens)
 "use client"
 
 import * as React from "react"

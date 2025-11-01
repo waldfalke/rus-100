@@ -26,3 +26,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 *storybook.log
+
+# E2E Testing
+/test-results/
+/playwright-report/
+/.features-gen/
+/tests/e2e/generated-steps.ts
+
+.vercel

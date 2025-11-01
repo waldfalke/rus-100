@@ -3,23 +3,13 @@
 
 // @token-status: COMPLETED
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { H2 } from "@/components/ui/typography";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Data based on FC-001 Selectable Exam Text contract
 const prototypeTexts = [
@@ -119,6 +109,7 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
   const [selectedTextId, setSelectedTextId] = useState<string>(prototypeTexts[0].id);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false); // Collapsible state, по умолчанию свернут
 
   useEffect(() => {
     // Имитируем загрузку данных
@@ -145,6 +136,42 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
 
   const handleValueChange = (value: string) => {
     setSelectedTextId(value);
+  };
+
+  // Функция для получения превью текста (первая строка полностью + начало второй)
+  const getTextPreview = (text: string) => {
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    if (lines.length === 0) return '';
+    
+    const maxLength = 300; // Увеличиваем лимит до 300 символов
+    
+    // Если есть только одна строка
+    if (lines.length === 1) {
+      const firstLine = lines[0];
+      if (firstLine.length <= maxLength) {
+        return firstLine;
+      }
+      return firstLine.substring(0, maxLength) + '...';
+    }
+    
+    // Если есть несколько строк, показываем первую полностью + начало второй
+    const firstLine = lines[0];
+    const secondLine = lines[1] || '';
+    
+    const combined = firstLine + ' ' + secondLine;
+    
+    if (combined.length <= maxLength) {
+      return combined + (lines.length > 2 ? '...' : '');
+    }
+    
+    // Если даже первая строка длиннее лимита, обрезаем её
+    if (firstLine.length >= maxLength) {
+      return firstLine.substring(0, maxLength) + '...';
+    }
+    
+    // Показываем первую строку + часть второй
+    const remainingLength = maxLength - firstLine.length - 1; // -1 для пробела
+    return firstLine + ' ' + secondLine.substring(0, remainingLength) + '...';
   };
 
   if (isLoading) {
@@ -202,12 +229,49 @@ export const SelectableExamText: React.FC<SelectableExamTextProps> = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[300px] w-full rounded-md border p-4 whitespace-pre-line text-base">
-          {selectedText?.content || "Текст не выбран."}
-        </ScrollArea>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div>
+            {/* Превью текста в свернутом состоянии */}
+            {!isOpen && (
+              <ScrollArea className="h-auto w-full whitespace-pre-line text-sm text-muted-foreground mb-3 mt-0 p-0">
+                <div className="p-0 mt-0 mx-0 leading-tight">
+                  {selectedText ? getTextPreview(selectedText.content) : "Текст не выбран."}
+                </div>
+              </ScrollArea>
+            )}
+            
+            {/* Полный текст в развернутом состоянии */}
+            <CollapsibleContent className="transition-all duration-300 ease-in-out pt-0 -mt-4">
+              <ScrollArea className="h-[300px] w-full whitespace-pre-line text-sm text-muted-foreground mb-3 mt-0 p-0">
+                <div className="p-0 mt-0 mx-0 leading-tight">
+                  {selectedText?.content || "Текст не выбран."}
+                </div>
+              </ScrollArea>
+            </CollapsibleContent>
+            
+            {/* Кнопка для разворачивания/сворачивания с текстом и иконкой */}
+            <div className="flex justify-start">
+              <CollapsibleTrigger asChild>
+                <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-all duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-1 focus-visible:ring-ring gap-1 leading-tight text-muted-foreground hover:bg-accent hover:text-accent-foreground border border-transparent h-6 px-2 text-xs">
+                  {isOpen ? (
+                    <>
+                      <ChevronUp className="size-4 text-muted-foreground transition-transform duration-200" />
+                      <span>Скрыть</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="size-4 text-muted-foreground transition-transform duration-200" />
+                      <span>Показать</span>
+                    </>
+                  )}
+                </button>
+              </CollapsibleTrigger>
+            </div>
+          </div>
+        </Collapsible>
       </CardContent>
     </Card>
   );
 };
 
-export default SelectableExamText; 
+export default SelectableExamText;

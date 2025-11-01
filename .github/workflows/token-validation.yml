@@ -1,0 +1,236 @@
+name: Token Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'lib/tokens/**'
+      - 'lib/theme-contracts/**'
+      - 'lib/color/**'
+      - 'lib/context/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'lib/tokens/**'
+      - 'lib/theme-contracts/**'
+      - 'lib/color/**'
+      - 'lib/context/**'
+
+jobs:
+  validate-tokens:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run token validation
+      run: npm run validate:tokens
+      
+    - name: Upload validation report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: token-validation-report-node-${{ matrix.node-version }}
+        path: |
+          validation-report.json
+          validation-report.xml
+          
+    - name: Comment PR with validation results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            const report = JSON.parse(fs.readFileSync('validation-report.json', 'utf8'));
+            
+            const successRate = (report.summary.successRate * 100).toFixed(1);
+            const status = report.summary.failedValidations === 0 ? '✅' : '❌';
+            
+            const comment = `## ${status} Token Validation Report
+            
+            **Summary:**
+            - Total Validations: ${report.summary.totalValidations}
+            - Success Rate: ${successRate}%
+            - Errors: ${report.summary.totalErrors}
+            - Warnings: ${report.summary.totalWarnings}
+            
+            **Performance:**
+            - Average Validation Time: ${report.performance.averageValidationTime.toFixed(2)}ms
+            - Peak Memory Usage: ${report.performance.peakMemoryUsage.toFixed(2)}MB
+            
+            ${report.summary.failedValidations > 0 ? `
+            **Failed Validations:**
+            ${report.results
+              .filter(r => !r.success)
+              .slice(0, 5) // Show first 5 failures
+              .map(r => `- \`${r.context.tokenPath}\`: ${r.errors.map(e => e.message).join(', ')}`)
+              .join('\n')}
+            ${report.results.filter(r => !r.success).length > 5 ? `\n... and ${report.results.filter(r => !r.success).length - 5} more` : ''}
+            ` : ''}
+            
+            <details>
+            <summary>View full report</summary>
+            
+            \`\`\`json
+            ${JSON.stringify(report, null, 2)}
+            \`\`\`
+            </details>`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.error('Failed to read validation report:', error);
+          }
+
+  visual-regression:
+    runs-on: ubuntu-latest
+    needs: validate-tokens
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+      
+    - name: Run visual regression tests
+      run: npm run test:visual
+      
+    - name: Upload visual test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: visual-test-results
+        path: |
+          test-results/
+          playwright-report/
+          
+    - name: Comment PR with visual test results
+      if: github.event_name == 'pull_request' && failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const comment = `## 📸 Visual Regression Test Results
+          
+          Some visual tests failed. Please review the uploaded artifacts to see the differences.
+          
+          [View detailed report in the Actions tab](${context.payload.repository.html_url}/actions/runs/${context.runId})`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  accessibility-audit:
+    runs-on: ubuntu-latest
+    needs: validate-tokens
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build demo application
+      run: npm run build:demo
+      
+    - name: Run accessibility audit
+      run: npm run audit:a11y
+      
+    - name: Upload accessibility report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: accessibility-audit-report
+        path: accessibility-report.json
+
+  performance-audit:
+    runs-on: ubuntu-latest
+    needs: validate-tokens
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run performance benchmarks
+      run: npm run benchmark:tokens
+      
+    - name: Upload performance report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-benchmark-report
+        path: benchmark-report.json
+        
+    - name: Check performance regression
+      run: |
+        node scripts/check-performance-regression.js
+        
+  publish-reports:
+    runs-on: ubuntu-latest
+    needs: [validate-tokens, visual-regression, accessibility-audit, performance-audit]
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Combine reports
+      run: |
+        mkdir -p combined-reports
+        find . -name "*.json" -exec cp {} combined-reports/ \;
+        find . -name "*.xml" -exec cp {} combined-reports/ \;
+        
+    - name: Upload combined reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: combined-validation-reports
+        path: combined-reports/
+        retention-days: 30

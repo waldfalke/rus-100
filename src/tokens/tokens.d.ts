@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Tue, 06 May 2025 19:25:16 GMT
+ * Generated on Wed, 08 Oct 2025 22:29:51 GMT
  */
 
 export default tokens;
@@ -66,21 +66,9 @@ declare const tokens: {
     },
     "info": {
       "50": DesignToken,
+      "100": DesignToken,
       "500": DesignToken,
       "900": DesignToken
-    },
-    "teal": {
-      "50": DesignToken,
-      "100": DesignToken,
-      "200": DesignToken,
-      "300": DesignToken,
-      "400": DesignToken,
-      "500": DesignToken,
-      "600": DesignToken,
-      "700": DesignToken,
-      "800": DesignToken,
-      "900": DesignToken,
-      "950": DesignToken
     }
   },
   "radius": {
@@ -119,6 +107,14 @@ declare const tokens: {
     "24": DesignToken
   },
   "fontSize": {
+    "xs": DesignToken,
+    "sm": DesignToken,
+    "base": DesignToken,
+    "lg": DesignToken,
+    "xl": DesignToken,
+    "2xl": DesignToken,
+    "3xl": DesignToken,
+    "4xl": DesignToken,
     "app-h1-mobile": DesignToken,
     "app-h1": DesignToken,
     "app-h2-mobile": DesignToken,

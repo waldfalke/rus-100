@@ -1,0 +1,380 @@
+/* Сброс стилей и базовые настройки */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Заголовок страницы */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Основной контент */
+.main-content {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.responsive-table-container {
+    padding: 2rem;
+}
+
+.responsive-table-container h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Контейнер таблицы */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    background: white;
+}
+
+/* Основная таблица - десктопная версия */
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: white;
+}
+
+.responsive-table th,
+.responsive-table td {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+
+.responsive-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.responsive-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.responsive-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.responsive-table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.responsive-table tbody tr:nth-child(even):hover {
+    background-color: #f1f3f4;
+}
+
+/* Колонка студента */
+.student-column {
+    min-width: 200px;
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.responsive-table th.student-column {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 15;
+}
+
+.responsive-table tbody tr:nth-child(even) .student-column {
+    background-color: #fafbfc;
+}
+
+.responsive-table tbody tr:hover .student-column {
+    background-color: #f8f9fa;
+}
+
+.student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.student-email {
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Мобильная версия - карточки */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 10px;
+    }
+    
+    .responsive-table-container {
+        padding: 1rem;
+    }
+    
+    .responsive-table-container h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .table-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+    }
+    
+    .responsive-table,
+    .responsive-table thead,
+    .responsive-table tbody,
+    .responsive-table th,
+    .responsive-table td,
+    .responsive-table tr {
+        display: block;
+    }
+    
+    .responsive-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .responsive-table tr {
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .responsive-table tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .responsive-table td {
+        border: none;
+        position: relative;
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 50px;
+    }
+    
+    .responsive-table td:not(.student-column) {
+        border-top: 1px solid #f1f3f4;
+    }
+    
+    .responsive-table td:before {
+        content: attr(data-label) ":";
+        font-weight: 600;
+        color: #495057;
+        flex-shrink: 0;
+        margin-right: 1rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .responsive-table td.student-column {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .responsive-table td.student-column:before {
+        display: none;
+    }
+    
+    .responsive-table td.student-column .student-info {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .responsive-table td.student-column .student-name {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    
+    .responsive-table td.student-column .student-email {
+        color: rgba(255,255,255,0.9);
+        font-size: 0.85rem;
+    }
+    
+    /* Цветовая схема для разных типов данных */
+    .responsive-table td[data-label="Балл"] {
+        background: linear-gradient(90deg, #e3f2fd, #bbdefb);
+    }
+    
+    .responsive-table td[data-label*="%"] {
+        background: linear-gradient(90deg, #f3e5f5, #e1bee7);
+    }
+    
+    .responsive-table td[data-label="Итоговая"] {
+        background: linear-gradient(90deg, #e8f5e8, #c8e6c9);
+        font-weight: 600;
+    }
+}
+
+/* Планшетная версия */
+@media (min-width: 769px) and (max-width: 1023px) {
+    .responsive-table {
+        font-size: 0.85rem;
+    }
+    
+    .responsive-table th,
+    .responsive-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .student-column {
+        min-width: 180px;
+    }
+    
+    .student-name {
+        font-size: 0.9rem;
+    }
+    
+    .student-email {
+        font-size: 0.75rem;
+    }
+}
+
+/* Большие экраны */
+@media (min-width: 1200px) {
+    .responsive-table {
+        font-size: 1rem;
+    }
+    
+    .responsive-table th,
+    .responsive-table td {
+        padding: 1.25rem 1rem;
+    }
+    
+    .student-column {
+        min-width: 250px;
+    }
+    
+    .page-header h1 {
+        font-size: 3rem;
+    }
+    
+    .responsive-table-container h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Анимации и переходы */
+@media (prefers-reduced-motion: no-preference) {
+    .responsive-table tr,
+    .responsive-table td {
+        transition: all 0.2s ease;
+    }
+    
+    .table-wrapper {
+        transition: box-shadow 0.3s ease;
+    }
+}
+
+/* Темная тема (если поддерживается) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: #ecf0f1;
+    }
+    
+    .main-content {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+    
+    .responsive-table {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+    
+    .responsive-table th,
+    .responsive-table td {
+        border-bottom-color: #34495e;
+    }
+    
+    .responsive-table tbody tr:nth-child(even) {
+        background-color: #34495e;
+    }
+    
+    .responsive-table tbody tr:hover {
+        background-color: #3a4a5c;
+    }
+    
+    .student-column {
+        background: #2c3e50;
+    }
+    
+    .responsive-table tbody tr:nth-child(even) .student-column {
+        background-color: #34495e;
+    }
+    
+    .responsive-table tbody tr:hover .student-column {
+        background-color: #3a4a5c;
+    }
+}

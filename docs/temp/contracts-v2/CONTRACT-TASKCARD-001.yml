@@ -1,0 +1,263 @@
+# CONTRACT-TASKCARD-001.yml
+# Component contract for TaskCard component
+
+id: CONTRACT-TASKCARD-001
+title: "TaskCard Component"
+type: component
+version: 1.0
+complexity_level: simple
+cynefin_domain: Simple
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "rnd/distilled-methodology/contracts/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  TaskCard is a standardized component for displaying a single task/question
+  in the EGE test generator. It shows task information and allows users to
+  adjust the quantity and difficulty level of questions for this task type.
+
+# ============================================================================
+# Props Definition (TypeScript-typed)
+# ============================================================================
+props:
+  required:
+    - name: id
+      type: string
+      description: "Unique identifier for the task"
+    
+    - name: title
+      type: string
+      description: "Display title of the task (e.g., 'Задание №5: Паронимы')"
+    
+    - name: count
+      type: number
+      description: "Current count of selected questions"
+      constraints: "count >= 0 && count <= maxCount"
+    
+    - name: maxCount
+      type: number
+      description: "Maximum allowed questions for this task type"
+      constraints: "maxCount >= 0"
+    
+    - name: difficultyType
+      type: "'none' | 'easy' | 'hard' | 'both'"
+      description: "Type of difficulty selection available"
+    
+    - name: onCountChange
+      type: "(id: string, delta: number) => void"
+      description: "Callback when count changes (+1 or -1)"
+  
+  optional:
+    - name: difficulty
+      type: "'easy' | 'hard' | 'both' | null"
+      default: null
+      description: "Current difficulty selection (required if difficultyType !== 'none')"
+    
+    - name: onDifficultyChange
+      type: "(id: string, difficulty: 'easy' | 'hard' | 'both') => void"
+      default: null
+      description: "Callback when difficulty changes (required if difficultyType !== 'none')"
+    
+    - name: className
+      type: string
+      default: ""
+      description: "Additional CSS classes for customization"
+
+# ============================================================================
+# Component States
+# ============================================================================
+states:
+  - name: "default"
+    description: "Normal interactive state"
+  
+  - name: "count-zero"
+    description: "When count = 0, decrement button is disabled"
+  
+  - name: "count-max"
+    description: "When count = maxCount, increment button is disabled"
+  
+  - name: "no-difficulty"
+    description: "When difficultyType = 'none', difficulty selector is hidden"
+
+# ============================================================================
+# Variants
+# ============================================================================
+variants:
+  - name: "with-difficulty"
+    props:
+      difficultyType: "both"
+      difficulty: "easy"
+    description: "Task card with difficulty selector"
+  
+  - name: "without-difficulty"
+    props:
+      difficultyType: "none"
+    description: "Task card without difficulty options"
+
+# ============================================================================
+# Invariants (MUST always be true)
+# ============================================================================
+invariants:
+  - "count >= 0 && count <= maxCount"
+  - "Decrement button is disabled ⟺ count === 0"
+  - "Increment button is disabled ⟺ count === maxCount"
+  - "Difficulty selector is visible ⟺ difficultyType !== 'none'"
+  - "If difficultyType !== 'none', then difficulty prop must be provided"
+  - "If difficultyType !== 'none', then onDifficultyChange must be provided"
+  - "id and title never change after render"
+
+# ============================================================================
+# Behavior Specifications
+# ============================================================================
+behavior:
+  increment_button:
+    precondition: "count < maxCount"
+    action: "Click increment button"
+    postcondition: "onCountChange(id, 1) called"
+    side_effects:
+      - "count increases by 1"
+      - "Decrement button becomes enabled if was disabled"
+      - "Increment button becomes disabled if count reaches maxCount"
+  
+  decrement_button:
+    precondition: "count > 0"
+    action: "Click decrement button"
+    postcondition: "onCountChange(id, -1) called"
+    side_effects:
+      - "count decreases by 1"
+      - "Increment button becomes enabled if was disabled"
+      - "Decrement button becomes disabled if count reaches 0"
+  
+  difficulty_selector:
+    precondition: "difficultyType !== 'none' && onDifficultyChange provided"
+    action: "Click difficulty selector"
+    postcondition: "onDifficultyChange(id, newDifficulty) called"
+    cycle: "easy → hard → both → easy"
+
+# ============================================================================
+# Accessibility Requirements
+# ============================================================================
+accessibility:
+  - "All buttons have aria-label attributes"
+  - "Disabled buttons have aria-disabled='true'"
+  - "WCAG 2.1 AA contrast ratios for all text"
+  - "Keyboard navigable (Tab, Enter, Space)"
+  - "Screen reader announces count changes"
+
+# ============================================================================
+# Acceptance Criteria (Machine-checkable)
+# ============================================================================
+acceptance_criteria:
+  - name: "TypeScript Compilation"
+    description: "Component props match TypeScript interface"
+    validation: "automated"
+    test: "tsc --noEmit passes"
+  
+  - name: "Props Validation"
+    description: "All required props present and typed correctly"
+    validation: "automated"
+    test: "PropTypes validation in dev mode"
+  
+  - name: "Invariants Hold"
+    description: "All invariants verified in unit tests"
+    validation: "automated"
+    test: "Jest/Vitest tests pass with 100% coverage"
+  
+  - name: "Button States"
+    description: "Increment/decrement buttons disabled at boundaries"
+    validation: "automated"
+    test: "Unit tests verify disabled states"
+  
+  - name: "Callback Invocation"
+    description: "onCountChange and onDifficultyChange called correctly"
+    validation: "automated"
+    test: "Mock callbacks verified in tests"
+  
+  - name: "Accessibility"
+    description: "Component meets WCAG 2.1 AA standards"
+    validation: "automated"
+    test: "axe-core tests pass, keyboard navigation works"
+  
+  - name: "Visual Regression"
+    description: "Component matches design in all states and variants"
+    validation: "automated"
+    test: "Storybook Chromatic tests pass"
+  
+  - name: "Storybook Stories"
+    description: "All variants and states have stories"
+    validation: "manual"
+    test: "Review stories in Storybook"
+
+# ============================================================================
+# Dependencies
+# ============================================================================
+dependencies:
+  - name: "React"
+    version: "^18.0.0"
+    reason: "Component framework"
+  
+  - name: "Tailwind CSS"
+    version: "^3.0.0"
+    reason: "Styling via utility classes"
+  
+  - name: "lucide-react"
+    version: "^0.x.x"
+    reason: "Icons (Plus, Minus)"
+
+# ============================================================================
+# Implementation Files
+# ============================================================================
+implementation:
+  component: "components/ui/TaskCardBlock.tsx"
+  tests: "components/ui/TaskCardBlock.test.tsx"
+  stories: "components/ui/TaskCardBlock.stories.tsx"
+  types: "types/task-card.ts"
+
+# ============================================================================
+# Examples
+# ============================================================================
+examples:
+  basic_usage: |
+    <TaskCard
+      id="task-5"
+      title="Задание №5: Паронимы"
+      count={3}
+      maxCount={5}
+      difficultyType="both"
+      difficulty="easy"
+      onCountChange={(id, delta) => console.log(id, delta)}
+      onDifficultyChange={(id, diff) => console.log(id, diff)}
+    />
+  
+  without_difficulty: |
+    <TaskCard
+      id="task-1"
+      title="Задание №1"
+      count={0}
+      maxCount={10}
+      difficultyType="none"
+      onCountChange={(id, delta) => handleCountChange(id, delta)}
+    />
+
+# ============================================================================
+# Anti-patterns
+# ============================================================================
+anti_patterns:
+  - pattern: "Passing count > maxCount"
+    why_bad: "Violates invariant, breaks UI state"
+    detection: "PropTypes warning, TypeScript error"
+    fix: "Validate in parent component before passing"
+  
+  - pattern: "Missing onDifficultyChange when difficultyType !== 'none'"
+    why_bad: "Difficulty selector won't work"
+    detection: "Runtime error on click"
+    fix: "Always provide callback when difficulty is enabled"
+  
+  - pattern: "Mutating count prop directly"
+    why_bad: "React one-way data flow violation"
+    detection: "Unexpected re-renders"
+    fix: "Use onCountChange callback only"
+
+# End of CONTRACT-TASKCARD-001.yml

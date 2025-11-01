@@ -5,47 +5,34 @@ const { getStyleDictionaryConfig } = require('./style-dictionary.config.js');
 const args = process.argv.slice(2);
 const isWatchMode = args.includes('--watch');
 
-console.log('Build started...');
+// Build for light theme
+console.log('Building light theme...');
+const lightSD = StyleDictionary.extend(getStyleDictionaryConfig('light'));
+lightSD.buildAllPlatforms();
 
-// Создание экземпляров для каждой темы
-['light', 'dark'].forEach(theme => {
-  console.log(`\nProcessing: [${theme}]`);
-  
-  const sd = StyleDictionary.extend(getStyleDictionaryConfig(theme));
-  
-  try {
-    sd.buildAllPlatforms();
-    console.log(`\nCompleted: [${theme}]`);
-  } catch (error) {
-    console.error(`\nError processing theme [${theme}]:`, error);
+// Build for dark theme
+console.log('Building dark theme...');
+const darkSD = StyleDictionary.extend(getStyleDictionaryConfig('dark'));
+darkSD.buildAllPlatforms();
+
+// Build shared types
+console.log('Building shared TypeScript declarations...');
+const sharedSD = StyleDictionary.extend({
+  source: ['tokens/base/**/*.json'],
+  platforms: {
+    ts: {
+      transformGroup: 'js',
+      buildPath: 'dist/',
+      files: [{
+        destination: 'tokens.d.ts',
+        format: 'typescript/es6-declarations'
+      }]
+    }
   }
 });
+sharedSD.buildAllPlatforms();
 
-// Создание единого файла с типами для TypeScript
-console.log('\nGenerating shared TypeScript declarations...');
-
-try {
-  StyleDictionary.extend({
-    source: [
-      'design-system/tokens/base/**/*.json'
-    ],
-    platforms: {
-      typescript: {
-        transformGroup: 'js',
-        buildPath: 'src/tokens/',
-        files: [{
-          destination: 'tokens.d.ts',
-          format: 'typescript/module-declarations'
-        }]
-      }
-    }
-  }).buildAllPlatforms();
-  console.log('Shared TypeScript declarations generated.');
-} catch (error) {
-  console.error('\nError generating shared TypeScript declarations:', error);
-}
-
-console.log('\nBuild completed!');
+console.log('✅ Build complete! All tokens from design-system consolidated.');
 
 // Запуск в режиме watch если указан флаг --watch
 if (isWatchMode) {
@@ -79,4 +66,4 @@ if (isWatchMode) {
     console.log('\nWatch mode requires chokidar. Please install it:');
     console.log('npm install --save-dev chokidar');
   }
-} 
+}

@@ -1,4 +1,5 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Fully tokenized using --component-toggle-* CSS variables)
 "use client"
 
 import * as React from "react"

@@ -1,0 +1,615 @@
+# CONTRACT-METHODOLOGY-REPOSITORY-001.yml
+# Contract for standalone methodology repository (contract-driven-methodology)
+
+id: CONTRACT-METHODOLOGY-REPOSITORY-001
+title: "Standalone Methodology Repository — Multi-Project Knowledge Base"
+type: repository_architecture
+version: 1.0
+created_at: "2025-01-10"
+complexity_level: complicated
+status: specification
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "distilled-methodology/contracts/METACONTRACT.yml"
+  note: "This contract follows Contract-Driven Development principles"
+
+# =============================================================================
+# PROBLEM DOMAIN
+# =============================================================================
+problem_domain:
+  name: "Multi-Project Methodology Reuse & Knowledge Consolidation"
+  
+  cynefin_classification: "Complicated"
+  
+  rationale: |
+    Creating standalone methodology repository is Complicated because:
+    
+    1. MULTIPLE VALID APPROACHES: Git submodule, npm package, Git subtree,
+       monorepo with workspace - each has trade-offs
+    
+    2. EXPERTISE REQUIRED: Understanding Git workflows, versioning strategies,
+       dependency management, documentation structure
+    
+    3. DETERMINISTIC OUTCOMES: When correct approach chosen and applied,
+       results are predictable and replicable
+    
+    This is NOT Complex because solution patterns are well-known and documented.
+  
+  fundamental_challenges:
+    versioning:
+      problem: "Methodology evolves, projects need specific versions"
+      consequence: "Project A may need v1.0, Project B needs v2.0"
+      solution_space: "Semantic versioning + Git tags + stable branches"
+    
+    bidirectional_updates:
+      problem: "Learnings from projects should flow back to methodology"
+      consequence: "Without process, methodology becomes stale"
+      solution_space: "PR workflow from project repos to methodology repo"
+    
+    coupling:
+      problem: "Projects should not break when methodology updates"
+      consequence: "Need isolation + opt-in upgrade path"
+      solution_space: "Lock versions, explicit upgrade PRs"
+    
+    distribution:
+      problem: "How to consume methodology in projects"
+      consequence: "Copy-paste leads to drift and duplication"
+      solution_space: "Git submodule, npm package, or template generation"
+
+# =============================================================================
+# GOVERNING PRINCIPLES
+# =============================================================================
+governing_principles:
+  principle_1_version_stability:
+    statement: "Projects MUST be isolated from methodology changes"
+    rationale: |
+      Methodology updates should not break existing projects.
+      Projects opt-in to updates via explicit version bumps.
+    
+    implementation: "Semantic versioning + Git tags + locked references"
+    
+    violation_consequence: "Methodology update breaks all consuming projects"
+  
+  principle_2_bidirectional_flow:
+    statement: "Knowledge MUST flow both ways (methodology ↔ projects)"
+    rationale: |
+      Methodology improves from real-world usage.
+      Projects contribute learnings back to central knowledge base.
+    
+    implementation: "PR workflow: project learnings → methodology repo"
+    
+    violation_consequence: "Methodology becomes theoretical, disconnected from reality"
+  
+  principle_3_minimal_coupling:
+    statement: "Projects SHOULD depend on methodology, not vice versa"
+    rationale: |
+      Methodology is universal, projects are specific.
+      Dependency arrow: Project → Methodology (not reverse).
+    
+    implementation: "Methodology has zero project-specific references"
+    
+    violation_consequence: "Methodology becomes project-specific, loses universality"
+  
+  principle_4_discoverability:
+    statement: "Methodology MUST be self-documenting and navigable"
+    rationale: |
+      New projects/agents can onboard without external help.
+      Complete documentation within repository.
+    
+    implementation: "README.md + RND-INDEX.md + inline navigation"
+    
+    violation_consequence: "Adoption friction, knowledge silos"
+  
+  principle_5_framework_agnostic:
+    statement: "Methodology SHOULD be framework/stack independent"
+    rationale: |
+      CDD principles apply to React, Vue, Svelte, etc.
+      Field manuals may be framework-specific (but CORE is universal).
+    
+    implementation: "CORE = universal, field-manuals = specializations"
+    
+    violation_consequence: "Limited applicability, fragmentation"
+
+# =============================================================================
+# INVARIANTS (What must always be true)
+# =============================================================================
+invariants:
+  I1_semantic_versioning:
+    statement: "Repository MUST follow semantic versioning (MAJOR.MINOR.PATCH)"
+    rationale: "Projects need predictable upgrade impact assessment"
+    verification: "Git tags match semver pattern: v1.0.0, v1.1.0, v2.0.0"
+    violation_symptom: "Projects cannot determine breaking changes"
+  
+  I2_changelog:
+    statement: "CHANGELOG.md MUST document all notable changes per version"
+    rationale: "Projects need to know what changed before upgrading"
+    verification: "CHANGELOG.md exists with entries per version tag"
+    violation_symptom: "Upgrade decisions made blindly"
+  
+  I3_stable_main:
+    statement: "main branch MUST always be stable and tagged"
+    rationale: "Projects reference main, it must be production-ready"
+    verification: "CI passes on main, all merges via PR + review"
+    violation_symptom: "Projects pull broken methodology"
+  
+  I4_no_project_references:
+    statement: "Methodology MUST NOT reference specific project code/paths"
+    rationale: "Maintains universality and reusability"
+    verification: "Grep for project-specific paths returns empty"
+    violation_symptom: "Methodology unusable in other projects"
+  
+  I5_self_contained:
+    statement: "Repository MUST be runnable standalone (validation scripts work)"
+    rationale: "Can validate contracts/tokens without project context"
+    verification: "npm install && npm test passes in clean clone"
+    violation_symptom: "Cannot validate methodology outside project"
+  
+  I6_navigation_hub:
+    statement: "RND-INDEX.md or equivalent MUST exist as entry point"
+    rationale: "New users/agents can orient themselves"
+    verification: "README.md links to navigation hub"
+    violation_symptom: "Users cannot find relevant documentation"
+
+# =============================================================================
+# IMPLEMENTATION APPROACHES
+# =============================================================================
+implementation_approaches:
+  approach_1_git_submodule:
+    name: "Git Submodule"
+    description: "Add methodology as Git submodule in project"
+    
+    pros:
+      - "Simple: git submodule add <url>"
+      - "Version locked: submodule points to specific commit"
+      - "Bidirectional: can commit changes from within project"
+      - "No npm overhead"
+    
+    cons:
+      - "Git submodule complexity (easy to forget git submodule update)"
+      - "Nested .git/ directories"
+      - "Requires Git knowledge"
+    
+    when_to_use: "Small teams, Git-comfortable, direct methodology editing desired"
+    
+    implementation:
+      project_setup: |
+        cd /path/to/project
+        git submodule add https://github.com/org/contract-driven-methodology.git rnd
+        git submodule update --init --recursive
+      
+      upgrade: |
+        cd rnd
+        git checkout main
+        git pull origin main
+        cd ..
+        git add rnd
+        git commit -m "chore: upgrade methodology to latest"
+      
+      contribute_back: |
+        cd rnd
+        git checkout -b feature/new-pattern
+        # make changes
+        git push origin feature/new-pattern
+        # Open PR on methodology repo
+  
+  approach_2_npm_package:
+    name: "NPM Package (@org/contract-driven-methodology)"
+    description: "Publish methodology as npm package"
+    
+    pros:
+      - "Standard workflow: npm install @org/cdd-methodology"
+      - "Version management via package.json"
+      - "Can postinstall scripts for validation"
+      - "Familiar to JS developers"
+    
+    cons:
+      - "Overhead: need npm registry (public or private)"
+      - "Methodology is code + docs, not typical npm package"
+      - "Harder to contribute back (need to fork)"
+      - "Version lock-in (not live updates)"
+    
+    when_to_use: "Large orgs, npm registry available, version discipline needed"
+    
+    implementation:
+      package_json: |
+        {
+          "name": "@org/cdd-methodology",
+          "version": "1.0.0",
+          "description": "Contract-Driven Development methodology",
+          "main": "index.js",
+          "files": ["distilled-methodology/", "Onboarding/", "*.md"],
+          "scripts": {
+            "validate": "node scripts/validate-all.js"
+          }
+        }
+      
+      project_setup: |
+        npm install @org/cdd-methodology@1.0.0
+        # Methodology in node_modules/@org/cdd-methodology/
+      
+      upgrade: |
+        npm install @org/cdd-methodology@1.1.0
+        npm test  # Verify compatibility
+  
+  approach_3_template_generation:
+    name: "Template Generator (npx create-cdd-project)"
+    description: "Copy methodology into project at creation time"
+    
+    pros:
+      - "Zero runtime dependency"
+      - "Project owns its copy (no external breakage)"
+      - "Can customize without affecting upstream"
+      - "Fast: no git submodule complexity"
+    
+    cons:
+      - "No automatic updates (methodology drifts)"
+      - "Contributing back requires manual diff"
+      - "Duplication across projects"
+    
+    when_to_use: "One-off projects, heavy customization expected, isolation needed"
+    
+    implementation:
+      generator: |
+        npx create-cdd-project my-app
+        # Copies rnd/ into my-app/rnd/
+        # No link to upstream
+      
+      upgrade: "Manual: copy new files from methodology repo"
+  
+  approach_4_monorepo:
+    name: "Monorepo with Workspace"
+    description: "Methodology and projects in same monorepo"
+    
+    pros:
+      - "Single repo = single source of truth"
+      - "Easy cross-references"
+      - "Atomic commits (methodology + project)"
+    
+    cons:
+      - "Tight coupling (violates Principle 3)"
+      - "Methodology becomes org-specific"
+      - "Cannot reuse across organizations"
+    
+    when_to_use: "Single organization, multiple tightly-coupled projects"
+    
+    implementation: "Not recommended for universal methodology"
+
+# =============================================================================
+# RECOMMENDED APPROACH
+# =============================================================================
+recommended_approach:
+  primary: "Git Submodule (Approach 1)"
+  
+  rationale: |
+    Git submodule balances:
+    - Version stability (locked to commit)
+    - Bidirectional flow (can PR from project)
+    - Minimal coupling (external dependency)
+    - Discoverability (standard Git workflow)
+    - Framework agnostic (no npm/build overhead)
+  
+  secondary: "NPM Package (Approach 2) for enterprise"
+  
+  not_recommended:
+    - "Approach 3 (Template): loses bidirectional flow"
+    - "Approach 4 (Monorepo): violates universality principle"
+
+# =============================================================================
+# REPOSITORY STRUCTURE
+# =============================================================================
+repository_structure:
+  name: "contract-driven-methodology"
+  
+  directory_layout: |
+    contract-driven-methodology/
+    ├── README.md                          ← Entry point
+    ├── RND-INDEX.md                       ← Navigation hub
+    ├── CHANGELOG.md                       ← Version history
+    ├── LICENSE                            ← MIT or similar
+    │
+    ├── Onboarding/                        ← Training
+    │   ├── 00-onboarding-exercise.md
+    │   ├── 01-button-simple-domain.md
+    │   ├── 02-scanner-complex-domain.md
+    │   └── 03-e2e-testing-complicated-domain.md
+    │
+    ├── distilled-methodology/             ← CORE
+    │   ├── README.md
+    │   ├── INDEX.md
+    │   ├── contracts/
+    │   │   ├── METACONTRACT.yml
+    │   │   └── CONTRACT-TOKENS-EXAMPLE.yml
+    │   ├── rules/
+    │   │   ├── 00-universal.md
+    │   │   ├── 01-cynefin.md
+    │   │   └── 05-traceability-obligations.md
+    │   ├── workflows/
+    │   ├── templates/
+    │   ├── schemas/
+    │   ├── scripts/
+    │   └── memories/
+    │
+    ├── field-manuals/                     ← Domain specializations
+    │   └── e2e-testing/
+    │       ├── README.md
+    │       ├── CONTRACT.yml
+    │       ├── examples/
+    │       └── success-story/
+    │
+    ├── examples/                          ← Tooling demos
+    │   ├── CLI-WORKFLOW.md
+    │   └── MULTI-AGENT-IMPLEMENTATION.md
+    │
+    ├── SCALING-METHODOLOGY.md             ← Roadmap
+    │
+    ├── package.json                       ← Validation scripts
+    └── .github/
+        └── workflows/
+            ├── validate.yml               ← CI: validate contracts/schemas
+            └── release.yml                ← CI: auto-tag on main merge
+  
+  notes: |
+    - Rename e2e-testing-field-manual/ → field-manuals/e2e-testing/
+    - Move examples/ content under appropriate sections
+    - Remove MASTER_BACKLOG.md (was project-specific)
+
+# =============================================================================
+# USAGE WORKFLOWS
+# =============================================================================
+usage_workflows:
+  workflow_1_new_project:
+    name: "Adding Methodology to New Project"
+    steps:
+      1: "Create new project repo"
+      2: "Add methodology as submodule: git submodule add https://github.com/org/contract-driven-methodology.git rnd"
+      3: "Commit: git commit -m 'chore: add CDD methodology'"
+      4: "Read: rnd/README.md for orientation"
+      5: "Start: rnd/Onboarding/00-onboarding-exercise.md"
+  
+  workflow_2_upgrade_methodology:
+    name: "Upgrading to Newer Methodology Version"
+    steps:
+      1: "Check CHANGELOG: cd rnd && git log --oneline"
+      2: "Choose version: git checkout v1.1.0"
+      3: "Test compatibility: run validation scripts"
+      4: "Commit upgrade: cd .. && git add rnd && git commit -m 'chore: upgrade methodology to v1.1.0'"
+      5: "If breaking: update project code per CHANGELOG"
+  
+  workflow_3_contribute_back:
+    name: "Contributing Learning Back to Methodology"
+    steps:
+      1: "Discover pattern in project work"
+      2: "Document in methodology: cd rnd && git checkout -b feature/new-pattern"
+      3: "Edit: memories/lessons-learned.md or create new field manual"
+      4: "Push: git push origin feature/new-pattern"
+      5: "Open PR on methodology repo"
+      6: "After merge: upgrade submodule in project"
+  
+  workflow_4_field_manual:
+    name: "Creating New Field Manual (e.g., API Design)"
+    steps:
+      1: "Fork methodology repo"
+      2: "Create: field-manuals/api-design/"
+      3: "Write CONTRACT.yml following METACONTRACT.yml"
+      4: "Add examples + success story"
+      5: "Update RND-INDEX.md navigation"
+      6: "PR to main repo"
+      7: "Tag new version: v1.2.0 (MINOR bump)"
+
+# =============================================================================
+# VERSIONING STRATEGY
+# =============================================================================
+versioning_strategy:
+  semantic_versioning:
+    MAJOR: "Breaking changes (CORE principles change, structure refactor)"
+    MINOR: "New features (new field manual, new workflow, new rule)"
+    PATCH: "Fixes (typos, clarifications, example improvements)"
+  
+  git_tags:
+    format: "v1.0.0, v1.1.0, v2.0.0"
+    process: "Tag on main after PR merge + CHANGELOG update"
+  
+  branches:
+    main: "Stable, production-ready, always tagged"
+    develop: "Integration branch (optional, for large changes)"
+    feature/*: "Feature branches, PRs to main"
+  
+  examples:
+    v1.0.0: "Initial release (current state)"
+    v1.1.0: "Add API design field manual (MINOR)"
+    v1.0.1: "Fix typo in METACONTRACT (PATCH)"
+    v2.0.0: "Restructure CORE (move rules/ → principles/) (MAJOR)"
+
+# =============================================================================
+# MIGRATION PLAN
+# =============================================================================
+migration_plan:
+  current_state: "Methodology in rus-100 project: rnd/"
+  target_state: "Standalone repo: contract-driven-methodology"
+  
+  phase_1_extract:
+    duration: "1-2 hours"
+    steps:
+      1: "Create new repo: contract-driven-methodology"
+      2: "Copy rnd/ contents to repo root"
+      3: "Restructure:"
+      4: "  - Rename e2e-testing-field-manual → field-manuals/e2e-testing"
+      5: "  - Delete MASTER_BACKLOG.md (project-specific)"
+      6: "  - Verify RND-INDEX.md links"
+      7: "Add LICENSE (MIT recommended)"
+      8: "Add CHANGELOG.md with v1.0.0 entry"
+      9: "Commit: 'feat: initial methodology extraction from rus-100'"
+      10: "Tag: v1.0.0"
+      11: "Push to GitHub"
+  
+  phase_2_integrate:
+    duration: "30 min"
+    steps:
+      1: "In rus-100: git rm -r rnd/"
+      2: "Add submodule: git submodule add https://github.com/org/contract-driven-methodology.git rnd"
+      3: "Verify links: check imports, references"
+      4: "Commit: 'chore: migrate to standalone methodology repo'"
+      5: "Test: run validation scripts"
+  
+  phase_3_validate:
+    duration: "30 min"
+    steps:
+      1: "Clone fresh rus-100"
+      2: "git submodule update --init"
+      3: "Verify rnd/ populated"
+      4: "Run E2E tests (should pass)"
+      5: "Check navigation (RND-INDEX.md links work)"
+
+# =============================================================================
+# ACCEPTANCE CRITERIA
+# =============================================================================
+acceptance_criteria:
+  AC1_repository_created:
+    description: "Standalone repo exists on GitHub/GitLab"
+    verification: "git clone <url> works"
+  
+  AC2_structure_valid:
+    description: "All essential directories present"
+    verification: "README.md, RND-INDEX.md, Onboarding/, distilled-methodology/, field-manuals/ exist"
+  
+  AC3_navigation_works:
+    description: "All internal links resolve"
+    verification: "Click through RND-INDEX.md links, no 404s"
+  
+  AC4_validation_passes:
+    description: "CI validation succeeds"
+    verification: "npm install && npm test passes"
+  
+  AC5_versioned:
+    description: "Repository properly versioned"
+    verification: "git tag shows v1.0.0, CHANGELOG.md exists"
+  
+  AC6_submodule_integration:
+    description: "Can be added as submodule"
+    verification: "Test project: git submodule add <url> works"
+  
+  AC7_project_agnostic:
+    description: "No rus-100 specific references"
+    verification: "grep -r 'rus-100' returns only in success-story/"
+  
+  AC8_self_documenting:
+    description: "New user can onboard without external help"
+    verification: "Follow README.md → RND-INDEX.md → Onboarding/, succeeds"
+
+# =============================================================================
+# CONSTRAINTS
+# =============================================================================
+constraints:
+  technical:
+    git_version: "Git 2.30+ (for submodule features)"
+    node_version: "Node 18+ (for validation scripts)"
+    repository_size: "<10 MB (no large binaries)"
+  
+  organizational:
+    license: "MIT or Apache 2.0 (open source friendly)"
+    hosting: "GitHub (public or private based on org policy)"
+    access: "Read for all, write for maintainers only"
+  
+  maintenance:
+    review_process: "All PRs require 1 approval"
+    release_cadence: "As needed, no fixed schedule"
+    breaking_changes: "Announce 1 week before MAJOR release"
+
+# =============================================================================
+# SUCCESS METRICS
+# =============================================================================
+success_metrics:
+  adoption:
+    metric: "Number of projects using methodology"
+    target: "≥2 projects within 3 months"
+    measurement: "GitHub submodule dependencies"
+  
+  contributions:
+    metric: "PRs from project repos back to methodology"
+    target: "≥1 contribution per month"
+    measurement: "GitHub PR count from external contributors"
+  
+  stability:
+    metric: "CI pass rate on main branch"
+    target: "100%"
+    measurement: "GitHub Actions success rate"
+  
+  discoverability:
+    metric: "Time for new user to find relevant doc"
+    target: "≤3 minutes"
+    measurement: "User testing feedback"
+
+# =============================================================================
+# ANTI-PATTERNS
+# =============================================================================
+anti_patterns:
+  antipattern_copy_paste:
+    description: "Copying rnd/ into project instead of submodule"
+    why_bad: "Loses bidirectional flow, creates drift"
+    symptoms: "Multiple copies with different content"
+    fix: "Convert to Git submodule or npm package"
+  
+  antipattern_project_specific:
+    description: "Adding project-specific code to methodology"
+    why_bad: "Violates universality, limits reuse"
+    symptoms: "Methodology references project paths/APIs"
+    fix: "Extract universal pattern, document project-specific in project repo"
+  
+  antipattern_no_versioning:
+    description: "Not tagging releases, projects reference 'main'"
+    why_bad: "Methodology update breaks all projects"
+    symptoms: "Projects break on methodology commits"
+    fix: "Implement semantic versioning + Git tags"
+  
+  antipattern_stale_methodology:
+    description: "Methodology not updated with project learnings"
+    why_bad: "Becomes outdated, loses value"
+    symptoms: "Projects solve same problems differently"
+    fix: "Establish PR workflow for contributions"
+
+# =============================================================================
+# FUTURE ENHANCEMENTS
+# =============================================================================
+future_enhancements:
+  enhancement_1_cli:
+    description: "npx cdd-cli validate contracts/"
+    benefit: "Easier validation without project context"
+    complexity: "Medium"
+    timeline: "Q2 2025"
+  
+  enhancement_2_marketplace:
+    description: "Field manual registry/marketplace"
+    benefit: "Community-contributed specializations"
+    complexity: "High"
+    timeline: "Q3 2025"
+  
+  enhancement_3_vscode_extension:
+    description: "VSCode extension for contract editing/validation"
+    benefit: "Real-time validation, autocomplete"
+    complexity: "High"
+    timeline: "Q4 2025"
+
+# =============================================================================
+# NOTES
+# =============================================================================
+notes: |
+  This contract specifies how to extract rnd/ from rus-100 into standalone
+  contract-driven-methodology repository.
+  
+  Key decisions:
+  - Git submodule (not npm package) for simplicity + bidirectional flow
+  - Semantic versioning for predictable upgrades
+  - field-manuals/ structure for domain specializations
+  - Self-contained validation (can run outside project)
+  
+  Implementation is straightforward (Complicated, not Complex).
+  Outcome is deterministic when following this contract.
+
+version_history:
+  - version: "1.0"
+    date: "2025-01-10"
+    status: "Specification"
+    changes: "Initial contract for methodology extraction"
+
+# End of CONTRACT-METHODOLOGY-REPOSITORY-001.yml

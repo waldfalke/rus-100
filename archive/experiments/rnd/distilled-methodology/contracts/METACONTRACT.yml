@@ -1,0 +1,214 @@
+# contracts/METACONTRACT.yml
+# Universal meta-contract for Contract-Driven Development methodology
+
+id: METACONTRACT-001
+title: "Meta-Contract — Rules for Writing Contracts"
+version: 1.0
+created_at: "2025-10-08"
+complexity_level: complex  # Self-referential, governs all contracts
+
+# Self-reference
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "contracts/METACONTRACT.yml"
+  version: "1.0"
+
+summary: |
+  Universal meta-contract defining structure, invariants, conventions and validation
+  rules for all contracts in Contract-Driven Development methodology. This is the
+  single source of truth for authoring, reviewing and validating contracts (YAML)
+  that govern development work.
+
+# --------------------------
+# Contract complexity classification
+# --------------------------
+complexity_levels:
+  simple:
+    description: "Well-understood, deterministic tasks with clear best practices."
+    examples: "Button component, simple validation, file copy"
+    contract_precision: "High - specify exact implementation"
+    required_fields: ["id", "title", "type", "props", "acceptance_criteria"]
+  
+  complicated:
+    description: "Multiple valid approaches, requires expertise but predictable."
+    examples: "Form with validation, data table, token generation"
+    contract_precision: "Medium - specify interface, allow implementation choices"
+    required_fields: ["id", "title", "type", "cynefin_domain", "props", "invariants", "acceptance_criteria"]
+  
+  complex:
+    description: "Emergent outcomes, requires experimentation."
+    examples: "Camera API integration, AI generation, performance optimization"
+    contract_precision: "Low - specify goals, boundaries, invariants only"
+    required_fields: ["id", "title", "type", "cynefin_domain", "invariants", "constraints", "evidence_requirements", "acceptance_criteria"]
+
+# --------------------------
+# Required top-level fields
+# --------------------------
+required_fields:
+  common_to_all:
+    - id               # CONTRACT-NAME-001
+    - title            # Human-readable title
+    - type             # component | section | page | utility | service
+    - version          # Semver or simple version number
+    - meta_contract    # Reference to this file
+    - description      # What this contract defines
+    - acceptance_criteria  # How to verify compliance
+  
+  conditional_on_complexity:
+    simple:
+      - props          # Required and optional props
+      - variants       # Visual variants
+      - states         # Interaction states
+    
+    complicated:
+      - cynefin_domain # Simple | Complicated | Complex
+      - props
+      - invariants     # What must always be true
+      - dependencies   # External dependencies
+    
+    complex:
+      - cynefin_domain
+      - invariants
+      - constraints    # Performance, accessibility goals
+      - dependencies
+      - anti_patterns  # What NOT to do
+      - evidence_requirements
+
+# --------------------------
+# Contract structure rules
+# --------------------------
+structure_rules:
+  - "IDs follow pattern: CONTRACT-<NAME>-<NNN> (e.g., CONTRACT-BUTTON-001)"
+  - "YAML must be valid UTF-8 and YAML 1.2 compliant"
+  - "EVERY contract MUST reference this meta-contract"
+  - "version follows semver or simple incrementing (1.0, 1.1, 2.0)"
+  - "description: multi-line, markdown-friendly"
+  - "acceptance_criteria: machine-checkable items"
+  - "invariants: declarative statements (required for complicated/complex)"
+
+# --------------------------
+# Invariants
+# --------------------------
+base_invariants:
+  all_levels:
+    - "Contract MUST reference METACONTRACT-001"
+    - "No secrets (API keys, credentials) in contracts"
+    - "All file paths must be relative from project root"
+  
+  simple:
+    - "All props must have types"
+    - "All variants must be explicitly defined"
+  
+  complicated:
+    - "All invariants must be testable"
+    - "Dependencies must be explicitly listed"
+  
+  complex:
+    - "Evidence required for all factual claims"
+    - "Anti-patterns must include detection and fix"
+    - "Goals must be measurable"
+
+# --------------------------
+# Acceptance criteria template
+# --------------------------
+acceptance_template:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+
+# --------------------------
+# Templates
+# --------------------------
+templates:
+  component_header: |
+    id: CONTRACT-<NAME>-001
+    title: "<Component Name>"
+    type: component
+    version: 1.0
+    complexity_level: simple | complicated | complex
+    
+    meta_contract:
+      id: "METACONTRACT-001"
+      path: "contracts/METACONTRACT.yml"
+    
+    description: |
+      <What this component does>
+  
+  props_template: |
+    props:
+      required:
+        - name: <propName>
+          type: <TypeScript type>
+          description: <Description>
+      optional:
+        - name: <propName>
+          type: <TypeScript type>
+          default: <default value>
+          description: <Description>
+  
+  invariant_template: |
+    invariants:
+      - "<Condition that must ALWAYS be true>"
+
+# --------------------------
+# Anti-patterns
+# --------------------------
+meta_anti_patterns:
+  - pattern: "Vague acceptance criteria (looks good, works well)"
+    why_bad: "Subjective, not verifiable"
+    fix: "Specific, measurable criteria (WCAG AA contrast, all variants in Storybook)"
+  
+  - pattern: "Missing cynefin domain classification"
+    why_bad: "Contract precision mismatched to problem complexity"
+    fix: "Always classify: Simple, Complicated, or Complex"
+  
+  - pattern: "Over-specification in Complex domain"
+    why_bad: "Contract becomes outdated as solution emerges"
+    fix: "Specify goals and boundaries, not implementation"
+  
+  - pattern: "Under-specification in Simple domain"
+    why_bad: "Inconsistent implementations"
+    fix: "Be precise - exact variants, props, states"
+
+# --------------------------
+# Best practices
+# --------------------------
+best_practices:
+  - "Write contract BEFORE implementation"
+  - "Keep contracts focused on single deliverable"
+  - "Prefer machine-checkable criteria"
+  - "Include concrete examples"
+  - "Document anti-patterns (negative examples)"
+  - "Update contract when reality changes (especially Complex domain)"
+  - "Version contracts when breaking changes occur"
+
+# --------------------------
+# Validation rules
+# --------------------------
+validation_rules:
+  - "Contract must parse as valid YAML"
+  - "All required fields present for complexity level"
+  - "All file references use relative paths"
+  - "No circular contract references"
+  - "Acceptance criteria are testable"
+  - "Invariants are declarative statements"
+
+# --------------------------
+# Final acceptance
+# --------------------------
+final_acceptance:
+  - "Contract validates against meta-schema"
+  - "All required fields present"
+  - "Acceptance criteria defined and testable"
+  - "No anti-patterns present"
+  - "Human reviewer approval"
+
+# End of METACONTRACT.yml

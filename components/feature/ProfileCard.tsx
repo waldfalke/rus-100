@@ -40,25 +40,26 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           <Pencil size={16} />
         </Button>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div>
-          <p className="text-sm text-muted-foreground">Имя:</p>
-          <p className="font-medium">{userName}</p>
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">Email владельца:</p>
-          <p className="font-medium">{userEmail}</p>
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">Дата регистрации:</p>
-          <p className="text-app-small leading-normal">{registrationDate}</p>
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">Количество учеников:</p>
-          <p>
-            <span className="text-app-body font-semibold">{currentStudentCount}</span>
-            <span className="text-sm text-muted-foreground"> / {studentLimit}</span>
-          </p>
+      <CardContent>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Имя:</p>
+            <p className="text-sm font-semibold">{userName}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Email владельца:</p>
+            <p className="text-sm font-semibold">{userEmail}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Дата регистрации:</p>
+            <p className="text-sm font-semibold">{registrationDate}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Количество учеников:</p>
+            <p className="text-sm font-semibold">
+              {currentStudentCount} <span className="font-normal text-muted-foreground">/ {studentLimit}</span>
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -23,8 +23,8 @@ export const ProgressPanelBlock: React.FC<ProgressPanelBlockProps> = ({
     <div className="container max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <span className="text-app-caption font-normal text-muted-foreground">Выбрано заданий:</span>
-          <span className="text-app-caption font-semibold text-primary">
+          <span className="text-sm sm:text-base font-normal text-muted-foreground">Выбрано заданий:</span>
+          <span className="text-sm sm:text-base font-semibold text-primary">
             {totalSelected} / {totalLimit}
           </span>
         </div>
@@ -34,7 +34,7 @@ export const ProgressPanelBlock: React.FC<ProgressPanelBlockProps> = ({
         <button
           className={cn(
             "w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90",
-            "px-8 font-medium rounded-md py-2"
+            "px-8 font-medium rounded-md py-2 text-sm sm:text-base"
           )}
           onClick={onCreate}
         >
@@ -43,4 +43,4 @@ export const ProgressPanelBlock: React.FC<ProgressPanelBlockProps> = ({
       </div>
     </div>
   </div>
-); 
+);

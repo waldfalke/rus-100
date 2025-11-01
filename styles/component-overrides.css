@@ -21,7 +21,7 @@ html body [role="tablist"] .rounded-full[role="tab"][data-state="active"] {
 
 /* TabsList container border fix - restore border that gets removed by box-shadow: none */
 html body [role="tablist"] {
-  border: 1px solid hsl(var(--border)) !important;
+  border: none !important;
   box-shadow: none !important;
 }
 
@@ -122,6 +122,16 @@ html body [class*="dropdown-badge"] svg path,
 html body [class*="dropdown"] svg path,
 html body [class*="popover"] svg path {
   stroke: currentColor !important;
+}
+
+/* TabsContent margin override - remove default mt-2 to prevent spacing conflicts */
+html body [role="tabpanel"] {
+  margin-top: 0 !important;
+}
+
+/* Ensure consistent spacing for tab content containers */
+html body [role="tabpanel"] > div {
+  margin-top: 1.5rem !important; /* mt-6 equivalent */
 }
 
 /* Other common components overrides can be added below */

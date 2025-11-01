@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { GroupCard } from "@/components/ui/group-card"
-import { StudentCard } from "@/components/ui/student-card"
-import { StatisticsTable, type StatisticsRow } from "@/components/ui/statistics-table"
-import AirtableStyleTable from "@/components/AirtableStyleTable"
+import { GroupCard } from "@/src/components/ui/group-card"
+import { StudentCard } from "@/src/components/ui/student-card"
+import { StatisticsTable, type StatisticsRow } from "@/src/components/ui/statistics-table"
+import AirtableStyleTable from "@/src/components/AirtableStyleTable"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -204,10 +204,12 @@ export default function DemoPage() {
               {...group}
               isSelected={selectedGroup === group.id}
               onSelect={setSelectedGroup}
-              onEdit={(id) => console.log("Edit group:", id)}
-              onArchive={(id) => console.log("Archive group:", id)}
-              onDuplicate={(id) => console.log("Duplicate group:", id)}
-              onDelete={(id) => console.log("Delete group:", id)}
+              // ОШИБКА: Parameter 'id' implicitly has an 'any' type
+              // ИСПРАВЛЕНИЕ: Добавляем типизацию для параметров функций
+              onEdit={(id: string) => console.log("Edit group:", id)}
+              onArchive={(id: string) => console.log("Archive group:", id)}
+              onDuplicate={(id: string) => console.log("Duplicate group:", id)}
+              onDelete={(id: string) => console.log("Delete group:", id)}
             />
           ))}
         </div>
@@ -243,9 +245,11 @@ export default function DemoPage() {
             <StudentCard
               key={student.id}
               {...student}
-              onEmailClick={(email) => console.log("Email clicked:", email)}
-              onPhoneClick={(phone) => console.log("Phone clicked:", phone)}
-              onTestClick={(testId) => console.log("Test clicked:", testId)}
+              // ОШИБКА: Parameter 'email' implicitly has an 'any' type
+              // ИСПРАВЛЕНИЕ: Добавляем типизацию для параметров функций
+              onEmailClick={(email: string) => console.log("Email clicked:", email)}
+              onPhoneClick={(phone: string) => console.log("Phone clicked:", phone)}
+              onTestClick={(testId: string) => console.log("Test clicked:", testId)}
             />
           ))}
         </div>
@@ -278,11 +282,13 @@ export default function DemoPage() {
         
         <StatisticsTable
           data={demoStatistics}
-          onRowClick={(row) => console.log("Row clicked:", row)}
+          // ОШИБКА: Parameter 'row' implicitly has an 'any' type
+          // ИСПРАВЛЕНИЕ: Добавляем типизацию для параметров функций
+          onRowClick={(row: StatisticsRow) => console.log("Row clicked:", row)}
           onExport={() => console.log("Export clicked")}
-          onViewDetails={(id) => console.log("View details:", id)}
-          onEditStudent={(id) => console.log("Edit student:", id)}
-          onDeleteStudent={(id) => console.log("Delete student:", id)}
+          onViewDetails={(id: string) => console.log("View details:", id)}
+          onEditStudent={(id: string) => console.log("Edit student:", id)}
+          onDeleteStudent={(id: string) => console.log("Delete student:", id)}
         />
       </section>
 

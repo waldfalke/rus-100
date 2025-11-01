@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { TopNavBlock } from "@/components/ui/TopNavBlock";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { StatisticsCard } from "@/components/ui/statistics-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -142,11 +142,10 @@ export default function ResultsPage() {
   });
 
   const navLinks: NavLink[] = [
-    { label: "Дашборд", href: "/dashboard" },
-    { label: "Задания", href: "/tasks" },
-    { label: "Результаты", href: "/results" },
-    { label: "Тесты", href: "/tests" },
-    { label: "Демо", href: "/demo" },
+    { label: 'Главная', href: '/' },
+    { label: 'Тесты', href: '/tests' },
+    { label: 'Все группы', href: '/groups' },
+    { label: 'Профиль', href: '/account' },
   ];
 
   // Моковые данные согласно контракту RES-001
@@ -309,6 +308,34 @@ export default function ResultsPage() {
     }
   ];
 
+  // Данные достижений
+  const achievements = [
+    {
+      id: "1",
+      title: "Первые шаги",
+      description: "Завершили первый тест",
+      icon: "🎯",
+      unlockedAt: "2024-01-15T14:30:00Z",
+      category: "Прогресс"
+    },
+    {
+      id: "2", 
+      title: "Отличник",
+      description: "Набрали 90% или больше в тесте",
+      icon: "⭐",
+      unlockedAt: "2024-01-15T14:30:00Z",
+      category: "Успеваемость"
+    },
+    {
+      id: "3",
+      title: "Настойчивость",
+      description: "Завершили 5 тестов подряд",
+      icon: "💪",
+      unlockedAt: "2024-01-16T10:15:00Z",
+      category: "Прогресс"
+    }
+  ];
+
   // Вспомогательные функции
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -405,6 +432,48 @@ export default function ResultsPage() {
         </Button>
       </div>
     </div>
+  );
+
+  const TestResultCard = ({ result }: { result: DetailedTestResult }) => (
+    <Card className="p-4">
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <h3 className="font-semibold text-lg">{result.studentName}</h3>
+          <p className="text-sm text-muted-foreground">{result.testName}</p>
+        </div>
+        <Badge variant={result.status === 'completed' ? 'default' : 'secondary'}>
+          {getStatusText(result.status)}
+        </Badge>
+      </div>
+      
+      <div className="space-y-2 mb-4">
+        <div className="flex justify-between text-sm">
+          <span>Результат:</span>
+          <span className={`font-semibold ${getScoreColor(result.percentage)}`}>
+            {result.percentage}%
+          </span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span>Сложность:</span>
+          <span className={getDifficultyColor(result.difficulty)}>
+            {getDifficultyText(result.difficulty)}
+          </span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span>Дата:</span>
+          <span>{new Date(result.completedAt).toLocaleDateString('ru-RU')}</span>
+        </div>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <div className="text-xs text-muted-foreground">
+          {result.answers.filter(answer => answer.isCorrect).length}/{result.answers.length} правильных ответов
+        </div>
+        <Button variant="outline" size="sm">
+          Подробнее
+        </Button>
+      </div>
+    </Card>
   );
 
   const ViewModeSelector = () => (
@@ -527,9 +596,9 @@ export default function ResultsPage() {
               {new Date(result.completedAt).toLocaleDateString('ru-RU')}
             </CardDescription>
           </div>
-          <div className={`text-2xl font-bold ${getScoreColor(result.percentage)}`}>
+          <h2 className={`text-2xl font-bold ${getScoreColor(result.percentage)}`}>
             {result.score}/{result.maxScore}
-          </div>
+          </h2>
         </div>
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Badge className={getDifficultyColor(result.difficulty)}>
@@ -581,24 +650,22 @@ export default function ResultsPage() {
   );
 
   return (
-    <div className="font-sans min-h-screen bg-background flex flex-col">
-      <TopNavBlock 
-        userName="Евгений" 
-        userEmail="stribojich@gmail.com" 
-        navLinks={navLinks}
-        onUserClick={() => {}} 
-      />
-
-      <main className="flex-grow pb-20">
-        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h1 className="font-source-serif-pro text-3xl font-bold text-foreground mb-2">
-              Результаты
-            </h1>
-            <p className="text-muted-foreground">
-              Анализ вашего прогресса и достижений в изучении русского языка
-            </p>
-          </div>
+    <PageLayout
+      header={{
+        userName: "Евгений",
+        userEmail: "stribojich@gmail.com",
+        navLinks: navLinks,
+        onUserClick: () => {}
+      }}
+    >
+      <div className="mb-8">
+        <h1 className="font-source-serif-pro text-3xl font-bold text-foreground mb-2">
+          Результаты
+        </h1>
+        <p className="text-muted-foreground">
+          Анализ вашего прогресса и достижений в изучении русского языка
+        </p>
+      </div>
 
           {/* Общая статистика */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -606,9 +673,9 @@ export default function ResultsPage() {
               data={{
                 id: "1",
                 questionNumber: "№1",
-                title: "Средний балл",
-                completedWorkouts: calculateAverageScore(),
-                averageScore: calculateAverageScore(),
+                title: "Отличный результат",
+                completedWorkouts: 84,
+                averageScore: 84,
                 changePercent: 5,
                 level: 3
               }}
@@ -617,8 +684,8 @@ export default function ResultsPage() {
               data={{
                 id: "2",
                 questionNumber: "№2",
-                title: "Тестов пройдено",
-                completedWorkouts: testResults.length,
+                title: "Хороший результат",
+                completedWorkouts: 5,
                 averageScore: 75,
                 changePercent: 2,
                 level: 2
@@ -628,9 +695,9 @@ export default function ResultsPage() {
               data={{
                 id: "3",
                 questionNumber: "№3",
-                title: "Время изучения",
+                title: "Средний результат",
                 completedWorkouts: 47,
-                averageScore: 68,
+                averageScore: 10,
                 changePercent: 8,
                 level: 2
               }}
@@ -639,10 +706,10 @@ export default function ResultsPage() {
               data={{
                 id: "4",
                 questionNumber: "№4",
-                title: "Достижения",
-                completedWorkouts: achievements.length,
-                averageScore: 45,
-                changePercent: 1,
+                title: "Низкий результат",
+                completedWorkouts: 0,
+                averageScore: 0,
+                changePercent: 0,
                 level: 1
               }}
             />
@@ -691,7 +758,7 @@ export default function ResultsPage() {
                       <CardContent>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-4 w-4" />
-                          {new Date(achievement.date).toLocaleDateString('ru-RU')}
+                          {new Date(achievement.unlockedAt).toLocaleDateString('ru-RU')}
                         </div>
                       </CardContent>
                     </Card>
@@ -794,8 +861,6 @@ export default function ResultsPage() {
               </div>
             </TabsContent>
           </Tabs>
-        </div>
-      </main>
-    </div>
+    </PageLayout>
   );
 }

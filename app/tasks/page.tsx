@@ -28,11 +28,10 @@ interface Task {
 
 export default function TasksPage() {
   const navLinks: NavLink[] = [
-    { label: "Дашборд", href: "/dashboard" },
-    { label: "Задания", href: "/tasks" },
-    { label: "Результаты", href: "/results" },
-    { label: "Тесты", href: "/tests" },
-    { label: "Демо", href: "/demo" },
+    { label: 'Главная', href: '/' },
+    { label: 'Тесты', href: '/tests' },
+    { label: 'Все группы', href: '/groups' },
+    { label: 'Профиль', href: '/account' },
   ];
 
   const tasks: Task[] = [
@@ -247,50 +246,70 @@ export default function TasksPage() {
             </TabsList>
 
             <TabsContent value="all" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {tasks.map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {tasks.map(task => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="Грамматика" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTasksByCategory('Грамматика').map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filterTasksByCategory('Грамматика').map(task => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="Лексика" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTasksByCategory('Лексика').map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filterTasksByCategory('Лексика').map(task => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="Чтение" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTasksByCategory('Чтение').map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filterTasksByCategory('Чтение').map(task => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="Произношение" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTasksByCategory('Произношение').map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filterTasksByCategory('Произношение').map(task => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="Письмо" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTasksByCategory('Письмо').map(task => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
+              <div className="min-h-[400px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filterTasksByCategory('Письмо').length > 0 ? (
+                    filterTasksByCategory('Письмо').map(task => (
+                      <TaskCard key={task.id} task={task} />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-muted-foreground text-lg">
+                        Задания по письму скоро появятся
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </TabsContent>
           </Tabs>

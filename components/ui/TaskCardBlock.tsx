@@ -1,10 +1,10 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Uses tokenized Card, Button, Badge components)
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dice3 } from "lucide-react";
-import { TaskCategorySelector } from "@/components/ui/task-category-selector";
 import { CounterControlBlock } from "@/components/ui/CounterControlBlock";
 
 export interface TaskCardBlockProps {

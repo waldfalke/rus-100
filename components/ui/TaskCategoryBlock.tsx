@@ -1,4 +1,5 @@
 // Code Contracts: PENDING
+// @token-status: COMPLETED (Uses all token variables: bg-background, border-border, text-foreground, text-muted-foreground)
 import React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 

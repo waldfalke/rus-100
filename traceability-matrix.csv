@@ -1,0 +1,22 @@
+Task_ID,Contract_ID,Epic_ID,Implementation_Files,Test_Files,Documentation,Status,Last_Verified,Notes
+TOK-001,TD-IMP-002,EPIC-TOKENS,design-system/tokens/base/*.json,-,README-DesignTokens.md,DONE,2024-09-01,Retroactive - base tokens
+TOK-002,TD-IMP-003,EPIC-TOKENS,design-system/tokens/themes/*.json,-,README-DesignTokens.md,DONE,2024-09-02,Retroactive - semantic tokens
+TOK-003,TD-IMP-004,EPIC-TOKENS,design-system/tokens/components/*.json,-,README-DesignTokens.md,DONE,2024-09-03,Retroactive - component tokens
+TOK-010,TD-IMP-004,EPIC-TOKENS,project-docs/token-audit-registry.md,-,README-DesignTokens.md,DONE,2025-01-09,Token migration audit 100% complete
+CMP-001,TD-COMP-001,EPIC-COMPONENTS,components.json;components/ui/*,-,docs/components.md,DONE,2024-09-04,Retroactive - shadcn/ui setup
+CMP-016,TD-COMP-001,EPIC-COMPONENTS,components/ui/alert-dialog.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit for hardcoded values
+CMP-017,TD-COMP-001,EPIC-COMPONENTS,components/ui/breadcrumb.tsx;components/ui/BreadcrumbsBlock.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit breadcrumb components
+CMP-018,TD-COMP-001,EPIC-COMPONENTS,components/ui/menubar.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit menubar component
+CMP-019,TD-COMP-001,EPIC-COMPONENTS,components/ui/navigation-menu.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit navigation-menu component
+CMP-020,TD-COMP-001,EPIC-COMPONENTS,components/ui/pagination.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit pagination component
+CMP-021,TD-COMP-001,EPIC-COMPONENTS,components/ui/select.tsx,-,project-docs/token-audit-registry.md,DONE,2024-09-08,Audit select component
+CMP-022,TD-COMP-001,EPIC-COMPONENTS,components/ui/statistics-card.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit statistics-card component
+CMP-023,TD-COMP-001,EPIC-COMPONENTS,components/ui/TaskCardBlock.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit TaskCardBlock component
+CMP-024,TD-COMP-001,EPIC-COMPONENTS,components/ui/TaskCategoryBlock.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit TaskCategoryBlock component
+CMP-025,TD-COMP-001,EPIC-COMPONENTS,components/ui/theme-toggle.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit theme-toggle component
+CMP-026,TD-COMP-001,EPIC-COMPONENTS,components/ui/toast.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit toast component
+CMP-027,TD-COMP-001,EPIC-COMPONENTS,components/ui/toggle.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit toggle component
+CMP-028,TD-COMP-001,EPIC-COMPONENTS,components/ui/tooltip.tsx,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Audit tooltip component
+CMP-029,TD-COMP-001,EPIC-COMPONENTS,components/ui/*,-,project-docs/token-audit-registry.md,DONE,2025-01-09,Update @token-status annotations
+STB-001,Storybook-Integration-Contract,EPIC-STORYBOOK,.storybook/*,-,project-docs/contracts/storybook/,DONE,2024-09-05,Retroactive - Storybook setup
+TYP-001,typography-contract-rus100,EPIC-TYPOGRAPHY,styles/fonts.css;tailwind.config.ts,-,typography_analysis_report.md,DONE,2024-09-06,Retroactive - typography system

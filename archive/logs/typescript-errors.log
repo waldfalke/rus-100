@@ -1,0 +1,146 @@
+__tests__/accessibility/elevation-a11y.test.ts(111,7): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(111,12): error TS1005: ')' expected.
+__tests__/accessibility/elevation-a11y.test.ts(111,14): error TS1136: Property assignment expected.
+__tests__/accessibility/elevation-a11y.test.ts(113,17): error TS1005: ';' expected.
+__tests__/accessibility/elevation-a11y.test.ts(114,8): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(115,5): error TS1109: Expression expected.
+__tests__/accessibility/elevation-a11y.test.ts(117,6): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(118,3): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(119,1): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,30): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,35): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,46): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,48): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(167,56): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(168,30): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(168,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(168,46): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(168,48): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(168,56): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(169,30): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(169,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(169,46): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(169,48): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(169,56): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(170,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(210,11): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(210,16): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(210,19): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(211,11): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(211,26): error TS1136: Property assignment expected.
+__tests__/accessibility/elevation-a11y.test.ts(211,50): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(212,9): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(213,18): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(213,25): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(214,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(219,11): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(219,16): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(219,19): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(220,11): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(220,26): error TS1136: Property assignment expected.
+__tests__/accessibility/elevation-a11y.test.ts(220,49): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(221,9): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(222,19): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(222,26): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(223,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(256,3): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(256,4): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(263,28): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(263,33): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(263,36): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(264,19): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(264,26): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(265,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(276,28): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(276,33): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(276,36): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(277,16): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(277,25): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(278,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(289,28): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(289,33): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(289,36): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(290,19): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(290,24): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(291,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(340,30): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(340,35): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(340,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(340,40): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(340,50): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(341,22): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(341,28): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(342,21): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,29): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,34): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,41): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,44): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,53): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,56): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,63): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(342,71): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(343,12): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(344,30): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(344,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(344,40): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(344,50): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(345,25): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(345,30): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(346,21): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(346,29): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(346,33): error TS1005: '(' expected.
+__tests__/accessibility/elevation-a11y.test.ts(346,40): error TS1005: ';' expected.
+__tests__/accessibility/elevation-a11y.test.ts(346,48): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(347,12): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(348,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(349,7): error TS1005: ';' expected.
+__tests__/accessibility/elevation-a11y.test.ts(371,30): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(371,35): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(371,38): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(371,40): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(371,51): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(372,23): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(372,32): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(373,12): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(374,24): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(374,34): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(374,42): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(375,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(400,11): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(400,16): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(400,19): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(401,11): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(401,22): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(402,11): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(403,11): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(403,22): error TS1136: Property assignment expected.
+__tests__/accessibility/elevation-a11y.test.ts(403,26): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(404,18): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(404,51): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(404,53): error TS1005: ';' expected.
+__tests__/accessibility/elevation-a11y.test.ts(408,12): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(409,9): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(410,23): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(410,32): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(411,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(425,5): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(425,6): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(426,3): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(426,4): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(526,28): error TS1005: '>' expected.
+__tests__/accessibility/elevation-a11y.test.ts(526,33): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(526,36): error TS1005: ':' expected.
+__tests__/accessibility/elevation-a11y.test.ts(527,20): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(527,25): error TS1005: ',' expected.
+__tests__/accessibility/elevation-a11y.test.ts(528,10): error TS1161: Unterminated regular expression literal.
+__tests__/accessibility/elevation-a11y.test.ts(554,1): error TS1128: Declaration or statement expected.
+__tests__/accessibility/elevation-a11y.test.ts(554,2): error TS1128: Declaration or statement expected.
+pages/demo/context.tsx(8,6): error TS17008: JSX element 'ThemeProvider' has no corresponding closing tag.
+pages/demo/context.tsx(9,8): error TS17008: JSX element 'Layout' has no corresponding closing tag.
+pages/demo/context.tsx(13,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+pages/demo/context.tsx(193,11): error TS17002: Expected corresponding JSX closing tag for 'section'.
+pages/demo/context.tsx(194,9): error TS17002: Expected corresponding JSX closing tag for 'main'.
+pages/demo/context.tsx(196,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+pages/demo/context.tsx(198,32): error TS1005: '</' expected.
+pages/demo/tokens.tsx(177,8): error TS17008: JSX element 'main' has no corresponding closing tag.

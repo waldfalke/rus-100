@@ -8,7 +8,7 @@ import { EditProfileModal } from '@/components/feature/EditProfileModal'; // И�
 import { AccountSelectorDropdown } from '@/components/feature/AccountSelectorDropdown'; // Импорт дропдауна
 import { mockUserData, mockAdminViewingUserData, mockAdminOwnData } from '@/data/mockAccountData'; // Импорт mock данных
 import { TopNavBlock } from "@/components/ui/TopNavBlock"; // Импорт хедера
-import { BreadcrumbsBlock } from "@/components/ui/BreadcrumbsBlock"; // Импорт хлебных крошек
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs"; // Импорт хлебных крошек
 // Импорты для других компонентов (AccountSelectorDropdown) будут добавлены позже
 
 // Define NavLink type mirroring the one in TopNavBlock
@@ -140,12 +140,10 @@ export default function Page() {
 
   // Define navLinks for TopNavBlock
   const navLinks: NavLink[] = [
-    // { label: "Главная", href: "/" }, // Logo links to main page
-    { label: "Дашборд", href: "/dashboard" },
-    { label: "Задания", href: "/tasks" },
-    { label: "Результаты", href: "/results" },
-    { label: "Тесты", href: "/tests" },
-    { label: "Демо", href: "/demo" },
+    { label: 'Главная', href: '/' },
+    { label: 'Тесты', href: '/tests' },
+    { label: 'Все группы', href: '/groups' },
+    { label: 'Профиль', href: '/account' },
   ];
 
   // Define a handler for the user icon click (optional, can be null)
@@ -164,7 +162,7 @@ export default function Page() {
       />
       <main className="flex-grow">
         <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-          <BreadcrumbsBlock items={breadcrumbItems} />
+          <Breadcrumbs items={breadcrumbItems} />
           
           <div className="flex justify-between items-center mb-6">
             <h1 className="font-source-serif-pro text-2xl font-bold">{pageTitle}</h1>

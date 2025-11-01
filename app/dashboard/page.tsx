@@ -413,11 +413,10 @@ export default function DashboardPage() {
   });
 
   const navLinks: NavLink[] = [
-    { label: "Мои группы", href: "/dashboard" },
-    { label: "Задания", href: "/tasks" },
-    { label: "Результаты", href: "/results" },
-    { label: "Тесты", href: "/tests" },
-    { label: "Демо", href: "/demo" },
+    { label: 'Главная', href: '/' },
+    { label: 'Тесты', href: '/tests' },
+    { label: 'Все группы', href: '/groups' },
+    { label: 'Профиль', href: '/account' },
   ];
 
   // Моковые данные для демонстрации

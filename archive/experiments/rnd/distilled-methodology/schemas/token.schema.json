@@ -1,0 +1,266 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://contract-driven.dev/schemas/token.schema.json",
+  "title": "Design Token System",
+  "description": "Schema for design tokens following multi-layer architecture",
+  "type": "object",
+  "required": ["$schema", "tokens"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema for validation"
+    },
+    "tokens": {
+      "type": "object",
+      "description": "Token definitions organized by category",
+      "properties": {
+        "color": {
+          "$ref": "#/definitions/colorTokens"
+        },
+        "typography": {
+          "$ref": "#/definitions/typographyTokens"
+        },
+        "spacing": {
+          "$ref": "#/definitions/spacingTokens"
+        },
+        "sizing": {
+          "$ref": "#/definitions/sizingTokens"
+        },
+        "radius": {
+          "$ref": "#/definitions/radiusTokens"
+        },
+        "shadow": {
+          "$ref": "#/definitions/shadowTokens"
+        },
+        "animation": {
+          "$ref": "#/definitions/animationTokens"
+        },
+        "breakpoint": {
+          "$ref": "#/definitions/breakpointTokens"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "version": {"type": "string"},
+        "layer": {
+          "type": "string",
+          "enum": ["base", "semantic", "component"],
+          "description": "Token layer in the hierarchy"
+        },
+        "description": {"type": "string"}
+      }
+    }
+  },
+  "definitions": {
+    "colorTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^(#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(|rgba\\(|hsl\\(|hsla\\(|\\{color\\..+\\})$"
+                },
+                "description": {"type": "string"},
+                "type": {"const": "color"}
+              }
+            },
+            {
+              "type": "object",
+              "description": "Nested color group"
+            }
+          ]
+        }
+      }
+    },
+    "typographyTokens": {
+      "type": "object",
+      "properties": {
+        "fontFamily": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {"type": "string"},
+                "type": {"const": "fontFamily"}
+              }
+            }
+          }
+        },
+        "fontSize": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^(\\d+(\\.\\d+)?(px|rem|em)|\\{typography\\.fontSize\\..+\\})$"
+                },
+                "type": {"const": "fontSize"}
+              }
+            }
+          }
+        },
+        "fontWeight": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "oneOf": [
+                    {"type": "number", "minimum": 100, "maximum": 900},
+                    {"type": "string", "pattern": "^\\{typography\\.fontWeight\\..+\\}$"}
+                  ]
+                },
+                "type": {"const": "fontWeight"}
+              }
+            }
+          }
+        },
+        "lineHeight": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^(\\d+(\\.\\d+)?(px|rem|%)?|\\{typography\\.lineHeight\\..+\\})$"
+                },
+                "type": {"const": "lineHeight"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "spacingTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^(\\d+(\\.\\d+)?(px|rem)|\\{spacing\\..+\\})$"
+            },
+            "description": {"type": "string"},
+            "type": {"const": "spacing"}
+          }
+        }
+      }
+    },
+    "sizingTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^(\\d+(\\.\\d+)?(px|rem|%|vh|vw)|\\{sizing\\..+\\})$"
+            },
+            "type": {"const": "sizing"}
+          }
+        }
+      }
+    },
+    "radiusTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^(\\d+(\\.\\d+)?(px|rem|%)|\\{radius\\..+\\})$"
+            },
+            "type": {"const": "borderRadius"}
+          }
+        }
+      }
+    },
+    "shadowTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "CSS box-shadow value or reference"
+            },
+            "type": {"const": "boxShadow"}
+          }
+        }
+      }
+    },
+    "animationTokens": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^\\d+ms$"
+                },
+                "type": {"const": "duration"}
+              }
+            }
+          }
+        },
+        "easing": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9-]*$": {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {"type": "string"},
+                "type": {"const": "cubicBezier"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "breakpointTokens": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9-]*$": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^\\d+px$"
+            },
+            "description": {"type": "string"}
+          }
+        }
+      }
+    }
+  }
+}

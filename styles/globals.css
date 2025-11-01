@@ -22,11 +22,11 @@
   html {
     /* 
       Explicitly set base font size using the semantic token. 
-      Ensure --theme-typography-body-default-font-size is correctly defined 
+      Ensure --theme-typography-body-default-fontSize is correctly defined 
       in your generated token files (e.g., styles/tokens.light.css) 
       and resolves to 1rem (16px).
     */
-    font-size: var(--theme-typography-body-default-font-size);
+    font-size: var(--theme-typography-body-default-fontSize);
   }
 
   * {

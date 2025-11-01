@@ -1,0 +1,59 @@
+# Project Structure Example
+# This structure satisfies CONTRACT-E2E-TESTING-001
+
+your-project/
+├── .github/
+│   └── workflows/
+│       └── e2e-tests.yml              # ✅ AC-012: CI/CD configuration
+│
+├── tests/
+│   ├── e2e/                            # ✅ Required: testDir
+│   │   ├── smoke.spec.ts               # ✅ AC-007: Critical flows
+│   │   ├── visual-regression.spec.ts   # ✅ AC-008: Visual baselines
+│   │   ├── responsive.spec.ts          # ✅ AC-009: Responsive tests
+│   │   ├── accessibility.spec.ts       # ✅ CONSTRAINT: A11y tests
+│   │   │
+│   │   └── *.spec.ts-snapshots/        # ✅ INVARIANT: Visual baselines version controlled
+│   │       ├── main-page.png
+│   │       ├── theme-light.png
+│   │       ├── theme-dark.png
+│   │       └── breakpoint-*.png
+│   │
+│   ├── helpers/
+│   │   └── test-utils.ts               # ✅ AC-002: Helper library
+│   │       ├── waitForPageReady()      # ✅ Pattern 1: Loading state
+│   │       ├── prepareForScreenshot()  # ✅ Pattern 3: Visual stability
+│   │       ├── getVisibleElements()    # ✅ Pattern 2: Resilient selectors
+│   │       └── clickSafely()           # ✅ Pattern 4: Error handling
+│   │
+│   └── templates/                      # ✅ AC-011: Patterns documented
+│       ├── README.md
+│       └── QUICK-START-GUIDE.md
+│
+├── playwright-e2e.config.ts            # ✅ AC-001: Separated E2E config
+├── playwright.config.ts                # ✅ Separated BDD config (optional)
+├── package.json                        # ✅ AC-003: NPM scripts
+│
+├── test-results/                       # ✅ INVARIANT: Separate from source
+│   └── e2e/
+│       ├── *.png                       # Screenshots on failure
+│       └── e2e-results.json            # ✅ EVIDENCE: Test results
+│
+└── playwright-report/                  # ✅ EVIDENCE: HTML report
+    └── e2e/
+        └── index.html
+
+
+# ✅ INVARIANT: Test output directories separate from source code
+# ✅ INVARIANT: Visual baselines version controlled (in -snapshots/)
+# ✅ AC-002: Helpers MUST be reusable (in separate directory)
+# ✅ AC-010: Quick Start available (in templates/)
+
+# File count validation:
+# - Config files: 2 (playwright-e2e.config.ts, package.json)
+# - Helper files: 1 (test-utils.ts)
+# - Test files: ≥3 (smoke, visual, responsive minimum)
+# - Visual baselines: ≥3 (.png files)
+# - Documentation: ≥1 (QUICK-START-GUIDE.md)
+
+# Total minimum files for compliance: ~10 files
