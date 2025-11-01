@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(vercel --prod:*)"
+      "Bash(vercel --prod:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(test:*)",
+      "Bash(rmdir:*)"
     ],
     "deny": [],
     "ask": []

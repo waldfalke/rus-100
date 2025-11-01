@@ -33,4 +33,24 @@ next-env.d.ts
 /.features-gen/
 /tests/e2e/generated-steps.ts
 
+# Project cleanup
+/archive/
+/Examples/
+/project-docs/
+/docs/
+/tasks/
+/logs/
+/storybook-static/
+*.log
+*-FINAL-SUMMARY.md
+CONTRACT-REGISTRY.md
+master-backlog.md
+README-DesignTokens.md
+README-design-tokens.md
+TYPESCRIPT_ERRORS.md
+typography_analysis_report.md
+QAT-*.md
+TOK-*.md
+CMP-*.md
+
 .vercel
