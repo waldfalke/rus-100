@@ -1,2 +1,0 @@
-import{j as e}from"./jsx-runtime-DoEZbXM1.js";import{T as r}from"./theme-provider-BNnhpJ4B.js";import"./jsx-runtime-Bw5QeaCk.js";import"./index-DWtqY3O_.js";const s=t=>e.jsx("div",{className:"next-client-wrapper",children:e.jsx(t,{})}),c=[s,t=>e.jsx(r,{attribute:"class",defaultTheme:"light",enableSystem:!1,children:e.jsx(t,{})})],m={actions:{argTypesRegex:"^on[A-Z].*"},controls:{expanded:!0}};export{c as decorators,m as parameters};
-//# sourceMappingURL=preview-BR0HUEmZ.js.map
