@@ -311,8 +311,8 @@ export function getTaskStatisticsByGroupId(groupId: string): Record<string, Stat
         // Создаем mock TestItem для задания
         const mockItem = {
           id: taskId,
-          title: `#${taskId}`,
-          description: `Задание ${taskId}`,
+          title: `№${taskId}`,
+          description: `Задание №${taskId}`,
           content: '',
           type: 'multiple-choice' as const,
           options: [],

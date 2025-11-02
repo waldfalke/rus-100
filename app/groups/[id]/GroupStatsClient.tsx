@@ -59,9 +59,9 @@ const mockGroups = [
     id: "5",
     name: "Развитие речи",
     description: "Практические занятия по развитию устной и письменной речи",
-    status: "archived" as const,
-    participantCount: 20,
-    testsCount: 15,
+    status: "active" as const,
+    participantCount: 31,
+    testsCount: 28,
     createdAt: "2024-01-20T11:20:00Z"
   },
   {
@@ -276,11 +276,11 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
               >
                 Ученики
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="table"
                 className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
               >
-                Таблица результатов
+                Статистика по группе
               </TabsTrigger>
             </TabsList>
 
@@ -352,7 +352,7 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                     <BarChart3 className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Таблица результатов</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Статистика по группе</h3>
                   <p className="text-gray-500 max-w-md">
                     Для этой группы пока нет данных о результатах тестирования.
                   </p>
