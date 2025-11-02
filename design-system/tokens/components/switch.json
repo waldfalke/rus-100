@@ -20,7 +20,7 @@
           "backgroundColor": { "value": "{theme.color.primary.default}", "type": "color" }
         },
         "unchecked": {
-          "backgroundColor": { "value": "{theme.color.input.default}", "type": "color" }
+          "backgroundColor": { "value": "{theme.color.background.muted}", "type": "color" }
         }
       },
       "thumb": {

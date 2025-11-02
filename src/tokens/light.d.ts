@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Tue, 06 May 2025 15:18:25 GMT
+ * Generated on Sat, 01 Nov 2025 23:47:26 GMT
  */
 
 export const ColorPrimary50 : string;
@@ -35,6 +35,7 @@ export const ColorWarning50 : string;
 export const ColorWarning500 : string;
 export const ColorWarning900 : string;
 export const ColorInfo50 : string;
+export const ColorInfo100 : string;
 export const ColorInfo500 : string;
 export const ColorInfo900 : string;
 export const ColorTeal50 : string;
@@ -103,8 +104,15 @@ export const FontSizeXl : string;
 export const FontSize2xl : string;
 export const FontSize3xl : string;
 export const FontSize4xl : string;
-export const FontSize5xl : string;
-export const FontSize6xl : string;
+export const FontSizeAppH1Mobile : string;
+export const FontSizeAppH1 : string;
+export const FontSizeAppH2Mobile : string;
+export const FontSizeAppH2 : string;
+export const FontSizeAppH3Mobile : string;
+export const FontSizeAppH3 : string;
+export const FontSizeAppBody : string;
+export const FontSizeAppSmall : string;
+export const FontSizeAppCaption : string;
 export const FontWeightThin : string;
 export const FontWeightExtralight : string;
 export const FontWeightLight : string;

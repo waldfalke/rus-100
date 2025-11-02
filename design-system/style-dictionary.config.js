@@ -12,6 +12,7 @@ function getStyleDictionaryConfig(theme) {
   return {
     source: [
       'design-system/tokens/base/**/*.json',
+      'design-system/tokens/components/**/*.json',
       `design-system/tokens/themes/${theme}.json`,
     ],
     platforms: {
