@@ -22,21 +22,17 @@ export function useColumnWidths(isMobile: boolean, dependencies: any[] = []) {
 
     // Функция синхронизации ширин колонок
     const syncColumnWidths = () => {
-      // Временно переключаем на auto для измерения реальных ширин
-      headerTable.style.tableLayout = 'auto'
-      bodyTable.style.tableLayout = 'auto'
-
       const headerCells = Array.from(headerTable.querySelectorAll('thead tr:first-child th'))
-      const bodyCells = Array.from(bodyTable.querySelectorAll('tbody tr:first-child td'))
 
-      // Измеряем и берём максимальную ширину для каждой колонки
+      // Устанавливаем фиксированные ширины без измерения
       const widths = headerCells.map((headerCell, idx) => {
-        const headerWidth = headerCell.getBoundingClientRect().width
-        const bodyWidth = bodyCells[idx]?.getBoundingClientRect().width || 0
-        return Math.max(headerWidth, bodyWidth)
+        // Первая колонка (студент) - 200px
+        if (idx === 0) return 200
+        // Остальные колонки - 70px
+        return 70
       })
 
-      // Возвращаем fixed layout
+      // Устанавливаем fixed layout
       headerTable.style.tableLayout = 'fixed'
       bodyTable.style.tableLayout = 'fixed'
 
