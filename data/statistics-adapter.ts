@@ -117,16 +117,41 @@ const mockTaskStats: Record<string, TaskCompletionStats[]> = {
     { taskId: 21, completedStudents: 19, totalStudents: 22, averageScore: 88, changePercent: 4 }
   ],
   '5': [
-    // Развитие речи - практические занятия
-    { taskId: 1, completedStudents: 18, totalStudents: 20, averageScore: 88, changePercent: 4 },
-    { taskId: 2, completedStudents: 17, totalStudents: 20, averageScore: 85, changePercent: 2 },
-    { taskId: 3, completedStudents: 16, totalStudents: 20, averageScore: 82, changePercent: 1 },
-    
-    { taskId: 22, completedStudents: 19, totalStudents: 20, averageScore: 92, changePercent: 6 },
-    { taskId: 23, completedStudents: 15, totalStudents: 20, averageScore: 76, changePercent: -1 },
-    { taskId: 24, completedStudents: 18, totalStudents: 20, averageScore: 89, changePercent: 5 },
-    { taskId: 25, completedStudents: 14, totalStudents: 20, averageScore: 71, changePercent: -2 },
-    { taskId: 26, completedStudents: 17, totalStudents: 20, averageScore: 84, changePercent: 3 }
+    // Работа с текстом (1-3)
+    { taskId: 1, completedStudents: 28, totalStudents: 31, averageScore: 82, changePercent: 3 },
+    { taskId: 2, completedStudents: 26, totalStudents: 31, averageScore: 88, changePercent: 5 },
+    { taskId: 3, completedStudents: 25, totalStudents: 31, averageScore: 79, changePercent: 1 },
+
+    // Нормы (4-8)
+    { taskId: 4, completedStudents: 29, totalStudents: 31, averageScore: 85, changePercent: -4 },
+    { taskId: 5, completedStudents: 22, totalStudents: 31, averageScore: 77, changePercent: 4 },
+    { taskId: 6, completedStudents: 27, totalStudents: 31, averageScore: 82, changePercent: 7 },
+    { taskId: 7, completedStudents: 28, totalStudents: 31, averageScore: 85, changePercent: 3 },
+    { taskId: 8, completedStudents: 24, totalStudents: 31, averageScore: 74, changePercent: 2 },
+
+    // Орфография (9-15)
+    { taskId: 9, completedStudents: 30, totalStudents: 31, averageScore: 91, changePercent: 6 },
+    { taskId: 10, completedStudents: 23, totalStudents: 31, averageScore: 76, changePercent: -2 },
+    { taskId: 11, completedStudents: 21, totalStudents: 31, averageScore: 68, changePercent: -5 },
+    { taskId: 12, completedStudents: 27, totalStudents: 31, averageScore: 84, changePercent: 4 },
+    { taskId: 13, completedStudents: 25, totalStudents: 31, averageScore: 78, changePercent: 1 },
+    { taskId: 14, completedStudents: 26, totalStudents: 31, averageScore: 81, changePercent: 3 },
+    { taskId: 15, completedStudents: 22, totalStudents: 31, averageScore: 71, changePercent: -3 },
+
+    // Пунктуация (16-21)
+    { taskId: 16, completedStudents: 29, totalStudents: 31, averageScore: 87, changePercent: 5 },
+    { taskId: 17, completedStudents: 24, totalStudents: 31, averageScore: 75, changePercent: 0 },
+    { taskId: 18, completedStudents: 20, totalStudents: 31, averageScore: 66, changePercent: -6 },
+    { taskId: 19, completedStudents: 28, totalStudents: 31, averageScore: 86, changePercent: 4 },
+    { taskId: 20, completedStudents: 25, totalStudents: 31, averageScore: 79, changePercent: 2 },
+    { taskId: 21, completedStudents: 26, totalStudents: 31, averageScore: 83, changePercent: 3 },
+
+    // Работа с текстом (22-26)
+    { taskId: 22, completedStudents: 30, totalStudents: 31, averageScore: 92, changePercent: 7 },
+    { taskId: 23, completedStudents: 23, totalStudents: 31, averageScore: 76, changePercent: -1 },
+    { taskId: 24, completedStudents: 28, totalStudents: 31, averageScore: 89, changePercent: 6 },
+    { taskId: 25, completedStudents: 22, totalStudents: 31, averageScore: 73, changePercent: -2 },
+    { taskId: 26, completedStudents: 27, totalStudents: 31, averageScore: 84, changePercent: 4 }
   ]
 };
 
