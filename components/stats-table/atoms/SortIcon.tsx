@@ -12,16 +12,16 @@ interface SortIconProps {
  */
 export function SortIcon({ isActive, direction }: SortIconProps) {
   if (!isActive) {
-    return <ChevronsUpDown className="w-4 h-4 ml-1 text-gray-400" />
+    return <ChevronsUpDown className="w-3 h-3 text-gray-400 flex-shrink-0" />
   }
 
   if (direction === 'asc') {
-    return <ChevronUp className="w-4 h-4 ml-1 text-gray-600" />
+    return <ChevronUp className="w-3 h-3 text-gray-600 flex-shrink-0" />
   }
 
   if (direction === 'desc') {
-    return <ChevronDown className="w-4 h-4 ml-1 text-gray-600" />
+    return <ChevronDown className="w-3 h-3 text-gray-600 flex-shrink-0" />
   }
 
-  return <ChevronsUpDown className="w-4 h-4 ml-1 text-gray-400" />
+  return <ChevronsUpDown className="w-3 h-3 text-gray-400 flex-shrink-0" />
 }

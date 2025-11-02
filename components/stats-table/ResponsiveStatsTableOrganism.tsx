@@ -91,11 +91,11 @@ export default function ResponsiveStatsTableOrganism({
         {!isFullscreen && !isMobile && (
           <button
             onClick={() => setIsFullscreen(true)}
-            className="absolute top-2 right-2 z-30 p-2 bg-background border border-border rounded-md hover:bg-muted transition-colors"
+            className="absolute top-1 right-1 z-30 p-1.5 bg-background/90 border border-border rounded-md hover:bg-muted transition-colors shadow-sm"
             aria-label="Развернуть таблицу"
             title="Развернуть таблицу"
           >
-            <Maximize2 className="w-5 h-5" />
+            <Maximize2 className="w-4 h-4" />
           </button>
         )}
 

@@ -5,6 +5,7 @@
 .responsive-stats-table {
   width: 100%;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .table-scroll-container {
@@ -64,7 +65,12 @@
 
 .desktop-table th,
 .desktop-table td {
-  padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
+  padding: var(--spacing-2, 8px) var(--spacing-3, 12px);
+}
+
+/* Заголовки групп - еще меньше padding */
+.desktop-table thead tr:first-child th {
+  padding: var(--spacing-1, 4px) var(--spacing-2, 8px);
 }
 
 /* Контейнер тела таблицы для скролла */
@@ -90,12 +96,14 @@
 /* Заголовки первого ряда (группы) */
 .desktop-table thead tr:first-child th {
   background: hsl(var(--muted));
-  font-weight: normal;
+  font-weight: 600;
   color: hsl(var(--muted-foreground));
   position: sticky !important;
   top: 0 !important;
   z-index: 15 !important;
   border-bottom: 1px solid hsl(var(--border));
+  font-size: 0.875rem;
+  line-height: 1.2;
 }
 
 /* Темная тема для заголовков */
@@ -116,11 +124,20 @@
 /* === КОЛОНКА СТУДЕНТА === */
 
 .desktop-table .student-column {
-  width: 250px;
-  min-width: 250px;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
   background: hsl(var(--muted));
   text-align: left;
   border-bottom: 1px solid hsl(var(--border));
+}
+
+/* Обычные колонки данных - компактнее */
+.desktop-table th:not(.student-column),
+.desktop-table td:not(.student-column) {
+  min-width: 60px;
+  max-width: 80px;
+  width: 70px;
 }
 
 /* Sticky positioning для колонки студента в thead */
