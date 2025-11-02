@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { HeaderOrganism } from "@/components/ui/HeaderOrganism";
 import { GroupCard } from "@/components/feature/GroupCard";
 import { GroupFilters } from "@/components/feature/GroupFilters";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { H1, P } from "@/components/ui/typography";
 import { 
   fontSize3Xl, 
@@ -31,16 +29,28 @@ const mockGroups = [
     status: "active" as const,
     participantCount: 24,
     testsCount: 8,
-    createdAt: "2024-01-15T10:00:00Z"
+    createdAt: "2024-01-15T10:00:00Z",
+    stats: {
+      averageScore: 78.5,
+      completionRate: 85,
+      activeStudents: 22,
+      recentActivity: "2025-10-28T15:30:00Z"
+    }
   },
   {
-    id: "2", 
+    id: "2",
     name: "Продвинутый русский",
     description: "Курс для студентов среднего и продвинутого уровня. Углубленное изучение грамматики и развитие навыков письма.",
     status: "active" as const,
     participantCount: 18,
     testsCount: 12,
-    createdAt: "2024-02-01T14:30:00Z"
+    createdAt: "2024-02-01T14:30:00Z",
+    stats: {
+      averageScore: 84.2,
+      completionRate: 92,
+      activeStudents: 17,
+      recentActivity: "2025-10-29T10:15:00Z"
+    }
   },
   {
     id: "3",
@@ -58,7 +68,13 @@ const mockGroups = [
     status: "draft" as const,
     participantCount: 0,
     testsCount: 3,
-    createdAt: "2024-03-01T16:45:00Z"
+    createdAt: "2024-03-01T16:45:00Z",
+    stats: {
+      averageScore: 0,
+      completionRate: 0,
+      activeStudents: 0,
+      recentActivity: "2024-03-01T16:45:00Z"
+    }
   },
   {
     id: "5",
@@ -67,7 +83,13 @@ const mockGroups = [
     status: "active" as const,
     participantCount: 31,
     testsCount: 15,
-    createdAt: "2024-01-20T11:20:00Z"
+    createdAt: "2024-01-20T11:20:00Z",
+    stats: {
+      averageScore: 81.7,
+      completionRate: 88,
+      activeStudents: 28,
+      recentActivity: "2025-10-30T14:20:00Z"
+    }
   },
   {
     id: "6",
@@ -76,7 +98,13 @@ const mockGroups = [
     status: "draft" as const,
     participantCount: 15,
     testsCount: 5,
-    createdAt: "2024-02-15T13:00:00Z"
+    createdAt: "2024-02-15T13:00:00Z",
+    stats: {
+      averageScore: 0,
+      completionRate: 0,
+      activeStudents: 0,
+      recentActivity: "2024-02-15T13:00:00Z"
+    }
   }
 ];
 
@@ -154,6 +182,7 @@ function GroupList({ groups, onEdit, onArchive, onDelete, onOpen }: GroupListPro
           participantCount={group.participantCount}
           testsCount={group.testsCount}
           createdAt={group.createdAt}
+          stats={'stats' in group ? group.stats : undefined}
           onEdit={onEdit}
           onArchive={onArchive}
           onDelete={onDelete}
@@ -166,29 +195,27 @@ function GroupList({ groups, onEdit, onArchive, onDelete, onOpen }: GroupListPro
 
 export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("active");
+  const [showArchived, setShowArchived] = useState(false);
   const router = useRouter();
-  
+
   // Фильтрация групп
   const filteredGroups = mockGroups.filter((group) => {
     const matchesSearch = group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (group.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-    
-    const matchesTab = activeTab === "all" || 
-                      (activeTab === "active" && (group.status === "active" || group.status === "draft")) ||
-                      (activeTab === "archived" && group.status === "archived");
-    
-    return matchesSearch && matchesTab;
+
+    // Если showArchived = false, показываем только активные и черновики
+    // Если showArchived = true, показываем все группы (включая архивные)
+    const matchesStatus = showArchived || group.status !== "archived";
+
+    return matchesSearch && matchesStatus;
   });
 
-  // Сортировка групп: черновики всегда вверху в табе "Активные"
+  // Сортировка групп: черновики всегда вверху
   const sortedGroups = [...filteredGroups].sort((a, b) => {
-    if (activeTab === "active") {
-      // В табе "Активные": сначала черновики, потом активные
-      if (a.status === "draft" && b.status !== "draft") return -1;
-      if (a.status !== "draft" && b.status === "draft") return 1;
-    }
-    // Для остальных случаев сортируем по дате создания (новые сверху)
+    // Черновики всегда вверху
+    if (a.status === "draft" && b.status !== "draft") return -1;
+    if (a.status !== "draft" && b.status === "draft") return 1;
+    // Для остальных сортируем по дате создания (новые сверху)
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
@@ -244,38 +271,10 @@ export default function GroupsPage() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             onSearch={handleSearch}
+            showArchived={showArchived}
+            onShowArchivedChange={setShowArchived}
             onCreateGroup={handleCreateGroup}
           />
-        </div>
-
-        {/* Sticky navigation tabs */}
-        <div className="sticky top-0 z-30 bg-muted rounded-t-xl border-b border-border mb-4">
-          <Tabs 
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full max-w-full"
-          >
-            <TabsList className="grid w-full grid-cols-3 gap-1.5 p-1.5 items-center">
-              <TabsTrigger
-                value="active"
-                className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
-              >
-                Активные
-              </TabsTrigger>
-              <TabsTrigger
-                value="archived"
-                className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
-              >
-                Архивные
-              </TabsTrigger>
-              <TabsTrigger
-                value="all"
-                className="font-inter text-app-small leading-5 font-normal py-1.5 px-4 rounded-md transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:hover:bg-primary/90 data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-accent-foreground"
-              >
-                Все
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
 
         {/* Список групп */}

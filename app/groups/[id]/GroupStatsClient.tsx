@@ -121,38 +121,128 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     { id: '15', name: 'Новиков Владимир', email: 'novikov@example.com' }
   ];
 
-  const mockTableColumns = [
-    { key: 'total', label: 'Успехи', type: 'score' as const, sortable: true },
-    { key: 'grammar', label: 'Орфография', type: 'score' as const, sortable: true },
-    { key: 'punctuation', label: 'Пунктуация', type: 'score' as const, sortable: true },
-    { key: 'vocabulary', label: 'Грамматика', type: 'score' as const, sortable: true },
-    { key: 'lexicon', label: 'Лексика', type: 'score' as const, sortable: true },
-    { key: 'style', label: 'Стилистика', type: 'score' as const, sortable: true },
-    { key: 'essay', label: 'Сочинение', type: 'score' as const, sortable: true },
-    { key: 'summary', label: 'Изложение', type: 'score' as const, sortable: true },
-    { key: 'dictation', label: 'Диктант', type: 'score' as const, sortable: true },
-    { key: 'testing', label: 'Тестирование', type: 'score' as const, sortable: true },
-    { key: 'final', label: 'Итоговая', type: 'score' as const, sortable: true }
+  // Новая структура с группами колонок (по примеру из референса)
+  const mockColumnGroups = [
+    {
+      name: 'Работа с текстом',
+      key: 'text-work-1',
+      columns: [
+        { key: 'text1_total', label: 'Всего', type: 'score' as const, sortable: true },
+        { key: 'text1_1', label: '№1', type: 'score' as const, sortable: true },
+        { key: 'text1_2', label: '№2', type: 'score' as const, sortable: true },
+        { key: 'text1_3', label: '№3', type: 'score' as const, sortable: true },
+      ],
+      collapsed: false
+    },
+    {
+      name: 'Нормы',
+      key: 'norms',
+      columns: [
+        { key: 'norms_total', label: 'Всего', type: 'score' as const, sortable: true },
+        { key: 'norms_4', label: '№4', type: 'score' as const, sortable: true },
+        { key: 'norms_5', label: '№5', type: 'score' as const, sortable: true },
+        { key: 'norms_6', label: '№6', type: 'score' as const, sortable: true },
+        { key: 'norms_7', label: '№7', type: 'score' as const, sortable: true },
+        { key: 'norms_8', label: '№8', type: 'score' as const, sortable: true },
+      ],
+      collapsed: false
+    },
+    {
+      name: 'Орфография',
+      key: 'orfography',
+      columns: [
+        { key: 'orf_total', label: 'Всего', type: 'score' as const, sortable: true },
+        { key: 'orf_9', label: '№9', type: 'score' as const, sortable: true },
+        { key: 'orf_10', label: '№10', type: 'score' as const, sortable: true },
+        { key: 'orf_11', label: '№11', type: 'score' as const, sortable: true },
+        { key: 'orf_12', label: '№12', type: 'score' as const, sortable: true },
+        { key: 'orf_13', label: '№13', type: 'score' as const, sortable: true },
+        { key: 'orf_14', label: '№14', type: 'score' as const, sortable: true },
+        { key: 'orf_15', label: '№15', type: 'score' as const, sortable: true },
+      ],
+      collapsed: false
+    },
+    {
+      name: 'Пунктуация',
+      key: 'punctuation',
+      columns: [
+        { key: 'punct_total', label: 'Всего', type: 'score' as const, sortable: true },
+        { key: 'punct_16', label: '№16', type: 'score' as const, sortable: true },
+        { key: 'punct_17', label: '№17', type: 'score' as const, sortable: true },
+        { key: 'punct_18', label: '№18', type: 'score' as const, sortable: true },
+        { key: 'punct_19', label: '№19', type: 'score' as const, sortable: true },
+        { key: 'punct_20', label: '№20', type: 'score' as const, sortable: true },
+        { key: 'punct_21', label: '№21', type: 'score' as const, sortable: true },
+      ],
+      collapsed: false
+    },
+    {
+      name: 'Работа с текстом',
+      key: 'text-work-2',
+      columns: [
+        { key: 'text2_total', label: 'Всего', type: 'score' as const, sortable: true },
+        { key: 'text2_22', label: '№22', type: 'score' as const, sortable: true },
+        { key: 'text2_23', label: '№23', type: 'score' as const, sortable: true },
+        { key: 'text2_24', label: '№24', type: 'score' as const, sortable: true },
+        { key: 'text2_25', label: '№25', type: 'score' as const, sortable: true },
+        { key: 'text2_fraz', label: 'Фразеологизмы', type: 'score' as const, sortable: true },
+        { key: 'text2_26', label: '№26', type: 'score' as const, sortable: true },
+      ],
+      collapsed: false
+    },
   ];
 
-  // Правильная структура данных согласно контракту ResponsiveStatsTable
-  const mockTableData: Record<string, any> = {
-    '1': { 'total': 85, 'grammar': 92, 'punctuation': 88, 'vocabulary': 90, 'lexicon': 85, 'style': 87, 'essay': 89, 'summary': 91, 'dictation': 86, 'testing': 88, 'final': 90 },
-    '2': { 'total': 78, 'grammar': 85, 'punctuation': 82, 'vocabulary': 80, 'lexicon': 75, 'style': 79, 'essay': 81, 'summary': 83, 'dictation': 77, 'testing': 80, 'final': 82 },
-    '3': { 'total': 92, 'grammar': 95, 'punctuation': 94, 'vocabulary': 93, 'lexicon': 91, 'style': 92, 'essay': 94, 'summary': 96, 'dictation': 90, 'testing': 93, 'final': 95 },
-    '4': { 'total': 73, 'grammar': 78, 'punctuation': 75, 'vocabulary': 72, 'lexicon': 70, 'style': 74, 'essay': 76, 'summary': 78, 'dictation': 71, 'testing': 75, 'final': 77 },
-    '5': { 'total': 88, 'grammar': 90, 'punctuation': 89, 'vocabulary': 87, 'lexicon': 86, 'style': 88, 'essay': 90, 'summary': 92, 'dictation': 85, 'testing': 89, 'final': 91 },
-    '6': { 'total': 79, 'grammar': 83, 'punctuation': 76, 'vocabulary': 81, 'lexicon': 78, 'style': 80, 'essay': 82, 'summary': 84, 'dictation': 77, 'testing': 79, 'final': 81 },
-    '7': { 'total': 91, 'grammar': 94, 'punctuation': 89, 'vocabulary': 92, 'lexicon': 90, 'style': 93, 'essay': 91, 'summary': 95, 'dictation': 88, 'testing': 92, 'final': 93 },
-    '8': { 'total': 84, 'grammar': 87, 'punctuation': 82, 'vocabulary': 85, 'lexicon': 83, 'style': 86, 'essay': 84, 'summary': 88, 'dictation': 81, 'testing': 85, 'final': 86 },
-    '9': { 'total': 76, 'grammar': 80, 'punctuation': 74, 'vocabulary': 78, 'lexicon': 75, 'style': 77, 'essay': 79, 'summary': 81, 'dictation': 73, 'testing': 76, 'final': 78 },
-    '10': { 'total': 89, 'grammar': 92, 'punctuation': 87, 'vocabulary': 90, 'lexicon': 88, 'style': 91, 'essay': 89, 'summary': 93, 'dictation': 86, 'testing': 90, 'final': 91 },
-    '11': { 'total': 82, 'grammar': 85, 'punctuation': 80, 'vocabulary': 83, 'lexicon': 81, 'style': 84, 'essay': 82, 'summary': 86, 'dictation': 79, 'testing': 83, 'final': 84 },
-    '12': { 'total': 87, 'grammar': 90, 'punctuation': 85, 'vocabulary': 88, 'lexicon': 86, 'style': 89, 'essay': 87, 'summary': 91, 'dictation': 84, 'testing': 88, 'final': 89 },
-    '13': { 'total': 75, 'grammar': 78, 'punctuation': 73, 'vocabulary': 76, 'lexicon': 74, 'style': 77, 'essay': 75, 'summary': 79, 'dictation': 72, 'testing': 76, 'final': 77 },
-    '14': { 'total': 93, 'grammar': 96, 'punctuation': 91, 'vocabulary': 94, 'lexicon': 92, 'style': 95, 'essay': 93, 'summary': 97, 'dictation': 90, 'testing': 94, 'final': 95 },
-    '15': { 'total': 80, 'grammar': 83, 'punctuation': 78, 'vocabulary': 81, 'lexicon': 79, 'style': 82, 'essay': 80, 'summary': 84, 'dictation': 77, 'testing': 81, 'final': 82 }
+  // Генератор моков данных для группированных колонок
+  const generateStudentData = (studentId: number) => {
+    const baseScore = 60 + (studentId * 2); // Базовый балл от 62 до 90
+    const randomVariation = () => Math.floor(Math.random() * 20) - 10; // ±10
+
+    return {
+      // Работа с текстом 1
+      'text1_total': baseScore + randomVariation(),
+      'text1_1': baseScore + randomVariation(),
+      'text1_2': baseScore + randomVariation(),
+      'text1_3': baseScore + randomVariation(),
+      // Нормы
+      'norms_total': baseScore + randomVariation(),
+      'norms_4': baseScore + randomVariation(),
+      'norms_5': baseScore + randomVariation(),
+      'norms_6': baseScore + randomVariation(),
+      'norms_7': baseScore + randomVariation(),
+      'norms_8': baseScore + randomVariation(),
+      // Орфография
+      'orf_total': baseScore + randomVariation(),
+      'orf_9': baseScore + randomVariation(),
+      'orf_10': baseScore + randomVariation(),
+      'orf_11': baseScore + randomVariation(),
+      'orf_12': baseScore + randomVariation(),
+      'orf_13': baseScore + randomVariation(),
+      'orf_14': baseScore + randomVariation(),
+      'orf_15': baseScore + randomVariation(),
+      // Пунктуация
+      'punct_total': baseScore + randomVariation(),
+      'punct_16': baseScore + randomVariation(),
+      'punct_17': baseScore + randomVariation(),
+      'punct_18': baseScore + randomVariation(),
+      'punct_19': baseScore + randomVariation(),
+      'punct_20': baseScore + randomVariation(),
+      'punct_21': baseScore + randomVariation(),
+      // Работа с текстом 2
+      'text2_total': baseScore + randomVariation(),
+      'text2_22': baseScore + randomVariation(),
+      'text2_23': baseScore + randomVariation(),
+      'text2_24': baseScore + randomVariation(),
+      'text2_25': baseScore + randomVariation(),
+      'text2_fraz': baseScore + randomVariation(),
+      'text2_26': baseScore + randomVariation(),
+    };
   };
+
+  // Создаем данные для всех студентов
+  const mockTableDataGrouped: Record<string, any> = {};
+  for (let i = 1; i <= 15; i++) {
+    mockTableDataGrouped[i.toString()] = generateStudentData(i);
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -270,8 +360,8 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
               ) : (
                 <ResponsiveStatsTable
                   students={mockTableStudents}
-                  columns={mockTableColumns}
-                  data={mockTableData}
+                  columnGroups={mockColumnGroups}
+                  data={mockTableDataGrouped}
                 />
               )}
             </TabsContent>

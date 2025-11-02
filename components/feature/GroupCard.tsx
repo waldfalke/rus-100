@@ -5,9 +5,17 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MoreVertical, Edit, Archive, Trash2, Users, Folder, ArrowRight } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { MoreVertical, Edit, Archive, Trash2, Users, Folder, ArrowRight, TrendingUp, Activity } from "lucide-react";
 import { pluralizeStudents, pluralizeTests } from "@/lib/utils/pluralization";
 import { H3, P } from "@/components/ui/typography";
+
+interface GroupStats {
+  averageScore: number;
+  completionRate: number;
+  activeStudents: number;
+  recentActivity: string;
+}
 
 interface GroupCardProps {
   id: string;
@@ -17,6 +25,7 @@ interface GroupCardProps {
   participantCount: number;
   testsCount: number;
   createdAt: string;
+  stats?: GroupStats;
   onEdit?: (id: string) => void;
   onArchive?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -35,6 +44,7 @@ export function GroupCard({
   participantCount,
   testsCount,
   createdAt,
+  stats,
   onEdit,
   onArchive,
   onDelete,
@@ -173,7 +183,7 @@ export function GroupCard({
       
       <CardContent className="px-6 pb-6 pt-0">
         {/* Метаданные */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -215,6 +225,68 @@ export function GroupCard({
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
+
+        {/* Статистика - только для активных и черновиков */}
+        {stats && status !== "archived" && (
+          <TooltipProvider delayDuration={200}>
+            <div className="flex items-center gap-3 pt-3 border-t border-border">
+              {/* Средний балл */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5 text-xs cursor-help">
+                    <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className={`font-medium ${
+                      stats.averageScore >= 80 ? 'text-green-600' :
+                      stats.averageScore >= 60 ? 'text-yellow-600' :
+                      stats.averageScore > 0 ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {stats.averageScore > 0 ? `${stats.averageScore.toFixed(1)}%` : '—'}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-xs">
+                    <p className="font-semibold">Средний балл</p>
+                    <p className="text-muted-foreground">
+                      {stats.averageScore > 0
+                        ? `${stats.averageScore.toFixed(1)}% по всем заданиям`
+                        : 'Нет данных'}
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Процент завершения */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5 text-xs cursor-help">
+                    <Activity className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className={`font-medium ${
+                      stats.completionRate >= 80 ? 'text-green-600' :
+                      stats.completionRate >= 60 ? 'text-yellow-600' :
+                      stats.completionRate > 0 ? 'text-red-600' : 'text-muted-foreground'
+                    }`}>
+                      {stats.completionRate > 0 ? `${stats.completionRate}%` : '—'}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-xs">
+                    <p className="font-semibold">Процент завершения</p>
+                    <p className="text-muted-foreground">
+                      {stats.completionRate > 0
+                        ? `${stats.completionRate}% заданий выполнено`
+                        : 'Нет данных'}
+                    </p>
+                    <p className="text-muted-foreground mt-1">
+                      Активных студентов: {stats.activeStudents} из {participantCount}
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+        )}
       </CardContent>
     </Card>
   );
