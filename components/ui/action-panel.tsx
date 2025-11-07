@@ -1,0 +1,212 @@
+"use client";
+
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { SourceSwitcher } from "./source-switcher";
+import { FilterGroup } from "./filter-group";
+
+export type Density = "compact" | "cozy";
+
+export type SourceSwitcherSpec = {
+  enabled?: boolean;
+  value?: "all" | "platform" | "mine";
+  onChange?: (value: "all" | "platform" | "mine") => void;
+};
+
+export type SearchSpec = {
+  placeholder?: string;
+  query: string;
+  onQueryChange: (next: string) => void;
+  debounceMs?: number;
+};
+
+export type SelectAllSpec = {
+  label?: string;
+  checked: boolean;
+  onToggle: (checked: boolean) => void;
+};
+
+export type SecondaryActionSpec = {
+  id: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  onClick: () => void;
+  disabled?: boolean;
+};
+
+export type PrimaryActionSpec = {
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  onClick: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+};
+
+export type FilterControlSpec =
+  | { type: "chip"; id: string; label: string; selected: boolean; onToggle: (selected: boolean) => void }
+  | { type: "select"; id: string; label: string; value: string; options: { label: string; value: string }[]; onChange: (value: string) => void }
+  | { type: "toggle"; id: string; label: string; checked: boolean; onChange: (checked: boolean) => void };
+
+export type FilterGroupSpec = {
+  id: string;
+  label?: string;
+  controls: FilterControlSpec[];
+};
+
+export interface ActionPanelProps {
+  filterGroups: FilterGroupSpec[];
+  primaryAction: PrimaryActionSpec;
+  sourceSwitcher?: SourceSwitcherSpec | null;
+  search?: SearchSpec | null;
+  selectAll?: SelectAllSpec | null;
+  secondaryActions?: SecondaryActionSpec[] | null;
+  density?: Density;
+  className?: string;
+}
+
+const densityClasses: Record<Density, { container: string; control: string; icon: string }> = {
+  compact: {
+    container: "gap-2",
+    control: "h-9",
+    icon: "h-4 w-4",
+  },
+  cozy: {
+    container: "gap-3",
+    control: "h-10",
+    icon: "h-5 w-5",
+  },
+};
+
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = React.useState(value);
+  React.useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
+}
+
+export const ActionPanel: React.FC<ActionPanelProps> = ({
+  filterGroups,
+  primaryAction,
+  sourceSwitcher = null,
+  search = null,
+  selectAll = null,
+  secondaryActions = [],
+  density = "compact",
+  className,
+}) => {
+  const d = densityClasses[density];
+
+  const [searchLocal, setSearchLocal] = React.useState(search?.query ?? "");
+  const debouncedQuery = useDebouncedValue(searchLocal, search?.debounceMs ?? 300);
+  React.useEffect(() => {
+    if (search && debouncedQuery !== search.query) {
+      search.onQueryChange(debouncedQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery]);
+
+  return (
+    <div className={cn("py-0 rounded-lg flex flex-col items-start sm:flex-row sm:items-center sm:justify-between", d.container, className)}>
+      {/* Left: source switcher, select-all, search, filters */}
+      <div className={cn("flex flex-wrap items-center", d.container)}>
+        {sourceSwitcher?.enabled !== false && sourceSwitcher && (
+          <SourceSwitcher value={sourceSwitcher.value} onChange={sourceSwitcher.onChange} density={density} />
+        )}
+
+        {selectAll && (
+          <div className={cn("inline-flex items-center gap-2 shrink-0 px-3 border border-border rounded-md bg-background", d.control)}>
+            <Checkbox
+              id="action-panel-select-all"
+              checked={selectAll.checked}
+              onCheckedChange={(checked) => selectAll.onToggle(checked === true)}
+              className="data-[state=unchecked]:bg-muted"
+            />
+            <Label htmlFor="action-panel-select-all" className="cursor-pointer text-sm">
+              {selectAll.label ?? "Выбрать всех"}
+            </Label>
+          </div>
+        )}
+
+        {search && (
+          <Input
+            value={searchLocal}
+            onChange={(e) => setSearchLocal(e.target.value)}
+            placeholder={search.placeholder ?? "Поиск"}
+            className={cn("w-[200px]", d.control)}
+          />
+        )}
+
+        {filterGroups && filterGroups.length > 0 && (
+          <FilterGroup groups={filterGroups} density={density} />
+        )}
+      </div>
+
+      {/* Right: secondary actions (mobile icon-only), primary action */}
+      <div className={cn("flex items-center", d.container)}>
+        {secondaryActions && secondaryActions.length > 0 && (
+          <TooltipProvider>
+            <div className={cn("flex items-center", d.container)}>
+              {secondaryActions.map((act) => {
+                const Icon = act.icon;
+                return (
+                  <React.Fragment key={act.id}>
+                    {/* Mobile: icon-only ghost */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="sm:hidden"
+                          aria-label={act.label}
+                          onClick={act.onClick}
+                          disabled={act.disabled}
+                        >
+                          {Icon ? <Icon className={d.icon} /> : <span className="sr-only">{act.label}</span>}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{act.label}</TooltipContent>
+                    </Tooltip>
+
+                    {/* Desktop/Tablet: outline with text */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="hidden sm:inline-flex"
+                      onClick={act.onClick}
+                      disabled={act.disabled}
+                    >
+                      {Icon ? <Icon className={cn(d.icon, "mr-2")} /> : null}
+                      {act.label}
+                    </Button>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </TooltipProvider>
+        )}
+
+        {/* Primary action */}
+        <Button
+          size="sm"
+          variant="default"
+          onClick={primaryAction.onClick}
+          disabled={primaryAction.disabled}
+        >
+          {primaryAction.icon ? <primaryAction.icon className={cn(d.icon, "mr-2 hidden sm:inline")} /> : null}
+          <span className="hidden sm:inline">{primaryAction.label}</span>
+          {/* Mobile: compact, label visible to avoid ambiguity */}
+          <span className="sm:hidden">{primaryAction.label}</span>
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+ActionPanel.displayName = "ActionPanel";

@@ -58,6 +58,11 @@ import { cn } from '@/lib/utils';
 import { CustomTestsStats } from '@/components/CustomTestsStats';
 import { StatisticsCard, StatisticsCardData } from '@/components/ui/statistics-card';
 import { TestSubmissionCard, TestSubmission } from '@/components/answer-card';
+import { pluralizeWord } from '@/lib/utils/pluralization';
+import { MultiTagPicker, Option as MultiOption } from '@/components/ui/multi-tag-picker';
+import { DateRangePopover } from '@/components/ui/date-range-popover';
+import { Label } from '@/components/ui/label';
+import { ActionPanel } from '@/components/ui/action-panel';
 
 // Типы данных согласно контракту GRP-001
 // Интерфейсы для статистики заданий
@@ -551,7 +556,7 @@ function StudentsFilterBar({
   onViewModeChange: (mode: 'grid' | 'table') => void;
 }) {
   return (
-    <div className="bg-white p-4 rounded-lg border mb-6">
+    <div className="rounded-lg border mb-6">
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="flex-1">
           <div className="relative">
@@ -993,6 +998,7 @@ function StudentCard({
 export default function GroupPageClient() {
   const params = useParams();
   const groupId = params?.id as string;
+  const router = useRouter();
   
   if (!groupId) {
     return <div>Group ID not found</div>;
@@ -1012,6 +1018,8 @@ export default function GroupPageClient() {
     sortOrder: 'asc',
     tags: []
   });
+  const [mainTab, setMainTab] = useState<'students' | 'tests' | 'answers' | 'analytics' | 'settings'>('students');
+  const [testsSource, setTestsSource] = useState<'all' | 'platform' | 'mine'>('platform');
 
   // Mock данные для статистики навыков
   const mockStatsData: GroupStatsData = {
@@ -1295,7 +1303,7 @@ export default function GroupPageClient() {
       <GroupStatsOverview stats={stats} />
       
       {/* Вкладки */}
-      <Tabs defaultValue="students" className="w-full">
+      <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
         <TabsList>
           <TabsTrigger value="students" expandToFill>Ученики</TabsTrigger>
           <TabsTrigger value="tests" expandToFill>Тесты</TabsTrigger>
@@ -1303,6 +1311,57 @@ export default function GroupPageClient() {
           <TabsTrigger value="analytics" expandToFill>Аналитика</TabsTrigger>
           <TabsTrigger value="settings" expandToFill>Настройки</TabsTrigger>
         </TabsList>
+        {mainTab === 'students' && (
+          <ActionPanel
+            density="compact"
+            filterGroups={[]}
+            selectAll={{
+              label: 'Выбрать всех',
+              checked: filteredStudents.length > 0 && selectedStudents.length === filteredStudents.length,
+              onToggle: (checked) => {
+                if (checked) {
+                  setSelectedStudents(filteredStudents.map(s => s.id));
+                } else {
+                  setSelectedStudents([]);
+                }
+              }
+            }}
+            secondaryActions={selectedStudents.length > 0 ? [
+              { id: 'message', label: 'Отправить сообщение', icon: Mail, onClick: () => {/* TODO: implement messaging */} },
+              { id: 'export', label: 'Экспорт', icon: Download, onClick: () => {/* TODO: implement export */} },
+            ] : []}
+            primaryAction={{ label: 'Пригласить учеников', icon: UserPlus, onClick: () => handleAction('invite') }}
+          />
+        )}
+        {mainTab === 'tests' && (
+          <ActionPanel
+            density="compact"
+            filterGroups={[]}
+            sourceSwitcher={{ enabled: true, value: testsSource, onChange: (v) => setTestsSource(v as 'all' | 'platform' | 'mine') }}
+            primaryAction={{ label: 'Создать тест', icon: BookOpen, onClick: () => router.push('/create-test') }}
+          />
+        )}
+        {mainTab === 'answers' && (
+          <ActionPanel
+            density="compact"
+            filterGroups={[]}
+            primaryAction={{ label: 'Действие', icon: List, onClick: () => {} }}
+          />
+        )}
+        {mainTab === 'analytics' && (
+          <ActionPanel
+            density="compact"
+            filterGroups={[]}
+            primaryAction={{ label: 'Действие', icon: List, onClick: () => {} }}
+          />
+        )}
+        {mainTab === 'settings' && (
+          <ActionPanel
+            density="compact"
+            filterGroups={[]}
+            primaryAction={{ label: 'Действие', icon: List, onClick: () => {} }}
+          />
+        )}
         
         <TabsContent value="students" className="space-y-6">
           {/* Панель фильтров */}
@@ -1313,33 +1372,7 @@ export default function GroupPageClient() {
             onViewModeChange={setViewMode}
           />
           
-          {/* Панель массовых действий */}
-          {selectedStudents.length > 0 && (
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
-                  Выбрано учеников: {selectedStudents.length}
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="outline">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Отправить сообщение
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Экспорт
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => setSelectedStudents([])}
-                  >
-                    Отменить выбор
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Панель массовых действий перенесена в ActionPanel ниже заголовка вкладок */}
           
           {/* Список учеников */}
           {viewMode === 'grid' ? (
@@ -1417,28 +1450,18 @@ export default function GroupPageClient() {
         </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
-          <Tabs defaultValue="custom" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="custom">Пользовательские тесты</TabsTrigger>
-              <TabsTrigger value="assigned">Назначенные тесты</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="custom" className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">Пользовательские тесты</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Создавайте и управляйте собственными тестами для группы
-                  </p>
-                </div>
-                <Button>
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Создать тест
-                </Button>
+          <Tabs value={testsSource} onValueChange={setTestsSource} className="w-full">
+
+            <TabsContent value="all" className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold">Все тесты</h3>
+                <p className="text-sm text-muted-foreground">
+                  Отображаются тесты платформы (мои тесты пока пусты)
+                </p>
               </div>
-              
+
               <CustomTestsStats data={mockCustomTests} />
-              
+
               <TestsFilterBar 
                 filters={{
                   search: '',
@@ -1450,7 +1473,7 @@ export default function GroupPageClient() {
                 }}
                 onFiltersChange={() => {}}
               />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockCustomTests.tests.map((test) => (
                   <CustomTestCard 
@@ -1462,29 +1485,54 @@ export default function GroupPageClient() {
                   />
                 ))}
               </div>
-              
-              {mockCustomTests.tests.length === 0 && (
-                <div className="text-center py-12">
-                  <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Нет пользовательских тестов</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Создайте свой первый тест для группы
-                  </p>
-                  <Button>
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Создать тест
-                  </Button>
-                </div>
-              )}
             </TabsContent>
-            
-            <TabsContent value="assigned" className="space-y-6">
+
+            <TabsContent value="platform" className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold">Тесты платформы</h3>
+                <p className="text-sm text-muted-foreground">
+                  Библиотека тестов платформы, доступных группе
+                </p>
+              </div>
+
+              <CustomTestsStats data={mockCustomTests} />
+
+              <TestsFilterBar 
+                filters={{
+                  search: '',
+                  type: 'all',
+                  status: 'all',
+                  difficulty: 'all',
+                  sortBy: 'title',
+                  sortOrder: 'asc'
+                }}
+                onFiltersChange={() => {}}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mockCustomTests.tests.map((test) => (
+                  <CustomTestCard 
+                    key={test.id} 
+                    test={test} 
+                    onAction={(action, testId) => {
+                      console.log(`Action: ${action} for test ${testId}`);
+                    }}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="mine" className="space-y-6">
               <div className="text-center py-12">
                 <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Назначенные тесты</h3>
-                <p className="text-muted-foreground">
-                  Здесь будут отображаться тесты, назначенные группе из библиотеки
+                <h3 className="text-lg font-semibold mb-2">Мои тесты пусты</h3>
+                <p className="text-muted-foreground mb-4">
+                  Здесь появятся тесты, которые вы создадите
                 </p>
+                <Button size="sm" onClick={() => router.push('/create-test')}>
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Создать тест
+                </Button>
               </div>
             </TabsContent>
           </Tabs>
@@ -1877,40 +1925,147 @@ const mockModerators: GroupModerator[] = [
 
 // Компонент ленты решённых тестов
 const TestFeed = ({ data }: { data: TestFeedData }) => {
+  const studentOptions: MultiOption[] = Array.from(
+    new Map(data.submissions.map((s) => [s.studentId, s.studentName])).entries()
+  ).map(([value, label]) => ({ value, label }));
+  const testOptions: MultiOption[] = Array.from(
+    new Map(data.submissions.map((s) => [s.testId, s.testTitle])).entries()
+  ).map(([value, label]) => ({ value, label }));
+
+  const [selectedStudentIds, setSelectedStudentIds] = React.useState<string[]>([]);
+  const [selectedTestIds, setSelectedTestIds] = React.useState<string[]>([]);
+  const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = React.useState<Date | undefined>(undefined);
+
+  const toInputDate = (d?: Date): string => {
+    if (!d) return "";
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  const parseIsoInput = (iso: string): Date | undefined => {
+    if (!iso) return undefined;
+    const [y, m, d] = iso.split("-").map(Number);
+    const next = new Date(y, (m ?? 1) - 1, d ?? 1);
+    return isNaN(next.getTime()) ? undefined : next;
+  };
+
+  const inRange = (submittedAt: string) => {
+    const dt = new Date(submittedAt);
+    if (startDate && dt < startDate) return false;
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      if (dt > end) return false;
+    }
+    return true;
+  };
+
+  const filtered = data.submissions.filter((sub) => {
+    if (selectedStudentIds.length > 0 && !selectedStudentIds.includes(sub.studentId)) return false;
+    if (selectedTestIds.length > 0 && !selectedTestIds.includes(sub.testId)) return false;
+    if (!inRange(sub.submittedAt)) return false;
+    return true;
+  });
+
+  const stats = {
+    totalTests: new Set(filtered.map((s) => s.testId)).size,
+    totalAnswers: filtered.reduce((sum, s) => sum + (s.totalQuestions ?? 0), 0),
+    correctAnswers: filtered.reduce((sum, s) => sum + (s.correctAnswers ?? 0), 0),
+    incorrectAnswers: filtered.reduce((sum, s) => sum + ((s.totalQuestions ?? 0) - (s.correctAnswers ?? 0)), 0),
+  };
+
+  const resetFilters = () => {
+    setSelectedStudentIds([]);
+    setSelectedTestIds([]);
+    setStartDate(undefined);
+    setEndDate(undefined);
+  };
+
   return (
     <div className="space-y-4">
+      {/* Компактная панель фильтров */}
+      <div className="mb-2">
+        {(() => {
+          const getSummary = (title: string, ids: string[], options: MultiOption[]) => {
+            if (!ids || ids.length === 0) return `${title} · все`;
+            const labels = ids
+              .map((id) => options.find((o) => o.value === id)?.label || id)
+              .filter(Boolean);
+            if (labels.length === 1) return `${title} · ${labels[0]}`;
+            return `${title} · ${labels[0]} +${labels.length - 1}`;
+          };
+          const studentSummary = getSummary('Ученики', selectedStudentIds, studentOptions);
+          const testSummary = getSummary('Тесты', selectedTestIds, testOptions);
+          return (
+            <div className="flex flex-wrap items-center gap-2">
+              <MultiTagPicker
+                options={studentOptions}
+                value={selectedStudentIds}
+                onChange={setSelectedStudentIds}
+                showChips={false}
+                placeholder={studentSummary}
+                triggerClassName="h-9 px-3"
+              />
+              <MultiTagPicker
+                options={testOptions}
+                value={selectedTestIds}
+                onChange={setSelectedTestIds}
+                showChips={false}
+                placeholder={testSummary}
+                triggerClassName="h-9 px-3"
+              />
+              <DateRangePopover
+                onChange={(start, end) => { setStartDate(start); setEndDate(end); }}
+                startDate={startDate}
+                endDate={endDate}
+                triggerClassName="h-9 px-3"
+              />
+              <Button variant="ghost" size="sm" onClick={resetFilters}>
+                Сброс
+              </Button>
+            </div>
+          );
+        })()}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-blue-600">{data.totalTests}</h2>
-            <div className="text-sm text-gray-600">Всего тестов</div>
+            <h2 className="text-2xl font-bold text-blue-600">{stats.totalTests}</h2>
+            <div className="text-sm text-gray-600">{pluralizeWord(stats.totalTests, 'тест', 'теста', 'тестов')}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-indigo-600">{data.totalAnswers}</h2>
-            <div className="text-sm text-gray-600">Всего ответов</div>
+            <h2 className="text-2xl font-bold text-indigo-600">{stats.totalAnswers}</h2>
+            <div className="text-sm text-gray-600">{pluralizeWord(stats.totalAnswers, 'ответ', 'ответа', 'ответов')}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-green-600">{data.correctAnswers}</h2>
-            <div className="text-sm text-gray-600">Правильные</div>
+            <h2 className="text-2xl font-bold text-green-600">{stats.correctAnswers}</h2>
+            <div className="text-sm text-gray-600">{pluralizeWord(stats.correctAnswers, 'правильный', 'правильных', 'правильных')}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-red-600">{data.incorrectAnswers}</h2>
-            <div className="text-sm text-gray-600">Неправильные</div>
+            <h2 className="text-2xl font-bold text-red-600">{stats.incorrectAnswers}</h2>
+            <div className="text-sm text-gray-600">{pluralizeWord(stats.incorrectAnswers, 'неправильный', 'неправильных', 'неправильных')}</div>
           </CardContent>
         </Card>
       </div>
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900">Последние тесты</h3>
-        {data.submissions.map((sub) => (
+        {filtered.map((sub) => (
           <TestSubmissionCard key={sub.id} submission={sub} />
         ))}
+        {filtered.length === 0 && (
+          <div className="text-sm text-muted-foreground">Нет данных по выбранным фильтрам</div>
+        )}
       </div>
     </div>
   );

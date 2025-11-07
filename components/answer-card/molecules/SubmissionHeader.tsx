@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { StudentAvatar } from '../atoms/StudentAvatar';
 import { formatSubmissionDate } from '../utils/formatters';
 
 interface SubmissionHeaderProps {
@@ -18,8 +17,7 @@ export function SubmissionHeader({
   submittedAt
 }: SubmissionHeaderProps) {
   return (
-    <div className="flex items-start gap-3">
-      <StudentAvatar studentName={studentName} />
+    <div className="flex items-start">
       <div className="flex-1 min-w-0">
         <div className="font-medium text-foreground truncate">
           {studentName}

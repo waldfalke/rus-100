@@ -1,0 +1,156 @@
+id: CONTRACT-ACTION-PANEL-001
+title: "Action Panel — Filters & Actions"
+type: component
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Standardized UI component that renders a unified action panel at the top of
+  tab content (excluding the Tabs themselves). The panel provides a consistent
+  left–right layout: filters & toggles on the left; actions on the right. It
+  establishes a reusable, accessible pattern for switching sources (e.g., All /
+  Platform / My), applying filters, searching, selecting items, and triggering
+  actions like "Create". Mobile policy lowers the visual emphasis of additional
+  actions: secondary actions collapse to icon-only ghost buttons on small
+  screens; text labels appear from the `sm` breakpoint.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: filterGroups
+      type: FilterGroupSpec[]
+      description: "Declarative filter groups (chips, selects, toggles) rendered on the left."
+    - name: primaryAction
+      type: PrimaryActionSpec
+      description: "Main CTA on the right (label, icon, onClick, loading)."
+  optional:
+    - name: sourceSwitcher
+      type: SourceSwitcherSpec | null
+      default: null
+      description: "Three-way source switcher (All / Platform / My). When null, not rendered."
+    - name: search
+      type: SearchSpec | null
+      default: null
+      description: "Search input with debounce, placeholder, and onQueryChange callback."
+    - name: selectAll
+      type: SelectAllSpec | null
+      default: null
+      description: "Optional select-all control with count and onToggle."
+    - name: secondaryActions
+      type: SecondaryActionSpec[] | null
+      default: []
+      description: "Additional low-priority actions (invite, export). Icon-only on mobile by policy."
+    - name: density
+      type: "compact" | "cozy"
+      default: "compact"
+      description: "Visual density for spacing scale and control sizes."
+    - name: className
+      type: string | undefined
+      default: undefined
+      description: "Optional class for wrapper overrides (non-breaking)."
+
+invariants:
+  - "Left–right layout is stable: filters left, actions right, wraps on mobile."
+  - "Spacing and sizes use design tokens (no magic numbers)."
+  - "Keyboard navigation covers all interactive elements in logical order."
+  - "ARIA roles/labels provided for controls; color contrast meets WCAG AA."
+  - "Source switcher values are one of: all | platform | my."
+  - "No component-owned business logic; callbacks surface changes upstream."
+  - "Density consistently maps to spacing and control size tokens."
+  - "On <sm screens, secondary actions render as icon-only ghost buttons with aria-labels."
+  - "No full-width action buttons on mobile (no implicit `w-full` for actions)."
+  - "Primary action remains compact; secondary actions visually de-emphasized on mobile."
+
+policy:
+  responsive_behavior:
+    mobile_breakpoint: "sm"
+    secondary_actions_on_mobile: "icon-only ghost; text hidden"
+    primary_action_on_mobile: "compact button; outline variant preferred when action is auxiliary"
+    layout_mobile: "flex-col with items-start; actions do not stretch"
+
+dependencies:
+  - components/ui/button
+  - components/ui/tabs
+  - components/ui/select
+  - components/ui/input
+  - components/ui/popover
+  - components/ui/calendar
+  - components/ui/badge
+  - components/ui/switch
+  - components/ui/card
+
+anti_patterns:
+  - pattern: "Actions intermixed with content"
+    detection: "Create/Export buttons live inside grid/list instead of header"
+    why_bad: "Inconsistent UX; duplicate triggers; poor discoverability"
+    fix: "Centralize actions in ActionPanel; content triggers only open modals"
+  - pattern: "Ad-hoc spacing"
+    detection: "Inline styles with arbitrary px values"
+    why_bad: "Visual drift and maintenance overhead"
+    fix: "Use tokens via tailwind/tokens; map density to spacing scale"
+  - pattern: "Hidden keyboard traps"
+    detection: "Elements not focusable or incorrect tab order"
+    why_bad: "Accessibility regressions"
+    fix: "Ensure focus order; use semantic elements and ARIA where needed"
+  - pattern: "Stateful filtering inside cards"
+    detection: "Per-card filters alter global view state"
+    why_bad: "Fragmented control; confusing behavior"
+    fix: "Promote global filters to ActionPanel; cards remain passive"
+
+integration_targets:
+  - app/dashboard/[id]/GroupStatsClient.tsx: Tests tab header
+  - app/dashboard/[id]/GroupPageClient.tsx: Legacy tests tab header (if rendered)
+  - app/answers/page.tsx: Answers list header
+  - app/dashboard/[id]/students: Students tab header (file to be identified)
+
+deliverables:
+  - file: components/ui/action-panel.tsx
+    description: "Panel component implementing props and invariants above"
+  - file: components/ui/filter-group.tsx
+    description: "Declarative filter group renderer (chips/selects/toggles)"
+  - file: components/ui/source-switcher.tsx
+    description: "Three-way source switcher with keyboard support and ARIA"
+  - file: docs/contracts/ACTION-PANEL.md
+    description: "Usage examples and composition guidelines"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Keyboard & A11y"
+    description: "Tab order, ARIA, and WCAG AA contrast verified"
+    validation: "automated"
+  - name: "Density Toggle"
+    description: "compact/cozy toggles adjust spacing and sizes via tokens"
+    validation: "automated"
+  - name: "Source Switcher Behavior"
+    description: "Switching all/platform/my updates upstream state via callbacks"
+    validation: "automated"
+  - name: "Token Usage"
+    description: "No magic numbers; spacing/colors derive from tokens"
+    validation: "automated"
+  - name: "Mobile CTA Policy"
+    description: "On <sm, secondary actions are icon-only; no full-width buttons"
+    validation: "automated"
+
+evidence_requirements:
+  - "Screenshots for desktop and mobile layouts"
+  - "Playwright a11y checks for focus order and roles"
+  - "Vitest unit tests for props-driven behavior (switcher, density)"
+  - "Viewport-based tests asserting icon-only secondary actions on mobile"
+
+notes:
+  - "This contract excludes the Tabs component; focus on the top header panel."
+  - "Adoption will occur incrementally per tab to avoid regressions."
