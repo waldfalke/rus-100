@@ -1,0 +1,102 @@
+id: CONTRACT-ADAPTER-001
+title: "Adapter — Interface Compatibility Contract"
+type: utility
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for an Adapter that reconciles a Target interface with an
+  incompatible Adaptee, preserving Target semantics, normalizing errors, and
+  providing explicit mapping rules with strict mode options.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: targetInterface
+      type: string
+      description: Identifier/name of the Target interface to satisfy.
+    - name: adapteeProvider
+      type: AdapteeProvider
+      description: Function/object providing access to the source (Adaptee) API/SDK.
+    - name: mapping
+      type: MappingSpec
+      description: Declarative mapping of fields/types/errors from Adaptee to Target.
+    - name: strict
+      type: boolean
+      description: Strict mode; unknown/extra fields cause errors.
+  optional:
+    - name: fallbacks
+      type: Record<string, unknown>
+      default: {}
+      description: Default values for missing fields when strict=false.
+    - name: versionMap
+      type: Record<string, string>
+      default: {}
+      description: Map Adaptee versions to Target expectations.
+    - name: errorNormalizer
+      type: ErrorNormalizer
+      default: DomainErrorNormalizer
+      description: Strategy to normalize errors to domain-specific types.
+
+invariants:
+  - "Required Target fields MUST be 100% covered by MappingSpec."
+  - "Strict=true MUST reject unknown/extra fields with a typed error."
+  - "All exceptions MUST be normalized to DomainError including cause."
+  - "Adapter MUST NOT change Target semantics; only translate."
+  - "MappingSpec changes MUST be versioned and documented."
+
+dependencies:
+  - typescript
+  - zod
+  - axios
+
+anti_patterns:
+  - pattern: "Silent data loss"
+    detection: "Mapping drops fields without explicit fallback or strict mode"
+    why_bad: "Violates Target semantics and corrupts data"
+    fix: "Enable strict mode or specify explicit fallbacks; add coverage tests"
+  - pattern: "Over-transformation changing meaning"
+    detection: "Unit/enum conversions performed without spec references"
+    why_bad: "Semantic drift yields incorrect behavior"
+    fix: "Document transformations; provide unit-tested conversion utilities"
+  - pattern: "Inconsistent error mapping"
+    detection: "Multiple sources mapped to same DomainError without cause"
+    why_bad: "Hinders debugging and correct recovery paths"
+    fix: "Include cause; use distinct codes; maintain mapping table"
+  - pattern: "Implicit defaults in non-strict mode"
+    detection: "Undocumented default values inserted when fields missing"
+    why_bad: "Hidden behavior deviates from Target expectations"
+    fix: "Document defaults; warn via telemetry; prefer strict=true by default"
+  - pattern: "Unversioned mapping changes"
+    detection: "MappingSpec updated without SemVer bump or changelog"
+    why_bad: "Undocumented breaking changes surprise consumers"
+    fix: "Version mapping rules; publish migration guidance"
+  - pattern: "N+1 or O(n^2) adaptation"
+    detection: "Nested loops across large collections during mapping"
+    why_bad: "Performance degradation and scalability issues"
+    fix: "Batch or stream transforms; single-pass mapping; benchmark"
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Mapping Completeness"
+    description: "All required Target fields covered; automated coverage check"
+    validation: "automated"
+  - name: "Strict Mode Enforcement"
+    description: "Unknown fields rejected with DomainError(code='UNKNOWN_FIELD')"
+    validation: "automated"
+  - name: "Error Normalization"
+    description: "Thrown errors normalized with { code, message, cause }"
+    validation: "automated"

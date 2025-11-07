@@ -1,0 +1,103 @@
+id: CONTRACT-FACADE-001
+title: "Facade — Public Entry Point Contract"
+type: service
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for a Facade that provides a simple, stable public
+  entry point to a subsystem, hiding internal modules and coordinating high-level
+  behaviors (feature flags, telemetry, error normalization). Ensures minimal
+  and stable API surface, consistent error semantics, and safe defaults.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: modules
+      type: string[]
+      description: Names/keys of internal modules composed behind the facade.
+    - name: api
+      type: Record<string, unknown>
+      description: Public API surface to expose (functions/objects), whitelist only.
+    - name: config
+      type: FacadeConfig
+      description: Feature flags and operational settings for the facade.
+    - name: logger
+      type: Logger | null
+      description: Logging interface; null disables logs.
+  optional:
+    - name: telemetry
+      type: TelemetryConfig
+      default: { enabled: false }
+      description: Telemetry settings; disabled by default (privacy-first).
+    - name: responsive
+      type: boolean
+      default: true
+      description: Enable responsive behavior coordination when facade is UI-facing.
+    - name: errorPolicy
+      type: { normalize: boolean }
+      default: { normalize: true }
+      description: Normalize errors to DomainError with code/message.
+
+invariants:
+  - "Facade MUST export only documented public API; no internal leakage."
+  - "Facade MUST not mutate global state unless explicitly documented."
+  - "Errors thrown via facade MUST conform to DomainError { code, message }."
+  - "Default configuration MUST be safe (telemetry off, strict error normalization on)."
+  - "Minor version updates MUST be backward compatible (SemVer)."
+
+dependencies:
+  - typescript
+  - react
+  - logger-interface
+
+anti_patterns:
+  - pattern: "Leaky exports (internal modules surfaced)"
+    detection: "Static analysis: exports from index.ts not in whitelist"
+    why_bad: "Breaks encapsulation; prevents safe refactoring; inflates public surface"
+    fix: "Whitelist-only exports; automated check blocking undocumented exports"
+  - pattern: "God facade (too many responsibilities)"
+    detection: "High complexity metrics: >N methods, >M dependencies, low cohesion"
+    why_bad: "Hard to maintain, hidden coupling, change risk"
+    fix: "Split into sub-facades; enforce single-responsibility via module boundaries"
+  - pattern: "Global state mutation"
+    detection: "Writes to window/global/process or shared singletons from facade"
+    why_bad: "Non-determinism and side effects that break consumers"
+    fix: "Move state into DI/config; document any unavoidable side effects"
+  - pattern: "Exception swallowing"
+    detection: "catch blocks that return null/undefined without logging/rethrow"
+    why_bad: "Obscures failures and blocks observability/recovery"
+    fix: "Normalize to DomainError with cause and propagate; structured logging"
+  - pattern: "Telemetry enabled by default"
+    detection: "telemetry.enabled defaults to true"
+    why_bad: "Privacy risks and unnecessary runtime overhead"
+    fix: "Default disabled; require explicit opt-in and data catalog"
+  - pattern: "Version drift between facade and internals"
+    detection: "Internal module updates without corresponding facade SemVer/changelog"
+    why_bad: "Undocumented breaking changes leak to consumers"
+    fix: "Pin versions; add compatibility layer; publish changelog"
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "API Surface Whitelist"
+    description: "Only documented exports available from facade index"
+    validation: "automated"
+  - name: "Error Normalization"
+    description: "Facade errors normalize to DomainError with code/message"
+    validation: "automated"
+  - name: "Safe Defaults"
+    description: "Telemetry disabled by default; strict normalization enabled"
+    validation: "automated"

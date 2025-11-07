@@ -21,7 +21,7 @@ import { SelectionDropdown, SelectionOption } from "@/components/ui/SelectionDro
 import { ProgressPanelBlock } from "@/components/ui/ProgressPanelBlock"
 import { HeaderOrganism } from "@/components/ui/HeaderOrganism";
 import ResponsiveContainer from "@/components/layout/ResponsiveContainer";
-import { ResponsiveStatsTable } from "@/components/ui/responsive-stats-table";
+import { ResponsiveStatsTable } from "@/components/stats-table";
 import { H1, P, H2, H3 } from "@/components/ui/typography"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import TokenGrid from "@/components/layout/TokenGrid";
@@ -544,7 +544,7 @@ export default function TestGenerator() {
     { label: "Задания", href: "/tasks" },
     { label: "Результаты", href: "/results" },
     { label: "Тесты", href: "/tests" },
-    { label: "Группы", href: "/groups" },
+    { label: "Профиль", href: "/account" },
   ];
 
   return (

@@ -2,20 +2,122 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { toSlug } from '@/lib/utils/slug';
 import { HeaderOrganism } from '@/components/ui/HeaderOrganism';
-import { H1 } from '@/components/ui/typography';
+import { H1, H3 } from '@/components/ui/typography';
 import ResponsiveContainer from '@/components/layout/ResponsiveContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ResponsiveStatsTable } from '@/components/ui/responsive-stats-table';
+import { ResponsiveStatsTable } from '@/components/stats-table';
+import { Card, CardHeader, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { 
   Users, 
   BookOpen, 
   Target, 
   Clock,
-  BarChart3
+  BarChart3,
+  Mail,
+  MoreHorizontal,
+  UserPlus,
+  Edit,
+  Archive
 } from 'lucide-react';
 import { StatisticsCard } from '@/components/ui/statistics-card';
-import { getTaskStatisticsByGroupId } from '@/data/statistics-adapter';
+import StatCard from '@/components/feature/StatCard';
+import { getTaskStatisticsByGroupId, getTableStatisticsByGroupId, TableStats } from '@/data/statistics-adapter';
+
+// Простейшая модель ученика для карточек вкладки "Ученики"
+type SimpleStudent = { id: string; name: string; email: string };
+type StudentCardProps = {
+  student: SimpleStudent;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
+  groupId: string;
+};
+
+// Карточка ученика (имя, email, меню действий)
+const StudentCard: React.FC<StudentCardProps> = ({ student, isSelected, onSelect, groupId }) => {
+  const router = useRouter();
+  return (
+    <Card
+      className={`group transition-all duration-200 hover:border-green-600 hover:shadow-md cursor-pointer relative ${
+        isSelected ? 'ring-2 ring-blue-500' : ''
+      }`}
+      onClick={() => onSelect(student.id)}
+    >
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3">
+        <div className="flex items-center gap-3">
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => onSelect(student.id)}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <H3 className="truncate">{student.name}</H3>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem onClick={() => router.push(`/results?studentId=${student.id}`)}>
+                Результаты
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard?studentId=${student.id}`)}>
+                Дашборд ученика
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                console.log('Деактивировать ученика', student.id);
+                alert('Ученика пометили как неактивного (заглушка)');
+              }}>
+                Деактивировать
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                const newName = prompt('Установить имя ученика', student.name);
+                if (newName) {
+                  console.log('Установить имя', student.id, newName);
+                  alert(`Имя обновлено (заглушка): ${newName}`);
+                }
+              }}>
+                Установить имя
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                console.log('Перенести ученика', student.id);
+                alert('Откроется диалог переноса (заглушка)');
+              }}>
+                Перенести
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600" onClick={() => {
+                if (confirm('Удалить ученика?')) {
+                  console.log('Удалить ученика', student.id);
+                  alert('Ученик удален (заглушка)');
+                }
+              }}>
+                Удалить
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/${groupId}/statistics?studentId=${student.id}`)}>
+                📈 Статистика
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/answers?studentId=${student.id}`)}>
+                Ответы
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Mail className="h-4 w-4" />
+            <span className="truncate">{student.email}</span>
+          </div>
+        </CardContent>
+      </Card>
+  );
+};
 
 // Импортируем данные о группах для определения статуса
 const mockGroups = [
@@ -94,11 +196,12 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
   
   // Устанавливаем активный таб по умолчанию: для черновиков - "table", для остальных - "skills"
   const [activeTab, setActiveTab] = useState(isDraft ? 'table' : 'skills');
+  const tableStats: TableStats[] = getTableStatisticsByGroupId(groupId);
 
   const navigationLinks = [
     { href: "/", label: "Главная" },
     { href: "/create-test", label: "Тесты" },
-    { href: "/groups", label: "Все группы" },
+    { href: "/dashboard", label: "Дашборд" },
     { href: "/account", label: "Профиль" }
   ];
 
@@ -120,6 +223,30 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     { id: '14', name: 'Соколова Юлия', email: 'sokolova@example.com' },
     { id: '15', name: 'Новиков Владимир', email: 'novikov@example.com' }
   ];
+
+  const [students] = useState<SimpleStudent[]>(mockTableStudents);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+
+  const handleStudentSelect = (studentId: string) => {
+    setSelectedStudents((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
+
+  const selectAllStudents = () => {
+    setSelectedStudents(students.map((s) => s.id));
+  };
+
+  const addStudents = () => {
+    console.log('Добавить учеников: открыть модал/навигацию');
+  };
+
+  const transferSelectedStudents = () => {
+    console.log('Перенести выбранных учеников', selectedStudents);
+  };
+
 
   // Новая структура с группами колонок (по примеру из референса)
   const mockColumnGroups = [
@@ -244,19 +371,38 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     mockTableDataGrouped[i.toString()] = generateStudentData(i);
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <HeaderOrganism 
-        userName="Анна Петрова"
-        userEmail="anna.petrova@example.com"
-        navLinks={navigationLinks}
-        breadcrumbItems={[{ label: "Главная", href: "/" }, { label: "Все группы", href: "/groups" }, { label: groupName }]}
-      />
-      
+    return (
+
       <main className="w-full">
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* 1. Main Page Title */}
-          <H1 className="font-source-serif-pro text-app-h1-mobile md:text-app-h1 leading-tight font-semibold text-foreground mb-6">{groupName}</H1>
+          {/* 1. Main Page Title with compact actions */}
+          <div className="flex items-center justify-between mb-6">
+            <H1 className="font-source-serif-pro text-app-h1-mobile md:text-app-h1 leading-tight font-semibold text-foreground">{groupName}</H1>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Дополнительно">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => router.push(`/dashboard/${groupId}/edit`)}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Редактировать
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (confirm('Переместить группу в архив?')) {
+                      alert('Группа перемещена в архив (заглушка)');
+                    }
+                  }}
+                >
+                  <Archive className="h-4 w-4 mr-2" />
+                  В архив
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {/* Табы для навигации */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
@@ -280,7 +426,7 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
                 value="table"
                 className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
               >
-                Статистика по группе
+                Тесты
               </TabsTrigger>
             </TabsList>
 
@@ -311,9 +457,9 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
                         <div key={category} className="space-y-4">
                           <div className="flex items-center gap-2">
                             <BookOpen className="w-5 h-5 text-muted-foreground" />
-                            <h3 className="text-lg font-semibold text-foreground">
+                            <H3>
                               {category}
-                            </h3>
+                            </H3>
                           </div>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -333,41 +479,83 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
             )}
 
             {/* Таб "Ученики" */}
-            <TabsContent value="students" className="space-y-6">
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Users className="w-8 h-8 text-gray-400" />
+            <TabsContent value="students" className="space-y-4">
+              {/* Панель действий */}
+              <div className="bg-white py-3 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center h-9 gap-2 shrink-0 px-3 border border-border rounded-md bg-background">
+                    <Checkbox
+                      id="select-all"
+                      checked={students.length > 0 && selectedStudents.length === students.length}
+                      onCheckedChange={(checked) => {
+                        if (checked === true) {
+                          selectAllStudents();
+                        } else {
+                          setSelectedStudents([]);
+                        }
+                      }}
+                      className="data-[state=unchecked]:bg-muted"
+                    />
+                    <Label htmlFor="select-all" className="cursor-pointer text-sm">Выбрать всех</Label>
+                  </div>
+                  {selectedStudents.length > 0 && (
+                    <Button variant="outline" size="sm" onClick={transferSelectedStudents}>Перенести</Button>
+                  )}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ученики группы</h3>
-                <p className="text-gray-500 max-w-md">
-                  Здесь будет список всех учеников группы с возможностью просмотра их прогресса.
-                </p>
+                <Button size="sm" onClick={addStudents}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Добавить учеников
+                </Button>
+              </div>
+
+              {/* Список учеников */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {students.map((student) => (
+                  <StudentCard
+                    key={student.id}
+                    student={student}
+                    isSelected={selectedStudents.includes(student.id)}
+                    onSelect={handleStudentSelect}
+                    groupId={groupId}
+                  />
+                ))}
               </div>
             </TabsContent>
 
-            {/* Таб "Таблица результатов" - крутая таблица! */}
-            <TabsContent value="table" className="space-y-6">
+            {/* Таб "Тесты" */}
+            <TabsContent value="table" className="space-y-6 table-tab-content">
               {isDraft || groupStatus === 'archived' ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                     <BarChart3 className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Статистика по группе</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Тесты</h3>
                   <p className="text-gray-500 max-w-md">
                     Для этой группы пока нет данных о результатах тестирования.
                   </p>
                 </div>
               ) : (
-                <ResponsiveStatsTable
-                  students={mockTableStudents}
-                  columnGroups={mockColumnGroups}
-                  data={mockTableDataGrouped}
-                />
+                <section className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {tableStats.map((stat) => (
+                    <Link
+                      key={stat.id}
+                      href={`/dashboard/${groupId}/statistics?title=${encodeURIComponent(toSlug(stat.title))}&stat=${encodeURIComponent(stat.id)}`}
+                      className="block"
+                    >
+                      <StatCard
+                        title={stat.title}
+                        testsCompleted={stat.testsCompleted}
+                        score={stat.score}
+                        totalScore={stat.totalScore}
+                        percentage={stat.percentage}
+                      />
+                    </Link>
+                  ))}
+                </section>
               )}
             </TabsContent>
            </Tabs>
         </div>
       </main>
-    </div>
   );
 }

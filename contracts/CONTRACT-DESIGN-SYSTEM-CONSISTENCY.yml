@@ -1,0 +1,191 @@
+id: CONTRACT-DS-CONSISTENCY-001
+title: "Design System Consistency — UI & Props Fixes"
+type: section
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "contracts/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Контракт описывает исправления и унификацию по дизайн‑системе:
+  корректировка паддингов и высоты панели действий «Студенты»,
+  согласование типографики через компоненты H3, устранение рассинхронизации
+  пропсов и дублирования компонентов GroupCard, а также перевод хардкода
+  цветов на дизайн‑токены. Дополнительно включает устранение ChunkLoadError
+  через очистку кэша и корректный перезапуск dev‑сервера.
+
+cynefin_domain: Complicated
+
+scope:
+  - "Панель действий на странице `app/dashboard/[id]#students`"
+  - "Компонент `src/components/ui/group-card.tsx`"
+  - "Компонент `components/feature/GroupCard.tsx`"
+  - "Демо `src/app/feature-group-cards-demo/page.tsx`"
+  - "Страницы с CardTitle и сырыми цветами: results/tests/tasks/answers/create-test"
+  - "Файл токенов/стилей: `app/globals.css`"
+
+props:
+  required:
+    - name: actionPanel
+      type: Selector | ComponentPath
+      description: Путь/селектор внешнего контейнера панели действий «Студенты» с паддингами.
+    - name: selectAllControl
+      type: Selector | ComponentPath
+      description: Путь/селектор контрола «Выбрать всех», требующего согласованной высоты.
+    - name: designTokens
+      type: TokenSetRef
+      description: Набор токенов/переменных для замены сырых цветов (styles/tokens.*, lib/tokens).
+    - name: typography
+      type: TypoComponentsRef
+      description: Компоненты типографики (H1/H2/H3) из `@/components/ui/typography`.
+    - name: groupCardFeature
+      type: ReactComponent
+      description: Компонент `@/components/feature/GroupCard` c поддержкой `onInvite` и `testsCount`.
+    - name: groupCardUi
+      type: ReactComponent
+      description: Компонент `src/components/ui/group-card.tsx`, должен использовать `H3`.
+  optional:
+    - name: lintRules
+      type: LintRuleSet
+      default: {}
+      description: Правила ESLint/Stylelint для запрета сырых `text-*`/`bg-*` вне токенов.
+    - name: auditedPages
+      type: string[]
+      default:
+        - "app/results/page.tsx"
+        - "app/tests/page.tsx"
+        - "app/tests-old/page.tsx"
+        - "app/create-test/page.tsx"
+        - "app/tasks/page.tsx"
+        - "app/answers/page.tsx"
+      description: Страницы для первичного аудита цветов и типографики.
+
+invariants:
+  - "Внешний контейнер панели действий использует `py-3` вместо `p-3`."
+  - "Контрол «Выбрать всех» имеет высоту `h-9`; внутренние боковые отступы восстановлены `px-3`."
+  - "Заголовки категорий Skills рендерятся через компонент `H3`; сырые `h3 text-lg font-semibold` отсутствуют."
+  - "Заголовок `GroupCard` в `src/components/ui/group-card.tsx` рендерится через `H3`."
+  - "Компонент `feature/GroupCard` объявляет опциональный проп `onInvite?: (id: string) => void`."
+  - "`testsCount` передаётся в демо `feature-group-cards-demo` и является обязательным для `GroupCard`."
+  - "Цвета/фоны используют дизайн‑токены (`bg-background`, `bg-card`, `text-muted-foreground`, `text-destructive` или кастомные токены); сырых `bg-white`/`text-gray-*` нет в изменённых файлах."
+  - "Линтер и тайпчек чисты; отсутствует ChunkLoadError после очистки `.next` и перезапуска dev‑сервера."
+
+dependencies:
+  - typescript
+  - react
+  - nextjs
+  - tailwindcss
+  - design_tokens
+
+anti_patterns:
+  - pattern: "Снятие паддингов не в том контейнере"
+    detection: "Убраны `px-*` у внутреннего блока вместо внешнего"
+    why_bad: "Ломает внутреннюю компоновку контрола; нарушает согласованность"
+    fix: "Снимать `px-*` во внешнем контейнере; внутренние `px-3` восстановить"
+  - pattern: "Сырые цвета текстов/фонов"
+    detection: "Используются `bg-white`, `text-gray-*`, `text-red-500`"
+    why_bad: "Несогласованность с дизайн‑системой; проблемы тёмной темы"
+    fix: "Перевести на токены `bg-background`, `bg-card`, `text-muted-foreground`, `text-destructive`"
+  - pattern: "Ручные размеры типографики"
+    detection: "`text-lg/text-xl/text-base` на заголовках"
+    why_bad: "Нарушение единообразия типографики"
+    fix: "Использовать `H1/H2/H3` из `@/components/ui/typography`"
+  - pattern: "Дублирующийся GroupCard"
+    detection: "Две реализации расходятся по пропсам/стилям"
+    why_bad: "Риск рассинхронизации и дефектов"
+    fix: "Консолидировать или явно алиасировать; синхронизировать пропсы"
+  - pattern: "Застрявшие чанки"
+    detection: "ChunkLoadError при навигации/рендере"
+    why_bad: "Неработающий UI и сбои загрузки модулей"
+    fix: "Остановить сервер, удалить `.next`, перезапустить; при необходимости очистить SW/кэш браузера"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "YAML соответствует метасхеме METACONTRACT"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Изменения соответствуют описанию контракта"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Контракт и изменения прошли ревью"
+    validation: "manual"
+  - name: "Visual Consistency"
+    description: "Высота/паддинги панели и контролов согласованы; заголовки через H3"
+    validation: "manual"
+  - name: "Tokenization"
+    description: "В изменённых файлах нет сырых `bg-*`/`text-*`; используются токены"
+    validation: "automated"
+  - name: "Typography Standardization"
+    description: "Сырые `h3 text-lg` заменены на `H3`"
+    validation: "automated"
+  - name: "Props Consistency"
+    description: "`onInvite` объявлен; `testsCount` передаётся в демо"
+    validation: "automated"
+  - name: "No ChunkLoadError"
+    description: "После очистки кэша и перезапуска dev‑сервера ошибок загрузки чанков нет"
+    validation: "manual"
+
+plan_alignment:
+  approved_patches:
+    - id: patch-1-action-panel-padding
+      summary: Заменить `p-3` на `py-3` у внешнего контейнера панели; восстановить `px-3` у контрола.
+      notes:
+        - Выравнивание высоты `Выбрать всех` до `h-9` для соответствия кнопкам.
+    - id: patch-2-typography-h3
+      summary: Заменить сырые `h3 text-lg font-semibold` на `H3` в Skills и GroupCard.
+      notes:
+        - Импорт `H3` из `@/components/ui/typography`.
+    - id: patch-3-groupcard-props
+      summary: Объявить `onInvite?` в feature/GroupCard; обеспечить передачу обязательного `testsCount` в демо.
+      notes:
+        - Устранить TS‑диагностику; синхронизировать пропсы.
+    - id: patch-4-color-tokens
+      summary: В изменяемых файлах заменить сырые `bg-*`/`text-*` на системные токены.
+      notes:
+        - Использовать `bg-background`, `bg-card`, `text-muted-foreground`, `text-destructive` или токены из `globals.css`.
+    - id: patch-5-chunk-cache
+      summary: Очистка `.next` и перезапуск dev‑сервера для устранения `ChunkLoadError`.
+      notes:
+        - Закрыть старые вкладки/порты; выполнить hard refresh.
+
+implementation_plan:
+  - name: Fix Students Action Panel spacing
+    steps:
+      - Найти контейнер панели действий и заменить `p-3` на `py-3`.
+      - Вернуть `px-3` для контрола «Выбрать всех» и выставить `h-9`.
+      - Проверить визуально соответствие высоты и отсутствие боковых паддингов.
+  - name: Standardize H3 Typography
+    steps:
+      - В `app/dashboard/[id]/GroupStatsClient.tsx` заменить сырые заголовки категорий на `H3`.
+      - В `src/components/ui/group-card.tsx` заменить заголовок карточки на `H3`.
+      - Пробежаться по страницам с `CardTitle` и зафиксировать места с ручными размерами для последующей унификации.
+  - name: Align GroupCard Props & Demo
+    steps:
+      - Добавить `onInvite?: (id: string) => void` в `components/feature/GroupCard.tsx`.
+      - Обеспечить передачу обязательного `testsCount` в `src/app/feature-group-cards-demo/page.tsx`.
+      - Проверить, что демо рендерится без TS/консольных ошибок.
+  - name: Tokenize Colors (targeted)
+    steps:
+      - В изменяемых файлах убрать `bg-white`, `text-gray-*`, `text-red-500`.
+      - Заменить на `bg-background`, `bg-card`, `text-muted-foreground`, `text-destructive` или токены из `globals.css`.
+      - Оставить заметки о местах, требующих полного рефактора страниц.
+  - name: Resolve ChunkLoadError
+    steps:
+      - Остановить dev‑сервер, удалить `.next`.
+      - Перезапустить `npm run dev`; закрыть вкладки на старых портах; выполнить hard refresh.
+      - Проверить отсутствие ошибок загрузки чанков на `dashboard` и демо.
+
+verification:
+  - grep:
+      - Проверка отсутствия сырых `h3 text-lg font-semibold` в изменённых файлах.
+      - Поиск `bg-white`, `text-gray-`, `text-red-500` в изменяемых файлах.
+  - typecheck:
+      - `tsc --noEmit` проходит без ошибок.
+  - browser:
+      - Визуальная проверка `http://localhost:<port>/dashboard/1#students` и `/feature-group-cards-demo`.
+      - Консоль без ошибок, заголовки через `H3`, контролы выровнены по высоте.
+  - devserver:
+      - После очистки `.next` сервер стартует; отсутствуют ChunkLoadError при навигации.

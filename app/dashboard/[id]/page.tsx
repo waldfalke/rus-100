@@ -47,11 +47,15 @@ export default async function GroupPage({ params }: GroupPageProps) {
   const group = mockGroups.find(g => g.id === id);
   const isDraft = group?.status === 'draft';
 
+  // Для групп 4 и 6 принудительно показываем статистический вид,
+  // чтобы страница была консистентна с остальными.
+  const forceStatsView = id === '4' || id === '6';
+
   // Черновики → страница редактирования/управления
   // Активные/архивные → статистика с таблицей
-  if (isDraft) {
-    return <GroupPageClient />;
+  if (forceStatsView || !isDraft) {
+    return <GroupStatsClient groupId={id} />;
   }
 
-  return <GroupStatsClient groupId={id} />;
+  return <GroupPageClient />;
 }

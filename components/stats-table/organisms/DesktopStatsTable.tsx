@@ -49,8 +49,8 @@ export function DesktopStatsTable({
 }: DesktopStatsTableProps) {
   return (
     <div className="desktop-table">
-      {/* Header table - БЕЗ overflow, sticky к viewport */}
-      <div className="overflow-x-auto [scrollbar-gutter:stable]" ref={headerScrollRef}>
+      {/* Header table - БЕЗ overflow для tooltip, скроллится синхронно с body */}
+      <div className="overflow-visible [scrollbar-gutter:stable]" ref={headerScrollRef}>
         <table className="w-full" ref={headerTableRef}>
           {columnWidths.length > 0 && (
             <colgroup>
@@ -66,9 +66,10 @@ export function DesktopStatsTable({
                 <tr>
                   <th
                     className={cn(
-                      "student-column sticky top-0 z-20 bg-muted cursor-pointer hover:bg-muted/50 select-none",
-                      stickyStudent && "sticky left-0"
+                      "student-column bg-muted cursor-pointer hover:bg-muted/50 select-none",
+                      "sticky top-0 left-0 z-25"
                     )}
+                    style={{ width: '200px', minWidth: '200px', maxWidth: '200px' }}
                     rowSpan={2}
                     onClick={() => onSort('student')}
                   >
@@ -98,7 +99,7 @@ export function DesktopStatsTable({
                       column={column}
                       sortState={sortState}
                       onSort={onSort}
-                      style={{ top: '48px' }}
+                      style={{ top: '28px' }}
                     />
                   ))}
                 </tr>
@@ -111,6 +112,7 @@ export function DesktopStatsTable({
                     "student-column sticky top-0 z-20 bg-muted cursor-pointer hover:bg-muted/50 select-none",
                     stickyStudent && "sticky left-0"
                   )}
+                  style={{ width: '200px', minWidth: '200px', maxWidth: '200px' }}
                   onClick={() => onSort('student')}
                 >
                   <div className="flex items-center justify-start">

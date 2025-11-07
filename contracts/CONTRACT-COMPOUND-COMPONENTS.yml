@@ -1,0 +1,99 @@
+id: CONTRACT-COMPOUND-COMPONENTS-001
+title: "Compound Components — Slot/Context Contract"
+type: ui
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for Compound Components where a Parent component provides
+  context and a set of coordinated Child components consume it via slots.
+  Ensures stable public API, predictable composition, support for controlled and
+  uncontrolled modes, and elimination of prop-drilling.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: parent
+      type: ReactComponent
+      description: Parent component exposing public API and creating Context provider.
+    - name: contextShape
+      type: ContextSpec
+      description: Shape/types of data provided via Context to all children.
+    - name: slots
+      type: Record<string, SlotSpec>
+      description: Declared child slots with roles (e.g., Header, Item, Footer).
+    - name: controlledProps
+      type: string[]
+      description: Names of props that put Parent into controlled mode when provided.
+  optional:
+    - name: uncontrolledDefaults
+      type: Record<string, unknown>
+      default: {}
+      description: Defaults used in uncontrolled mode.
+    - name: order
+      type: string[]
+      default: []
+      description: Declarative render order for non-positional slots (optional).
+    - name: errorPolicy
+      type: { missingContext: string, invalidSlot: string }
+      default: { missingContext: "MissingContextError", invalidSlot: "InvalidSlotError" }
+      description: Error codes for common misuse cases.
+
+invariants:
+  - "Children MUST read state via Context; prop-drilling beyond one level is forbidden."
+  - "Parent is the single source of truth; controlled/uncontrolled parity MUST hold."
+  - "Slots MUST be declared and validated; unknown slots raise InvalidSlotError."
+  - "Missing Context MUST produce a typed MissingContextError."
+  - "Children MUST be render-order agnostic unless explicitly documented."
+
+dependencies:
+  - typescript
+  - react
+
+anti_patterns:
+  - pattern: "Prop drilling"
+    detection: "Children receive Parent state via props across >1 level"
+    why_bad: "Breaks encapsulation, increases coupling, complicates refactors"
+    fix: "Move shared state to Context; children consume via hooks"
+  - pattern: "Undeclared slots"
+    detection: "Children rendered without registration in slots spec"
+    why_bad: "Implicit coupling and unpredictable composition"
+    fix: "Declare slots with roles; validate at runtime and in tests"
+  - pattern: "Context version drift"
+    detection: "Children expect fields absent from current ContextShape"
+    why_bad: "Runtime failures and brittle API"
+    fix: "Version and validate ContextShape; provide migrations"
+  - pattern: "Mixed visual and logic"
+    detection: "Parent owns heavy UI and domain logic together"
+    why_bad: "Hard to reuse and test"
+    fix: "Extract headless logic; keep Parent thin and composable"
+  - pattern: "Order-dependent children"
+    detection: "Correctness depends on child mounting order"
+    why_bad: "Non-determinism and fragile composition"
+    fix: "Derive behavior from Context state; avoid implicit order coupling"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Missing Context Error"
+    description: "Children outside Parent throw MissingContextError"
+    validation: "automated"
+  - name: "Slot Validation"
+    description: "Unknown slots rejected with InvalidSlotError"
+    validation: "automated"
+  - name: "Controlled/Uncontrolled Parity"
+    description: "Same user-visible behavior in both modes"
+    validation: "automated"

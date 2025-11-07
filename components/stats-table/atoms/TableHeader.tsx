@@ -27,15 +27,16 @@ export function TableHeader({
   return (
     <th
       className={cn(
-        "sticky z-10 bg-muted text-center border-b text-xs whitespace-nowrap overflow-hidden",
+        "sticky z-10 bg-muted text-center border-b text-xs whitespace-nowrap",
         isSortable && "cursor-pointer hover:bg-muted/50 select-none",
+        column.isHidden && "column-hidden",
         className
       )}
       style={style}
       onClick={() => isSortable && onSort(column.key)}
     >
       <div className="flex items-center justify-center gap-0.5 px-1 py-2">
-        <span className="truncate">{column.label}</span>
+        <span>{column.label}</span>
         {isSortable && (
           <SortIcon isActive={isActive} direction={sortState.direction} />
         )}

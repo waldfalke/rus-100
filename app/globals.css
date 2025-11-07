@@ -525,3 +525,7 @@ h3.md\:text-app-h3 {
     line-height: 1 !important;
   }
 }
+/* Fix for ResponsiveStatsTable sticky header inside TabsContent */
+.table-tab-content {
+  display: block;
+}

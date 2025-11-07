@@ -1,9 +1,14 @@
 import * as React from 'react'
+import { StatColumn } from '../types'
 
 /**
  * Хук для синхронизации ширины колонок между header и body таблицей
  */
-export function useColumnWidths(isMobile: boolean, dependencies: any[] = []) {
+export function useColumnWidths(
+  isMobile: boolean,
+  columns: StatColumn[],
+  dependencies: any[] = []
+) {
   const desktopHeaderScrollRef = React.useRef<HTMLDivElement>(null)
   const desktopBodyScrollRef = React.useRef<HTMLDivElement>(null)
   const desktopHeaderTableRef = React.useRef<HTMLTableElement>(null)
@@ -22,15 +27,12 @@ export function useColumnWidths(isMobile: boolean, dependencies: any[] = []) {
 
     // Функция синхронизации ширин колонок
     const syncColumnWidths = () => {
-      const headerCells = Array.from(headerTable.querySelectorAll('thead tr:first-child th'))
-
-      // Устанавливаем фиксированные ширины без измерения
-      const widths = headerCells.map((headerCell, idx) => {
-        // Первая колонка (студент) - 200px
-        if (idx === 0) return 200
-        // Остальные колонки - 70px
-        return 70
-      })
+      // Генерируем ширины на основе реального количества колонок
+      // 1 колонка студента (200px) + N колонок данных (80px для видимых, 0px для скрытых)
+      const widths = [
+        200,  // Колонка студента
+        ...columns.map(col => col.isHidden ? 0 : 80)  // 0 для скрытых, 80 для видимых
+      ]
 
       // Устанавливаем fixed layout
       headerTable.style.tableLayout = 'fixed'
@@ -39,9 +41,10 @@ export function useColumnWidths(isMobile: boolean, dependencies: any[] = []) {
       // Вычисляем общую ширину таблицы
       const totalWidth = widths.reduce((sum, w) => sum + w, 0)
 
-      // Устанавливаем минимальную ширину для обеих таблиц
-      headerTable.style.minWidth = `${totalWidth}px`
-      bodyTable.style.minWidth = `${totalWidth}px`
+      // Устанавливаем точную ширину для обеих таблиц (не minWidth!)
+      // Это предотвращает растягивание первой колонки при collapse
+      headerTable.style.width = `${totalWidth}px`
+      bodyTable.style.width = `${totalWidth}px`
 
       // Сохраняем вычисленные ширины в state
       setColumnWidths(widths.map(w => `${w}px`))
@@ -81,7 +84,7 @@ export function useColumnWidths(isMobile: boolean, dependencies: any[] = []) {
       }
       resizeObserver.disconnect()
     }
-  }, [isMobile, ...dependencies])
+  }, [isMobile, columns, ...dependencies])
 
   return {
     desktopHeaderScrollRef,

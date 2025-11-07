@@ -15,6 +15,7 @@ export interface StatColumn {
   type: 'score' | 'percentage' | 'count' | 'text'
   format?: (value: any) => string
   sortable?: boolean
+  isHidden?: boolean
 }
 
 export interface ColumnGroup {
@@ -35,7 +36,7 @@ export interface TaskDetails {
 }
 
 export interface StatData {
-  [key: string]: number | TaskDetails
+  [key: string]: number | string | TaskDetails
 }
 
 export type SortDirection = 'asc' | 'desc' | null

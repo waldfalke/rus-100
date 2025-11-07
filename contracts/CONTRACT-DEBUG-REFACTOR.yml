@@ -1,0 +1,128 @@
+meta:
+  id: DEBUG-REFACTOR
+  pattern: Process
+  title: Контракт на дебаггинг и рефакторинг
+  status: draft
+
+purpose:
+  - Обеспечить управляемый, воспроизводимый и проверяемый процесс устранения дефектов.
+  - Минимизировать регрессии и непреднамеренные изменения при рефакторинге.
+  - Повысить наблюдаемость, тестируемость и производительность без ухудшений UX.
+
+scope:
+  - Применим ко всем фронтенд-модулям (React/TSX, CSS, hooks, utils).
+  - Особый фокус на компонентах таблицы статистики и их стилях.
+  - Взаимодействие с контейнерами вкладок (Radix Tabs), sticky в табпанелях.
+
+properties:
+  - reproducibility: Требуется сценарий воспроизведения дефекта с шагами и входными данными.
+  - characterization_tests: Добавлять/обновлять тесты, фиксирующие существующее поведение до рефакторинга.
+  - minimal_surface: Изменения ограничивать локальными областями без «проезда мимо».
+  - observability: Временная инструментализация (метрики/логирование) при дебаге, удаляется перед мерджем.
+  - performance_baseline: Фиксация базовых метрик до/после (рендер-тайм, scroll-jank, CLS).
+  - accessibility_guardrails: Проверка фокуса, ARIA, контраста и клавиатурной навигации.
+  - traceability: Связка «проблема → гипотеза → фикс → тесты → метрики → результат» документируется.
+  - atomic_commits: Мелкие, атомарные коммиты с осмысленными сообщениями.
+  - hydration_safety: Избегать SSR-гидрационных конфликтов при определении isMobile; вычислять на клиенте.
+  - import_cleanup: Полная унификация импорта `ResponsiveStatsTable` на `@/components/stats-table`.
+  - sticky_diagnostics: Проверка цепочки предков на overflow/transform/contain/z-index, влияющих на sticky.
+
+invariants:
+  - no_regression: Существующие тесты не ломаются; функциональность сохраняется или улучшается.
+  - no_debug_artifacts: console.log, временные стили, скрытые флаги удалены перед мерджем.
+  - lint_types_clean: Линтер и тайпчек проходят; нет предупреждений в консоли браузера.
+  - tokens_consistency: Новые стили завязаны на токены/переменные, без хардкода.
+  - key_stability: Ключи списков устойчивы при изменении набора элементов.
+  - sticky_consistency: Sticky-поведение работает во всех целевых контейнерах.
+  - ssr_mobile_safe: Нет предупреждений о гидрации; первоначальный рендер согласован с клиентским состоянием.
+  - imports_updated: В кодовой базе отсутствуют импорты из `@/components/ui/responsive-stats-table`.
+  - tabs_ok: Sticky/скролл корректно работает внутри TabsContent, включая полноэкранный режим.
+
+dependencies:
+  - vitest: Юнит/компонентные тесты.
+  - playwright: E2E/визуальные проверки.
+  - design_tokens: CSS-переменные и токены из `styles/tokens.*.css` и `lib/tokens`.
+
+anti_patterns:
+  - name: Drive-by refactor
+    detect: Изменения в несвязанных файлах без подтверждённой связи с дефектом.
+    reason: Увеличивает риск регрессий и усложняет трассировку.
+    fix: Ограничить поверхность изменений; разделить задачи на атомарные патчи.
+  - name: Refactor without tests
+    detect: Нет новых/обновлённых тестов на изменённые пути выполнения.
+    reason: Повышает вероятность скрытых дефектов.
+    fix: Добавить characterization-тесты до и после фикса.
+  - name: Debug logs left behind
+    detect: Остались console.log, временные метрики или флаги.
+    reason: Шум, утечки данных, замедление.
+    fix: Удалить артефакты; сохранить только структурную телеметрию через предусмотренные каналы.
+  - name: Magic numbers
+    detect: Жёсткие значения ширин/отступов/цветов вне токенов.
+    reason: Неконсистентные стили, сложная поддержка.
+    fix: Заменить на CSS-переменные/токены; обновить таблицу соответствий.
+  - name: Sticky in hostile overflow
+    detect: Sticky не работает из-за родительских overflow/stacking.
+    reason: Хрупкое поведение в реальном DOM.
+    fix: Перестроить контейнеры/слои, убрать конфликтующие overflow, согласовать z-index.
+  - name: Unstable keys
+    detect: Ключи зависят от неполн. контекста (только column.key).
+    reason: Коллизии при изменении набора элементов.
+    fix: Композитные ключи (контекст + идентификатор сущности).
+
+plan_alignment:
+  approved_patches:
+    - id: patch-1-sticky-tabs
+      summary: Вкладка с таблицей получает класс `table-tab-content`; ей принудительно задаётся `display: block`.
+      notes:
+        - `display:flex` сам по себе обычно не ломает sticky; ключевой фактор — `overflow/transform/contain` у предков.
+        - Если фикса недостаточно, проверить и скорректировать: `overflow: hidden` у `.responsive-stats-table`, конфликтующие `transform`/`filter`, слои z-index.
+    - id: patch-2-imports-css
+      summary: Переезд импорта на `@/components/stats-table`; удаление дубликатов из `components/ui`.
+      notes:
+        - Обновить все вхождения: `app/create-test/page.tsx`, `app/groups/[id]/GroupStatsClient.tsx`, `app/groups/[id]/statistics/page.tsx`, `components/CustomTestsStats.tsx`.
+        - Перед удалением файлов выполнить поиск вхождений и убедиться в нуле оставшихся ссылок.
+    - id: patch-3-conditional-render
+      summary: Рендерить либо мобильную, либо десктопную версию по `isMobile` вместо CSS-скрытия.
+      notes:
+        - Обеспечить SSR-безопасность (вычислять `isMobile` на клиенте, избегать гидрационных предупреждений).
+    - id: patch-4-tokenization
+      summary: Замена «магических чисел» на CSS-переменные/токены дизайна по таблице соответствий.
+
+implementation_plan:
+  - name: Fix sticky in TabsContent
+    steps:
+      - Добавить класс `table-tab-content` к `<TabsContent value="table" ...>`.
+      - В `app/globals.css` прописать `.table-tab-content { display: block; }`.
+      - Провести sticky-диагностику: проверить родительские `overflow`, `transform`, `contain`, `z-index`.
+      - При необходимости скорректировать `.responsive-stats-table { overflow: hidden; }` на более безопасную стратегию для sticky-левых колонок.
+  - name: Unify imports and remove duplicates
+    steps:
+      - Заменить импорты `@/components/ui/responsive-stats-table` на `@/components/stats-table` глобально.
+      - Удалить `components/ui/responsive-stats-table.tsx` и `components/ui/responsive-stats-table.css` после проверки отсутствия ссылок.
+  - name: Conditional rendering by isMobile
+    steps:
+      - Обернуть рендеринг в тернарный оператор `{isMobile ? <Mobile/> : <Desktop/>}`.
+      - Убедиться, что вычисление `isMobile` производится на клиенте (`useEffect`), и начальный SSR не ломает гидрацию.
+      - Удалить CSS-правила, скрывающие/показывающие версии таблицы.
+  - name: Tokenize magic numbers
+    steps:
+      - Заменить значения: `768px`, `200px`, `80px`, `96px/56px`, `28px` на соответствующие токены/переменные.
+      - Обновить документацию по токенам в styles/tokens.* и README.
+
+verification:
+  - playwright:
+      - Скролл внутри `TabsContent[value="table"]`: заголовок не прокручивается; левый столбец прилипает.
+      - Проверка десктоп/мобайл: в DOM присутствует только соответствующая версия таблицы.
+  - vitest:
+      - Тест устойчивости ключей: отсутствие коллизий при добавлении/удалении колонок и студентов.
+      - Тест `isMobile`: начальный SSR рендер без предупреждений, переключение после mount.
+  - grep:
+      - Проверка отсутствия `@/components/ui/responsive-stats-table` после миграции.
+
+acceptance_criteria:
+  - Docs: Документ с воспроизведением, гипотезами и результатами метрик.
+  - Tests: Новые/обновлённые тесты покрывают исправленные пути выполнения (Vitest/Playwright).
+  - Metrics: Производительность не хуже baseline; приоритетно улучшена.
+  - Styles: Магические числа сведены к нулю в изменённых файлах; стили используют токены.
+  - UX/A11y: Нет регрессий; базовые проверки доступности проходят.
+  - Clean: Нет временных логов/флагов; lint и type-check чисты.

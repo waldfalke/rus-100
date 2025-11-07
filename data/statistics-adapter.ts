@@ -331,3 +331,104 @@ export function getTaskStatisticsByGroupId(groupId: string): Record<string, Stat
 
   return result;
 }
+
+export interface TableStats {
+  id: string;
+  title: string;
+  testsCompleted: number;
+  score: number;
+  totalScore: number;
+  percentage: number;
+}
+
+const tableData = `
+ Пунктуация
+Выполнено 3667 тестов.
+Набрано 20599 баллов из 27626 = 75%
+
+ Пунктуация. Контроль.
+Выполнено 1217 тестов.
+Набрано 7453 баллов из 9855 = 76%
+
+ Чекапы
+ Выполнено 282 теста.
+Набрано 1769 баллов из 2452 = 72%.
+
+ Сочинение
+ Сочинение. Контроль.
+ Сгенерированные тесты
+ Грамматика
+ Грамматика контроль
+ ЕГКР (от ФИПИ)
+ Орфография
+ Орфография. Контроль
+ Орфография (тексты с пропущенными буквами)
+ Речь
+ Тесты в формате ЕГЭ
+ Сложные слова для блока "Орфография"
+ Задание 9
+ Наречия (задание 14)
+ Задание 4
+ Тренировочные варианты (задание 22)
+ Тренировочные варианты (задание 21)
+ Школа, 11 класс
+ Тестовая группа
+ Пунктуация
+ Повторение "Пунктуация"
+`;
+
+export function getTableStatisticsByGroupId(groupId: string): TableStats[] {
+  const lines = tableData.trim().split('\n');
+  const tableStats: TableStats[] = [];
+  let currentTable: Partial<TableStats> = {};
+  let idCounter = 0;
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+    if (trimmedLine === '') return;
+
+    if (trimmedLine.startsWith('Выполнено')) {
+      const testsCompleted = parseInt(trimmedLine.split(' ')[1]);
+      currentTable.testsCompleted = testsCompleted;
+    } else if (trimmedLine.startsWith('Набрано')) {
+      const parts = trimmedLine.split(' ');
+      const score = parseInt(parts[1]);
+      const totalScore = parseInt(parts[4]);
+      const percentage = parseInt(parts[6].replace(/[^0-9]/g, ''));
+      currentTable.score = score;
+      currentTable.totalScore = totalScore;
+      currentTable.percentage = percentage;
+      tableStats.push(currentTable as TableStats);
+      currentTable = {};
+    } else {
+      if (currentTable.title) {
+        tableStats.push({
+          id: (idCounter++).toString(),
+          title: currentTable.title,
+          testsCompleted: Math.floor(Math.random() * 1000),
+          score: Math.floor(Math.random() * 5000),
+          totalScore: Math.floor(Math.random() * 5000) + 5000,
+          percentage: Math.floor(Math.random() * 100),
+        } as TableStats);
+      }
+      currentTable = {
+        id: (idCounter++).toString(),
+        title: trimmedLine,
+      };
+    }
+  });
+
+  if (currentTable.title) {
+    tableStats.push({
+      id: (idCounter++).toString(),
+      title: currentTable.title,
+      testsCompleted: Math.floor(Math.random() * 1000),
+      score: Math.floor(Math.random() * 5000),
+      totalScore: Math.floor(Math.random() * 5000) + 5000,
+      percentage: Math.floor(Math.random() * 100),
+    } as TableStats);
+  }
+
+  console.log(tableStats);
+  return tableStats;
+}

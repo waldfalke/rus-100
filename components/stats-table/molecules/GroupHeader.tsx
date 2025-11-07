@@ -12,21 +12,23 @@ interface GroupHeaderProps {
  * Молекула: Заголовок группы колонок с collapse/expand
  */
 export function GroupHeader({ group, isCollapsed, onToggle }: GroupHeaderProps) {
-  const visibleColCount = isCollapsed ? 1 : group.columns.length
+  // colspan всегда равен полному количеству колонок в группе
+  // Скрытые колонки имеют width: 0 в <colgroup>, но остаются в DOM
+  const colSpan = group.columns.length
 
   return (
     <th
-      colSpan={visibleColCount}
+      colSpan={colSpan}
       className={cn(
         "sticky top-0 z-10 bg-muted text-center border-b border-r-2 cursor-pointer hover:bg-muted/80 select-none",
-        "font-semibold text-sm whitespace-nowrap"
+        "font-semibold text-sm"
       )}
       onClick={() => onToggle(group.key)}
-      title={isCollapsed ? "Развернуть группу" : "Свернуть группу"}
+      title={group.name}
     >
       <div className="flex items-center justify-center gap-1 py-1 px-2">
-        <span>{group.name}</span>
-        <span className="text-xs text-muted-foreground">
+        <span className="whitespace-nowrap">{group.name}</span>
+        <span className="text-xs text-muted-foreground flex-shrink-0">
           {isCollapsed ? '▶' : '▼'}
         </span>
       </div>

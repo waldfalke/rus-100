@@ -11,6 +11,7 @@ const demoGroups = [
     description: "Начальный уровень: базовая грамматика и лексика",
     status: "active" as const,
     participantCount: 18,
+    testsCount: 12,
     createdAt: "2024-05-12",
   },
   {
@@ -19,6 +20,7 @@ const demoGroups = [
     description: "Подготовка к экзамену по орфографии",
     status: "active" as const,
     participantCount: 22,
+    testsCount: 18,
     createdAt: "2024-07-01",
   },
   {
@@ -27,6 +29,7 @@ const demoGroups = [
     description: "Практика написания сочинений разных типов",
     status: "archived" as const,
     participantCount: 15,
+    testsCount: 9,
     createdAt: "2024-02-20",
   },
   {
@@ -35,6 +38,7 @@ const demoGroups = [
     description: "Тестовые данные для демонстрации",
     status: "draft" as const,
     participantCount: 0,
+    testsCount: 0,
     createdAt: "2025-01-10",
   },
 ]
@@ -45,7 +49,7 @@ export default function FeatureGroupCardsDemoPage() {
   const handleEdit = (id: string) => console.log("Edit:", id)
   const handleArchive = (id: string) => console.log("Archive:", id)
   const handleDelete = (id: string) => console.log("Delete:", id)
-  const handleOpen = (id: string) => router.push(`/groups/${id}`)
+  const handleOpen = (id: string) => router.push(`/dashboard/${id}`)
   const handleInvite = (id: string) => console.log("Invite:", id)
 
   return (
@@ -60,6 +64,7 @@ export default function FeatureGroupCardsDemoPage() {
             description={group.description}
             status={group.status}
             participantCount={group.participantCount}
+            testsCount={group.testsCount}
             createdAt={group.createdAt}
             onEdit={() => handleEdit(group.id)}
             onArchive={() => handleArchive(group.id)}

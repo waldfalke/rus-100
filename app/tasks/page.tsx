@@ -30,7 +30,7 @@ export default function TasksPage() {
   const navLinks: NavLink[] = [
     { label: 'Главная', href: '/' },
     { label: 'Тесты', href: '/tests' },
-    { label: 'Все группы', href: '/groups' },
+    { label: 'Дашборд', href: '/dashboard' },
     { label: 'Профиль', href: '/account' },
   ];
 

@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ResponsiveStatsTable } from "@/components/ui/responsive-stats-table"
+import { ResponsiveStatsTable } from "@/components/stats-table"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -230,80 +230,59 @@ export function CustomTestsStats({
         </CardHeader>
         <CardContent>
           <ResponsiveStatsTable
-            data={{
-              students: sortedTests.map(test => ({
-                id: test.id,
-                name: test.title,
-                email: test.description || ''
-              })),
-              columns: [
-                {
-                  id: 'type',
-                  label: 'Тип',
-                  type: 'text',
-                  width: 120
-                },
-                {
-                  id: 'difficulty',
-                  label: 'Сложность',
-                  type: 'text',
-                  width: 100
-                },
-                {
-                  id: 'questions',
-                  label: 'Вопросы',
-                  type: 'number',
-                  width: 80
-                },
-                {
-                  id: 'assigned',
-                  label: 'Назначено',
-                  type: 'number',
-                  width: 100
-                },
-                {
-                  id: 'completed',
-                  label: 'Выполнено',
-                  type: 'number',
-                  width: 100
-                },
-                {
-                  id: 'completion_rate',
-                  label: 'Прогресс',
-                  type: 'percentage',
-                  width: 100
-                },
-                {
-                  id: 'average_score',
-                  label: 'Средний балл',
-                  type: 'percentage',
-                  width: 120
-                },
-                {
-                  id: 'status',
-                  label: 'Статус',
-                  type: 'text',
-                  width: 100
+            students={sortedTests.map(test => ({
+              id: test.id,
+              name: test.title,
+              email: test.description || ''
+            }))}
+            columns={[
+              { key: 'type', label: 'Тип', type: 'text' },
+              { key: 'difficulty', label: 'Сложность', type: 'text' },
+              { key: 'questions', label: 'Вопросы', type: 'count' },
+              { key: 'assigned', label: 'Назначено', type: 'count' },
+              { key: 'completed', label: 'Выполнено', type: 'count' },
+              { key: 'completion_rate', label: 'Прогресс', type: 'percentage' },
+              {
+                key: 'average_score',
+                label: 'Средний балл',
+                type: 'percentage',
+                // Добавляем форматирование, чтобы корректно отображать проценты
+                format: (value: any) => {
+                  const score =
+                    value && typeof value === 'object' && 'score' in value
+                      ? (value as any).score
+                      : value
+                  return typeof score === 'number' ? `${score.toFixed(1)}%` : `${score}`
                 }
-              ],
-              values: sortedTests.reduce((acc, test) => {
-                const completionRate = test.assignedStudents > 0 
-                  ? Math.round((test.completedStudents / test.assignedStudents) * 100) 
-                  : 0
-                
-                acc[test.id] = {
-                  type: typeConfig[test.type].label,
-                  difficulty: difficultyConfig[test.difficulty].label,
-                  questions: test.questionsCount,
-                  assigned: test.assignedStudents,
-                  completed: test.completedStudents,
-                  completion_rate: completionRate,
-                  average_score: test.averageScore || 0,
-                  status: statusConfig[test.status].label
-                }
-                return acc
-              }, {} as Record<string, Record<string, any>>)
-            }}
+              },
+              { key: 'status', label: 'Статус', type: 'text' }
+            ]}
+            data={sortedTests.reduce((acc, test) => {
+              const completionRate = test.assignedStudents > 0
+                ? Math.round((test.completedStudents / test.assignedStudents) * 100)
+                : 0
+
+              acc[test.id] = {
+                type: typeConfig[test.type].label,
+                difficulty: difficultyConfig[test.difficulty].label,
+                questions: test.questionsCount,
+                assigned: test.assignedStudents,
+                completed: test.completedStudents,
+                completion_rate: completionRate,
+                // Передаем объект TaskDetails, чтобы тултипы показывали подробности
+                average_score: {
+                  taskName: test.title,
+                  questionsCompleted: test.questionsCount, // агрегированное значение
+                  questionsTotal: test.questionsCount,
+                  successRate: Math.round(test.averageScore ?? 0),
+                  score: test.averageScore ?? 0,
+                  maxScore: 100,
+                  date: new Date(test.updatedAt || test.createdAt).toLocaleDateString('ru-RU')
+                },
+                status: statusConfig[test.status].label
+              }
+              return acc
+            }, {} as Record<string, import('./stats-table/types').StatData>)}
             className="w-full"
           />
         </CardContent>

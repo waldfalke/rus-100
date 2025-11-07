@@ -1,0 +1,13 @@
+{
+  "theme": "Default",
+  "selectedAuthType": "oauth-personal",
+  "model": "gemini-2.5-pro",
+  "contextFileName": "GEMINI.md",
+  "tokenCaching": true,
+  "importExcludes": [
+    "node_modules",
+    ".git",
+    "dist",
+    "build"
+  ]
+}

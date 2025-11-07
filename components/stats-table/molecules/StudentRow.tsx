@@ -24,10 +24,13 @@ export function StudentRow({
 }: StudentRowProps) {
   return (
     <tr>
-      <td className={cn(
-        "student-column bg-background",
-        stickyStudent && "sticky left-0 z-20"
-      )}>
+      <td
+        className={cn(
+          "student-column bg-background",
+          stickyStudent && "sticky left-0 z-20"
+        )}
+        style={{ width: '200px', minWidth: '200px', maxWidth: '200px' }}
+      >
         <StudentInfo student={student} />
       </td>
       {columns.map((column) => {

@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { MoreVertical, Edit, Archive, Trash2, Users, Folder, ArrowRight, TrendingUp, Activity } from "lucide-react";
 import { pluralizeStudents, pluralizeTests } from "@/lib/utils/pluralization";
 import { H3, P } from "@/components/ui/typography";
+import Link from "next/link";
 
 interface GroupStats {
   averageScore: number;
@@ -30,8 +31,7 @@ interface GroupCardProps {
   onArchive?: (id: string) => void;
   onDelete?: (id: string) => void;
   onOpen?: (id: string) => void;
-  onStudentsClick?: (id: string) => void;
-  onTestsClick?: (id: string) => void;
+  onInvite?: (id: string) => void;
   className?: string;
   isSelected?: boolean;
 }
@@ -49,8 +49,6 @@ export function GroupCard({
   onArchive,
   onDelete,
   onOpen,
-  onStudentsClick,
-  onTestsClick,
   className,
   isSelected = false
 }: GroupCardProps) {
@@ -186,28 +184,26 @@ export function GroupCard({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Button
+              asChild
               variant="ghost"
               size="sm"
               className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onStudentsClick?.(id);
-              }}
             >
-              <Users className="h-4 w-4 mr-1.5" />
-              <span>{pluralizeStudents(participantCount)}</span>
+              <Link href={`/dashboard/${id}#students`} onClick={(e) => e.stopPropagation()}>
+                <Users className="h-4 w-4 mr-1.5" />
+                <span>{pluralizeStudents(participantCount)}</span>
+              </Link>
             </Button>
             <Button
+              asChild
               variant="ghost"
               size="sm"
               className="h-8 px-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onTestsClick?.(id);
-              }}
             >
-              <Folder className="h-4 w-4 mr-1.5" />
-              <span>{pluralizeTests(testsCount)}</span>
+              <Link href={`/dashboard/${id}#table`} onClick={(e) => e.stopPropagation()}>
+                <Folder className="h-4 w-4 mr-1.5" />
+                <span>{pluralizeTests(testsCount)}</span>
+              </Link>
             </Button>
           </div>
 

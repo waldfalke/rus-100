@@ -39,7 +39,7 @@ interface NavLink {
 const DEFAULT_NAV_LINKS: NavLink[] = [
   { label: 'Главная', href: '/' },
   { label: 'Тесты', href: '/create-test' },
-  { label: 'Все группы', href: '/groups' },
+  { label: 'Дашборд', href: '/dashboard' },
   { label: 'Профиль', href: '/account' },
 ];
 

@@ -36,19 +36,52 @@ npm run lint                   # Run linting
 ```bash
 npm run test:e2e               # Run E2E tests (port 3001)
 npm run test:e2e:ui            # Run with Playwright UI
+npm run test:e2e:headed        # Run E2E with visible browser
+npm run test:e2e:debug         # Run E2E in debug mode
+npm run test:e2e:report        # View E2E test report
 npm run test:bdd               # Run BDD feature tests
+npm run test:bdd:ui            # Run BDD with Playwright UI
 npm run test:visual            # Visual regression tests
+npm run test:visual:update     # Update visual regression baselines
+npm run test                   # Run unit tests (Vitest)
+npm run test:watch             # Run unit tests in watch mode
+npm run test:all               # Run all tests (E2E + BDD + Visual)
 ```
 
 ### Design Tokens (Infrastructure)
 ```bash
 npm run build:tokens           # Build design tokens from JSON to CSS
+npm run build:tokens:watch     # Auto-rebuild tokens on changes
 npm run validate:tokens        # Validate token definitions
+npm run benchmark:tokens       # Performance benchmarking for tokens
+```
+
+### Code Verification Scripts
+```bash
+npm run verify:hardcoded       # Check for hardcoded values that should use tokens
+npm run verify:tokens-in-code  # Verify code uses valid token references
+npm run verify:css-injection   # Check for CSS injection vulnerabilities
+npm run verify:shadcn          # Verify shadcn components use tokens correctly
+```
+
+### Build Variants
+```bash
+npm run build                  # Standard production build
+npm run build:gh-pages         # Build for GitHub Pages (Unix/Mac)
+npm run build:gh-pages:win     # Build for GitHub Pages (Windows)
+npm run start:static           # Serve static build
+npm run start:static:local     # Serve static build on port 3000
 ```
 
 ### Storybook
 ```bash
 npm run storybook              # Component library (port 6006)
+```
+
+### Other Utilities
+```bash
+npm run audit:a11y             # Accessibility audit (requires server on 3001)
+npm run prepare:tests          # Update tests from components and sync tokens
 ```
 
 ## Teacher-Focused Features
@@ -174,8 +207,60 @@ export default function Page() {
 
 **Data Display**:
 - `GroupCard` - Group display card with actions
-- `responsive-stats-table` - Statistics table (needs fixes - see contract)
+- `responsive-stats-table` - Statistics table using Atomic Design (see below)
 - `statistics-card` - Individual stat cards
+
+### ResponsiveStatsTable - Atomic Architecture
+
+Located in `components/stats-table/`, this component follows **Atomic Design** principles:
+
+**Structure**:
+```
+components/stats-table/
+├── atoms/                      # Basic building blocks
+│   ├── SortIcon.tsx            # Sort indicator (3 states)
+│   ├── StudentInfo.tsx         # Student name + email block
+│   ├── TableCell.tsx           # Cell with tooltip
+│   └── TableHeader.tsx         # Sortable header
+├── molecules/                  # Composite components
+│   ├── GroupHeader.tsx         # Group header with collapse
+│   ├── StudentRow.tsx          # Student data row
+│   └── TotalsRow.tsx           # Averages row
+├── organisms/                  # Complex components
+│   ├── DesktopStatsTable.tsx   # Desktop table (>768px)
+│   └── MobileStatsTable.tsx    # Mobile version (≤768px)
+├── hooks/                      # Business logic
+│   ├── useTableSort.ts         # Sorting logic
+│   ├── useGroupCollapse.ts     # Collapse state
+│   ├── useScrollSync.ts        # Scroll synchronization
+│   └── useColumnWidths.ts      # Column width sync
+├── utils/                      # Pure functions
+│   └── formatters.ts           # Value formatting
+├── ResponsiveStatsTableOrganism.tsx  # Main coordinator
+├── types.ts                    # All TypeScript types
+└── responsive-stats-table.css  # Styles with tokens
+```
+
+**Usage**:
+```tsx
+import { ResponsiveStatsTable } from '@/components/stats-table'
+
+<ResponsiveStatsTable
+  students={studentData}
+  columnGroups={groups}  // or columns={flatColumns}
+  data={statsData}
+  stickyStudent={true}
+/>
+```
+
+**Key Features**:
+- Desktop: Sticky headers + student column, fullscreen mode
+- Mobile: A'/A'' pattern (fixed name row + scrolling data)
+- Column groups with collapse/expand
+- Detailed tooltips on hover (task details)
+- Design token integration (no hardcoded values)
+
+See `components/stats-table/README.md` for full API documentation.
 
 ### Typography System
 
@@ -200,9 +285,12 @@ leading-cyr-text      /* 1.6 - Cyrillic line height */
 Configured in `tsconfig.json`:
 ```typescript
 "@/*"           // Root
-"@/lib/*"       // Library code
+"@/lib/*"       // Library code (design tokens, utilities)
 "@/components/*" // Components
 "@/app/*"       // App pages
+"@/hooks/*"     // Custom React hooks
+"@/types/*"     // TypeScript type definitions
+"@/pages/*"     // Pages directory
 ```
 
 ## Design Token System (Infrastructure)
@@ -240,10 +328,39 @@ When tokens are modified:
 - `design-system/tokens/base/` - Primitive values
 - `design-system/tokens/themes/` - Light/dark themes
 - `design-system/tokens/components/` - Component-specific
-- `styles/tokens.light.css` - Generated CSS (light)
-- `styles/tokens.dark.css` - Generated CSS (dark)
+- `design-system/build.js` - Build script (transforms JSON → CSS)
+- `design-system/style-dictionary.config.js` - Style Dictionary configuration
+- `styles/tokens.light.css` - Generated CSS (light theme)
+- `styles/tokens.dark.css` - Generated CSS (dark theme)
 
 **Note**: Don't edit generated CSS files directly. Edit JSON sources.
+
+### lib/ Directory - Advanced Token System
+
+The `lib/` directory contains an advanced functional design token system with OKLCH color space support:
+
+```
+lib/
+├── color/                  # OKLCH color system
+│   ├── oklch.ts           # OKLCH color class
+│   └── palette-generator.ts
+├── context/               # Context-aware token resolution
+│   ├── ContextResolver.ts # Platform/accessibility detection
+│   └── PlatformDetector.ts
+├── components/            # React components for tokens
+│   ├── ThemeExample.tsx
+│   └── ContextDemo.tsx
+├── accessibility/         # WCAG validation
+│   └── wcag-validator.ts
+└── testing/              # Token testing utilities
+```
+
+**When to use lib/ tokens**:
+- Advanced features requiring context-aware resolution (platform detection, accessibility)
+- OKLCH color manipulation
+- Programmatic token access in React components
+
+**For most prototype work**: Use Tailwind classes or CSS variables instead.
 
 ## Contract-Based Development
 
@@ -265,6 +382,38 @@ Located in `docs/contracts/`:
 - ❌ Missing Esc key handler for fullscreen mode
 - ❌ 30+ hardcoded pixel values (should use design tokens)
 - ❌ Hardcoded breakpoints (should use Tailwind responsive utilities)
+
+## Deployment Configuration
+
+### GitHub Pages Static Export
+
+The project supports static site generation for GitHub Pages deployment:
+
+**Configuration** (`next.config.mjs`):
+- Environment variable `GITHUB_PAGES=true` activates GitHub Pages mode
+- `output: 'export'` - Enables static HTML export
+- `basePath: '/rus-100'` - GitHub Pages repository path
+- `assetPrefix: '/rus-100/'` - Asset URL prefix
+- `images.unoptimized: true` - No server-side image optimization
+
+**Build Commands**:
+```bash
+# Unix/Mac/Linux
+npm run build:gh-pages
+
+# Windows
+npm run build:gh-pages:win
+```
+
+**Important Notes**:
+- TypeScript errors are ignored during build (`ignoreBuildErrors: true`)
+- ESLint errors are ignored during build (`ignoreDuringBuilds: true`)
+- React Strict Mode is disabled for prototype development
+- Webpack hash function set to `xxhash64` (resolves WasmHash errors)
+
+### Vercel Deployment
+
+For standard Vercel deployment, use `npm run build` (no static export).
 
 ## Prototype Development Approach
 
@@ -403,28 +552,80 @@ const navLinks: NavLink[] = [
 
 ## Testing Considerations
 
-### E2E Tests
-- Run on port 3001 (configured in `playwright-e2e.config.ts`)
-- Tests will auto-start dev server if needed
+### Test Structure
+
+```
+tests/
+├── e2e/                       # E2E tests
+│   ├── *.spec.ts             # Standard Playwright tests
+│   ├── *.feature             # BDD feature files (Gherkin)
+│   └── design-tokens.spec.ts # Token validation tests
+├── visual/                    # Visual regression tests
+│   └── __screenshots__/      # Baseline screenshots
+└── setup/                     # Test configuration
+```
+
+### E2E Tests (Playwright)
+- **Configuration**: `playwright-e2e.config.ts`
+- **Port**: 3001 (auto-starts dev server)
+- **Test files**: `tests/e2e/*.spec.ts`
+- **Browser**: Chromium (Desktop Chrome)
+- **Reports**: `playwright-report/e2e/`
+- **Artifacts**: Screenshots/videos on failure only
+
+**Key Features**:
+- Auto-retry on CI (2 retries)
+- Trace recording on first retry
 - Focus on teacher workflows: group management, test creation
 
-### BDD Tests
-- Feature files in `tests/e2e/*.feature`
-- Written in Gherkin (Given/When/Then)
-- Run `npm run test:bdd` (auto-generates steps)
+### BDD Tests (Cucumber + Playwright)
+- **Configuration**: `playwright.config.ts`
+- **Feature files**: `tests/e2e/*.feature`
+- **Format**: Gherkin (Given/When/Then)
+- **Generator**: `bddgen` (auto-generates step definitions)
+- **Port**: Same as E2E (3001)
 
-### Visual Regression
-- Screenshot comparison tests
-- Use `npm run test:visual:update` to update baselines when UI intentionally changes
+**Workflow**:
+1. Write `.feature` file in Gherkin
+2. Run `bddgen` to generate step definitions
+3. Implement step logic
+4. Run `npm run test:bdd`
+
+### Visual Regression Tests
+- **Location**: `tests/visual/`
+- **Framework**: Playwright visual comparison
+- **Baseline**: `tests/visual/__screenshots__/`
+- **Update baselines**: `npm run test:visual:update`
+
+**When to update baselines**:
+- Intentional UI changes
+- Design token updates
+- Component refactoring with visual impact
+
+### Unit Tests (Vitest)
+- **Framework**: Vitest (fast Vite-based testing)
+- **Run**: `npm run test` or `npm run test:watch`
+- **Coverage**: Available via `@vitest/coverage-v8`
+
+### Validation Scripts
+
+Beyond tests, several validation scripts ensure code quality:
+
+- `verify:hardcoded` - Detects hardcoded values (should use tokens)
+- `verify:tokens-in-code` - Validates token references
+- `verify:css-injection` - Security check for CSS injection
+- `verify:shadcn` - Ensures shadcn components use tokens
+
+**Run before commits** to catch issues early.
 
 ## Known UX/UI Issues
 
 ### High Priority (UX)
-1. **Sticky headers broken** in responsive stats table (desktop)
-   - See: `CONTRACT-RESPONSIVE-STATS-TABLE-001-ADDENDUM.yml`
-   - Impact: Table headers scroll out of view
-   - This affects the demo experience
-   - Fix: Remove `.table-scroll-container` or restructure CSS
+1. **Stats table improvements needed**
+   - Recent work: Fixed column widths, improved layout (commits: acb3fbe, 29a21bc)
+   - Location: `components/stats-table/` (Atomic Design architecture)
+   - Known issue: Group 5 visibility (fixed in 55cf6e0)
+   - See component README: `components/stats-table/README.md`
 
 ### Medium Priority (Polish)
 1. **Hardcoded values in stats table CSS** (30+ instances)
@@ -514,6 +715,27 @@ npm run storybook              # Isolated component dev
 - ❌ Performance optimization beyond UX perception
 
 **Remember**: This is a **design validation tool**, not production software. Focus on making the UX clear and interactions polished.
+
+## Current Development State
+
+**Active Branch**: `enhanced-ui`
+
+**Recent Commits** (as of latest):
+- `acb3fbe` - Force fixed column widths instead of auto-measuring
+- `29a21bc` - Improve table layout and fix visual issues
+- `55cf6e0` - Rename table tab and fix group 5 visibility
+- `0642c82` - Add comprehensive README for stats-table atomic architecture
+- `af9cfe2` - Refactor ResponsiveStatsTable using Atomic Design
+
+**Modified Files** (uncommitted):
+- `components/stats-table/ResponsiveStatsTableOrganism.tsx`
+- `components/stats-table/atoms/TableCell.tsx`
+- `components/stats-table/hooks/useColumnWidths.ts`
+- `components/stats-table/molecules/*` (GroupHeader, StudentRow, TotalsRow)
+- `components/stats-table/organisms/DesktopStatsTable.tsx`
+- `components/stats-table/responsive-stats-table.css`
+
+**Current Focus**: Stats table refinement and visual polish
 
 ## Getting Started
 

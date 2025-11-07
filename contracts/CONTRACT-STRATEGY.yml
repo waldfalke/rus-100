@@ -1,0 +1,79 @@
+id: CONTRACT-STRATEGY-001
+title: "Strategy — Pluggable Policy Contract"
+type: utility
+version: 1.0
+complexity_level: simple
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for Strategy pattern: a stable policy interface with
+  multiple interchangeable implementations selected by name or predicate.
+  Guarantees deterministic selection, pure behavior, and consistent semantics.
+
+cynefin_domain: Simple
+
+props:
+  required:
+    - name: interface
+      type: StrategyInterface
+      description: Method signatures and behavior contract for strategies.
+    - name: strategies
+      type: Record<string, StrategyImpl>
+      description: Named implementations adhering to the interface.
+  optional:
+    - name: selector
+      type: StrategySelector
+      default: "default"
+      description: Name or function selecting the strategy.
+    - name: defaultStrategy
+      type: string
+      default: "default"
+      description: Fallback strategy name when selector yields none.
+
+invariants:
+  - "Strategies MUST be pure (no hidden side effects) unless documented."
+  - "Selection MUST be deterministic for the same inputs/config."
+  - "Interface MUST remain stable; implementations cannot change semantics."
+  - "At least two strategies MUST pass a shared contract test suite."
+
+dependencies:
+  - typescript
+
+anti_patterns:
+  - pattern: "Giant switch"
+    detection: "if/else or switch branching instead of separate implementations"
+    why_bad: "Hard to extend and test; violates open/closed"
+    fix: "Define interface and register implementations; remove branching"
+  - pattern: "State bleed"
+    detection: "Shared mutable state across strategies"
+    why_bad: "Non-deterministic behavior"
+    fix: "Isolate state per instance; pass state via args"
+  - pattern: "Selector magic"
+    detection: "Hidden env/time/random affects selection"
+    why_bad: "Flaky outcomes"
+    fix: "Config-driven selection; seed randomness"
+  - pattern: "Undocumented defaults"
+    detection: "DefaultStrategy not declared"
+    why_bad: "Surprising behavior"
+    fix: "Explicit default; document semantics"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Dual Strategies"
+    description: "≥2 strategies pass shared contract tests"
+    validation: "automated"
+  - name: "Deterministic Selection"
+    description: "Same inputs → same selected strategy"
+    validation: "automated"

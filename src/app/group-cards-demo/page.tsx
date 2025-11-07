@@ -90,7 +90,7 @@ export default function GroupCardsDemoPage() {
   }
 
   const handleOpen = (id: string) => {
-    router.push(`/groups/${id}`)
+    router.push(`/dashboard/${id}`)
   }
 
   return (

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { H3 } from "@/components/ui/typography"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -129,9 +130,7 @@ export function GroupCard({
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-3"> {/* Увеличено gap с 2 до 3 (12px) и mb с 2 до 3 */}
-              <h3 className="font-semibold text-lg leading-tight truncate"> {/* Увеличено с text-base до text-lg */}
-                {name}
-              </h3>
+              <H3 className="truncate">{name}</H3>
               <Badge 
                 variant={statusInfo.variant}
                 className={cn("text-sm px-3 py-1", statusInfo.className)}

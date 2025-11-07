@@ -39,7 +39,7 @@ export default function ResponsiveStatsTableOrganism({
   const { sortState, sortedStudents, handleSort } = useTableSort(students, data)
   const { collapsedGroups, toggleGroupCollapse, visibleColumns } = useGroupCollapse(columnGroups, columnsProp)
   const mobileScrollSync = useScrollSync([students.length])
-  const desktopColumnSync = useColumnWidths(isMobile, [students.length, visibleColumns.length])
+  const desktopColumnSync = useColumnWidths(isMobile, visibleColumns, [students.length])
 
   // Определение мобильного устройства
   useEffect(() => {
@@ -99,43 +99,43 @@ export default function ResponsiveStatsTableOrganism({
           </button>
         )}
 
-        {/* Десктопная версия */}
-        <div className="table-scroll-container">
-          <DesktopStatsTable
+        {isMobile ? (
+          <MobileStatsTable
             students={sortedStudents}
             columns={visibleColumns}
             columnGroups={columnGroups}
             data={data}
-            stickyStudent={stickyStudent}
             sortState={sortState}
             collapsedGroups={collapsedGroups}
-            columnWidths={desktopColumnSync.columnWidths}
             onSort={handleSort}
             onToggleGroup={toggleGroupCollapse}
             onCellClick={onCellClick}
-            headerScrollRef={desktopColumnSync.desktopHeaderScrollRef}
-            bodyScrollRef={desktopColumnSync.desktopBodyScrollRef}
-            headerTableRef={desktopColumnSync.desktopHeaderTableRef}
-            bodyTableRef={desktopColumnSync.desktopBodyTableRef}
-            isFullscreen={isFullscreen}
+            headerScrollRef={mobileScrollSync.headerScrollRef}
+            totalsScrollRef={mobileScrollSync.totalsScrollRef}
+            rowScrollRefs={mobileScrollSync.rowScrollRefs}
           />
-        </div>
-
-        {/* Мобильная версия */}
-        <MobileStatsTable
-          students={sortedStudents}
-          columns={visibleColumns}
-          columnGroups={columnGroups}
-          data={data}
-          sortState={sortState}
-          collapsedGroups={collapsedGroups}
-          onSort={handleSort}
-          onToggleGroup={toggleGroupCollapse}
-          onCellClick={onCellClick}
-          headerScrollRef={mobileScrollSync.headerScrollRef}
-          totalsScrollRef={mobileScrollSync.totalsScrollRef}
-          rowScrollRefs={mobileScrollSync.rowScrollRefs}
-        />
+        ) : (
+          <div className="table-scroll-container">
+            <DesktopStatsTable
+              students={sortedStudents}
+              columns={visibleColumns}
+              columnGroups={columnGroups}
+              data={data}
+              stickyStudent={stickyStudent}
+              sortState={sortState}
+              collapsedGroups={collapsedGroups}
+              columnWidths={desktopColumnSync.columnWidths}
+              onSort={handleSort}
+              onToggleGroup={toggleGroupCollapse}
+              onCellClick={onCellClick}
+              headerScrollRef={desktopColumnSync.desktopHeaderScrollRef}
+              bodyScrollRef={desktopColumnSync.desktopBodyScrollRef}
+              headerTableRef={desktopColumnSync.desktopHeaderTableRef}
+              bodyTableRef={desktopColumnSync.desktopBodyTableRef}
+              isFullscreen={isFullscreen}
+            />
+          </div>
+        )}
       </div>
     </TooltipProvider>
   )

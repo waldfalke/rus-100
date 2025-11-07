@@ -103,7 +103,7 @@ export function MobileStatsTable({
                 <div className="flex">
                   {columns.map((column) => (
                     <div
-                      key={column.key}
+                      key={`header-${column.key}`}
                       className={cn(
                         "header-cell text-xs",
                         (column.sortable !== false) && "cursor-pointer hover:bg-muted/50 select-none"
@@ -128,7 +128,7 @@ export function MobileStatsTable({
               <div className="stats-header-content">
                 {columns.map((column) => (
                   <div
-                    key={column.key}
+                    key={`header-${column.key}`}
                     className={cn(
                       "header-cell",
                       (column.sortable !== false) && "cursor-pointer hover:bg-muted/50 select-none"
@@ -164,7 +164,7 @@ export function MobileStatsTable({
                 const value = totalsData[column.key]
                 const formattedValue = formatValue(value, column)
                 return (
-                  <Tooltip key={column.key}>
+                  <Tooltip key={`total-${column.key}`}>
                     <TooltipTrigger asChild>
                       <div
                         className={cn(
@@ -219,7 +219,7 @@ export function MobileStatsTable({
                     const taskDetails = isTaskDetails ? (value as TaskDetails) : null
 
                     return (
-                      <Tooltip key={column.key}>
+                      <Tooltip key={`cell-${student.id}-${column.key}`}>
                         <TooltipTrigger asChild>
                           <div
                             className={cn(

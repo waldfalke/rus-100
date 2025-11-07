@@ -1,0 +1,91 @@
+id: CONTRACT-COMMAND-001
+title: "Command — Operation/Undo Contract"
+type: service
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for Command pattern: operations encapsulated as objects
+  with execute/cancel and optional undo/redo, queued by an Invoker and applied
+  to a Receiver. Ensures normalized errors and predictable history semantics.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: commandInterface
+      type: CommandInterface
+      description: execute() and optional undo()/redo() signatures with result types.
+    - name: invoker
+      type: InvokerSpec
+      description: Queuing, scheduling, and concurrency policy.
+    - name: receiver
+      type: ReceiverSpec
+      description: Target of command operations.
+  optional:
+    - name: history
+      type: HistorySpec
+      default: { enabled: true, maxDepth: 100 }
+      description: Undo/redo settings and storage.
+    - name: errorPolicy
+      type: { codeMap: Record<string, string> }
+      default: { codeMap: {} }
+      description: Normalization of execution errors.
+
+invariants:
+  - "Commands MUST be atomic units with clear success/failure outcomes."
+  - "Undo MUST restore previous state for undoable commands."
+  - "Invoker MUST honor concurrency and ordering policies."
+  - "Long-running commands MUST be cancelable or report progress."
+  - "Errors MUST be normalized to DomainError with cause."
+
+dependencies:
+  - typescript
+  - rxjs
+
+anti_patterns:
+  - pattern: "UI-bound business logic"
+    detection: "Command logic lives inside UI component"
+    why_bad: "Poor testability and reuse"
+    fix: "Extract commands into domain modules; UI triggers only"
+  - pattern: "No undo"
+    detection: "Undoable operations implemented without undo"
+    why_bad: "Poor UX and recovery"
+    fix: "Implement reversible steps or mark as non-undoable explicitly"
+  - pattern: "Queue starvation"
+    detection: "High-priority commands block others indefinitely"
+    why_bad: "Unresponsive behavior"
+    fix: "Fair scheduling; timeouts; backpressure"
+  - pattern: "Blocking UI"
+    detection: "Synchronous heavy execute() on main thread"
+    why_bad: "Frame drops and jank"
+    fix: "Async execution; workers; progress reporting"
+  - pattern: "Error swallowing"
+    detection: "catch returning success without surface failure"
+    why_bad: "Silent corruption"
+    fix: "Normalize and propagate errors; log with context"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Undo/Redo Semantics"
+    description: "Undo restores previous state; redo reapplies"
+    validation: "automated"
+  - name: "Cancelable Long-Running"
+    description: "Long operations support cancel or progress"
+    validation: "automated"
+  - name: "Queue Ordering"
+    description: "Invoker respects declared ordering"
+    validation: "automated"

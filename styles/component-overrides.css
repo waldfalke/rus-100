@@ -4,6 +4,19 @@
  * Импортируется после всех других стилей в globals.css
  */
 
+/* Component width/spacing tokens for GroupFilters */
+:root {
+  /* Gap between switch and button in the second row */
+  --component-groupfilters-row-gap: 0.75rem; /* 12px */
+
+  /* Button width tokens by breakpoints */
+  --component-button-max-w-mobile: 320px; /* limit on small screens */
+  --component-button-width-md: 200px;      /* medium screens fixed width */
+  --component-button-width-lg: 224px;      /* large screens fixed width */
+  --component-button-min-width-md: 140px;  /* minimum width from md */
+}
+
+
 /* Tabs component overrides - extremely specific selector to ensure override */
 html body [role="tablist"] [role="tab"][data-state="active"],
 [data-radix-popper-content-wrapper] [role="tab"][data-state="active"] {

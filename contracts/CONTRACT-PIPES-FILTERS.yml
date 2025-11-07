@@ -1,0 +1,88 @@
+id: CONTRACT-PIPES-FILTERS-001
+title: "Pipes & Filters — Stream Processing Contract"
+type: service
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for Pipes & Filters: a sequence of filters transforming
+  data flowing through a pipe. Ensures declarative ordering, purity or explicit
+  side-effect documentation, backpressure handling, and error propagation.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: filters
+      type: FilterSpec[]
+      description: Ordered list of filters with input/output schemas.
+    - name: pipe
+      type: PipeSpec
+      description: Composition and execution policy (sync/async, parallel, batching).
+  optional:
+    - name: backpressure
+      type: BackpressurePolicy
+      default: { strategy: "buffer", maxQueue: 1000 }
+      description: Policy for flow control under load.
+    - name: errorPolicy
+      type: { propagate: boolean, codeMap: Record<string, string> }
+      default: { propagate: true, codeMap: {} }
+      description: Error handling behavior across filters.
+
+invariants:
+  - "Filter input/output MUST match declared schemas."
+  - "Order MUST be explicit and documented; changes are versioned."
+  - "Filters MUST be pure unless side effects are declared."
+  - "Backpressure MUST prevent unbounded memory growth."
+  - "Errors MUST propagate unless explicitly caught and transformed."
+
+dependencies:
+  - typescript
+  - rxjs
+
+anti_patterns:
+  - pattern: "Shared mutable state"
+    detection: "Filters read/write a common global object"
+    why_bad: "Non-determinism and race conditions"
+    fix: "Pass state via payload; isolate per stage"
+  - pattern: "Hidden side effects"
+    detection: "I/O or logs inside filters without declaration"
+    why_bad: "Unpredictable behavior and audit gaps"
+    fix: "Declare side effects; separate into dedicated filter stages"
+  - pattern: "Order-dependent bugs"
+    detection: "Correctness varies with filter order"
+    why_bad: "Fragile pipelines"
+    fix: "Specify order and reasons; add tests covering permutations"
+  - pattern: "No backpressure"
+    detection: "Unbounded queue growth under load"
+    why_bad: "Memory exhaustion"
+    fix: "Apply buffering/dropping/windowing; set limits"
+  - pattern: "Swallow-and-continue"
+    detection: "Errors caught and ignored silently"
+    why_bad: "Data corruption and hidden failures"
+    fix: "Normalize errors and route to error stream or halt"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Deterministic Output"
+    description: "Same inputs → same pipeline outputs"
+    validation: "automated"
+  - name: "Backpressure Safety"
+    description: "No unbounded growth under load"
+    validation: "automated"
+  - name: "Error Propagation"
+    description: "Errors propagate or route per policy"
+    validation: "automated"

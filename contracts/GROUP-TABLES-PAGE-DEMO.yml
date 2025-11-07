@@ -1,0 +1,74 @@
+
+id: CONTRACT-GROUP-TABLES-PAGE-DEMO-001
+title: "Group Tables Page Demo"
+type: page
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+
+summary: |
+  A demo page that displays a collection of specific topics/test types (referred to as "tables") within a Group. 
+  It features new cards showing low-level statistics for each of these "tables". The visual style of the cards
+  should be similar to the cards on https://openrouter.ai/z-ai/glm-4.6.
+
+cynefin_domain: complicated
+
+props:
+  required:
+    - name: groupId
+      type: string
+      description: "The ID of the group to display the tables for."
+  optional: []
+
+design_system:
+  tokens: "The implementation must use the existing design tokens defined in `design-system/tokens`."
+  atoms:
+    - "Button (components/ui/button)"
+    - "Card (components/ui/card)"
+    - "Heading (h1, h2, h3)"
+    - "Text (p, span)"
+  molecules:
+    - "StatCard (to be created in components/feature/StatCard.tsx)"
+  organisms:
+    - "HeaderOrganism (components/feature/HeaderOrganism.tsx) - if applicable"
+    - "TopNavBlock (components/feature/TopNavBlock.tsx) - if applicable"
+
+reuse:
+  - "Existing `shadcn/ui` components should be used for all basic UI elements."
+  - "Existing layout components (e.g., `ResponsiveContainer`) should be used for page structure."
+  - "Existing utility functions from `lib/utils.ts` should be used where applicable."
+
+invariants:
+  - "The page must display a card for each 'table' (topic/test type) provided by the user."
+  - "Each card must display the 'table' name and relevant low-level statistics (e.g., average score, completion rate, number of associated tasks)."
+  - "The page must be responsive and display correctly on mobile and desktop devices."
+  blast_radius:
+    - "All changes must be confined to the new page `app/group-tables-demo/page.tsx` and its associated new components."
+    - "No changes should be made to existing components or pages outside of the new page's scope unless explicitly approved."
+    - "The `statistics-adapter.ts` may be extended, but not in a way that breaks existing functionality."
+
+dependencies:
+  - "components/ui/card"
+  - "data/statistics-adapter"
+  - "recharts"
+
+acceptance_criteria:
+  - name: "Page Renders"
+    description: "The page renders without errors for a valid groupId."
+    validation: "automated"
+  - name: "Displays Table Cards"
+    description: "The page displays a card for each specified 'table' (topic/test type)."
+    validation: "automated"
+  - name: "Displays Correct Low-Level Stats"
+    description: "Each card displays the correct 'table' name and associated low-level statistics."
+    validation: "manual"
+  - name: "Uses Design System"
+    description: "The page and its components correctly use the project's design tokens and `shadcn/ui` components."
+    validation: "manual"
+  - name: "Is Responsive"
+    description: "The page layout adapts to different screen sizes."
+    validation: "manual"
+

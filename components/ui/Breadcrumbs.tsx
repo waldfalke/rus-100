@@ -38,7 +38,9 @@ export function Breadcrumbs({ items, className, separator }: BreadcrumbsProps) {
             className="inline-flex items-center text-primary hover:underline text-sm font-medium"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
-            {previousPage.label}
+            <span className="truncate max-w-[70vw]" title={previousPage.label}>
+              {previousPage.label}
+            </span>
           </Link>
         ) : (
           <span className="inline-flex items-center text-muted-foreground text-sm">
@@ -60,12 +62,22 @@ export function Breadcrumbs({ items, className, separator }: BreadcrumbsProps) {
                 )}
                 <BreadcrumbItem>
                   {isLast ? (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    <BreadcrumbPage>
+                      <span className="max-w-[240px] sm:max-w-[300px] truncate align-middle" title={item.label}>
+                        {item.label}
+                      </span>
+                    </BreadcrumbPage>
                   ) : item.href ? (
-                    <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                    <BreadcrumbLink href={item.href}>
+                      <span className="max-w-[240px] sm:max-w-[300px] truncate align-middle" title={item.label}>
+                        {item.label}
+                      </span>
+                    </BreadcrumbLink>
                   ) : (
                     <BreadcrumbLink asChild>
-                      <span>{item.label}</span>
+                      <span className="max-w-[240px] sm:max-w-[300px] truncate align-middle" title={item.label}>
+                        {item.label}
+                      </span>
                     </BreadcrumbLink>
                   )}
                 </BreadcrumbItem>

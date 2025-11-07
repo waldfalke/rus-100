@@ -235,7 +235,7 @@ export default function AnswersFeedPage() {
   const navLinks: NavLink[] = [
     { label: 'Главная', href: '/' },
     { label: 'Тесты', href: '/tests' },
-    { label: 'Все группы', href: '/groups' },
+    { label: 'Дашборд', href: '/dashboard' },
     { label: 'Профиль', href: '/account' },
   ];
 

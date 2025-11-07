@@ -31,7 +31,7 @@ interface NavLink {
 const navigationLinks: NavLink[] = [
   { href: "/", label: "Главная" },
   { href: "/create-test", label: "Тесты" },
-  { href: "/groups", label: "Все группы" },
+  { href: "/dashboard", label: "Дашборд" },
   { href: "/account", label: "Профиль" }
 ];
 
@@ -53,8 +53,8 @@ const allPages: PageLink[] = [
     category: "Основные"
   },
   {
-    href: "/groups",
-    title: "Все группы",
+    href: "/dashboard",
+    title: "Дашборд",
     description: "Управление учебными группами и студентами",
     icon: <Users className="h-6 w-6" />,
     category: "Основные"
@@ -104,6 +104,14 @@ const allPages: PageLink[] = [
     description: "Подробная аналитика и отчеты",
     icon: <BarChart3 className="h-6 w-6" />,
     category: "Дополнительно"
+  },
+  // Демонстрации
+  {
+    href: "/group-tables-demo",
+    title: "Демо таблиц групп",
+    description: "Демонстрация статистики по таблицам групп",
+    icon: <TrendingUp className="h-6 w-6" />,
+    category: "Демонстрации"
   }
 ];
 

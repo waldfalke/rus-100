@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { 
   Card, 
   CardContent, 
@@ -836,12 +836,15 @@ function CustomTestCard({
 function StudentCard({ 
   student, 
   isSelected, 
-  onSelect 
+  onSelect,
+  groupId
 }: { 
   student: GroupStudent; 
   isSelected: boolean;
   onSelect: (studentId: string) => void;
+  groupId: string;
 }) {
+  const router = useRouter();
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800 border-green-200';
@@ -892,9 +895,47 @@ function StudentCard({
               Активность: {formatLastActivity(student.lastActivity)}
             </CardDescription>
           </div>
-          <h2 className={`text-2xl font-bold ${getScoreColor(student.averageScore)}`}>
-            {student.averageScore}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className={`text-2xl font-bold ${getScoreColor(student.averageScore)}`}>
+              {student.averageScore}
+            </h2>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                  <MoreHorizontal className="h-4 w-4" />
+                  <span className="sr-only">Открыть меню</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56" onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem onClick={() => router.push(`/results?studentId=${student.id}`)}>Результаты</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/dashboard?studentId=${student.id}`)}>Дашборд ученика</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                  // Заглушка: деактивация ученика
+                  console.log('Деактивировать ученика', student.id);
+                  alert('Ученика пометили как неактивного (заглушка)');
+                }}>Деактивировать</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                  const newName = prompt('Установить имя ученика', student.name);
+                  if (newName) {
+                    console.log('Установить имя', student.id, newName);
+                    alert(`Имя обновлено (заглушка): ${newName}`);
+                  }
+                }}>Установить имя</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                  console.log('Перенести ученика', student.id);
+                  alert('Откроется диалог переноса (заглушка)');
+                }}>Перенести</DropdownMenuItem>
+                <DropdownMenuItem className="text-red-600" onClick={() => {
+                  if (confirm('Удалить ученика?')) {
+                    console.log('Удалить ученика', student.id);
+                    alert('Ученик удален (заглушка)');
+                  }
+                }}>Удалить</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/dashboard/${groupId}/statistics?studentId=${student.id}`)}>📈 Статистика</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/answers?studentId=${student.id}`)}>Ответы</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Badge className={getStatusColor(student.status)}>
@@ -1307,6 +1348,7 @@ export default function GroupPageClient() {
                   student={student}
                   isSelected={selectedStudents.includes(student.id)}
                   onSelect={handleStudentSelect}
+                  groupId={groupId}
                 />
               ))}
             </div>

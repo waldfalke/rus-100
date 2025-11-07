@@ -50,7 +50,12 @@ export function TotalsRow({
           "student-column bg-muted font-semibold sticky z-30",
           stickyStudent && "left-0"
         )}
-        style={{ top: columnGroups ? '96px' : '56px' }}
+        style={{
+          top: columnGroups ? '96px' : '56px',
+          width: '200px',
+          minWidth: '200px',
+          maxWidth: '200px'
+        }}
       >
         Итого
       </th>
@@ -58,24 +63,36 @@ export function TotalsRow({
         const value = totalsData[column.key]
         const formattedValue = formatValue(value, column)
         return (
-          <Tooltip key={column.key}>
-            <TooltipTrigger asChild>
-              <th
-                className="sticky z-10 bg-muted text-center p-3 border-b font-semibold"
-                style={{ top: columnGroups ? '96px' : '56px' }}
-              >
-                <span className={getCellClassName(column, value)}>
+          <th
+            key={column.key}
+            className={cn(
+              "sticky z-10 bg-muted text-center border-b font-semibold",
+              column.isHidden && "column-hidden"
+            )}
+            style={{ top: columnGroups ? '96px' : '56px' }}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className={cn("w-full h-full flex items-center justify-center", getCellClassName(column, value))}>
                   {formattedValue}
                 </span>
-              </th>
-            </TooltipTrigger>
-            <TooltipContent>
-              <div className="text-xs">
-                <p className="font-semibold">Среднее значение</p>
-                <p className="text-muted-foreground">{column.label}: {formattedValue}</p>
-              </div>
-            </TooltipContent>
-          </Tooltip>
+              </TooltipTrigger>
+              <TooltipContent
+                className="z-[9999]"
+                sideOffset={8}
+                side="top"
+                align="center"
+                collisionPadding={16}
+                avoidCollisions={true}
+                sticky="always"
+              >
+                <div className="text-xs">
+                  <p className="font-semibold">Среднее значение</p>
+                  <p className="text-muted-foreground">{column.label}: {formattedValue}</p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </th>
         )
       })}
     </tr>

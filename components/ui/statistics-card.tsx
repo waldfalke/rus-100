@@ -4,6 +4,7 @@ import * as React from "react"
 import { TrendingUp, TrendingDown, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
+import { H3 } from "@/components/ui/typography"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
@@ -121,7 +122,7 @@ export function StatisticsCard({
               {/* Заголовок */}
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-lg">{data.questionNumber}</h3>
+                  <H3 className="truncate">{data.questionNumber}</H3>
                 </div>
                 
                 {/* Индикатор изменения */}
@@ -166,7 +167,7 @@ export function StatisticsCard({
             {/* Заголовок */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-lg">{data.questionNumber}</h3>
+                <H3 className="truncate">{data.questionNumber}</H3>
               </div>
               
               {/* Индикатор изменения */}

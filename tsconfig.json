@@ -64,7 +64,8 @@
     "types/**/*",
     "pages/**/*",
     "app/**/*",
-    "__tests__/**/*"
+    "__tests__/**/*",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,0 +1,91 @@
+id: CONTRACT-MEDIATOR-001
+title: "Mediator — Interaction Orchestration Contract"
+type: service
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for a Mediator coordinating interactions among multiple
+  participants/components via typed channels and policies. Prevents tight coupling,
+  enforces deterministic event ordering and lifecycle cleanup.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: participants
+      type: Record<string, ParticipantSpec>
+      description: Registered participants with roles and capabilities.
+    - name: channels
+      type: EventMap
+      description: Typed events (name → payload schema) used for communication.
+    - name: policies
+      type: PolicySet
+      description: Orchestration rules (ordering, retries, timeouts, guards).
+  optional:
+    - name: logger
+      type: Logger | null
+      default: null
+      description: Structured logging of mediation events.
+    - name: errorPolicy
+      type: { codeMap: Record<string, string> }
+      default: { codeMap: {} }
+      description: Normalization of participant errors into DomainError codes.
+
+invariants:
+  - "Participants MUST NOT call each other directly (only via Mediator)."
+  - "Event ordering MUST be deterministic given the same inputs/policies."
+  - "All subscriptions MUST be cleaned up on participant removal/dispose."
+  - "Errors MUST be normalized to DomainError with { code, message, cause }."
+  - "Policies MUST be declarative and versioned."
+
+dependencies:
+  - typescript
+  - eventemitter3
+
+anti_patterns:
+  - pattern: "God mediator"
+    detection: "Mediator accumulates business logic and many branches"
+    why_bad: "Becomes bottleneck; hard to evolve and test"
+    fix: "Push business logic to participants; keep mediator orchestration-only"
+  - pattern: "Direct participant coupling"
+    detection: "Participants import each other and call methods directly"
+    why_bad: "Breaks decoupling and testability"
+    fix: "Route interactions through channels; forbid cross-imports via lint"
+  - pattern: "Unbounded subscriptions"
+    detection: "Listeners added without removal on teardown"
+    why_bad: "Memory leaks and ghost behavior"
+    fix: "Track and dispose subscriptions; use scopes"
+  - pattern: "Nondeterministic ordering"
+    detection: "Use of timers/random affecting event sequence"
+    why_bad: "Flaky behavior and tests"
+    fix: "Policy-defined ordering; seed randomness; document guarantees"
+  - pattern: "Opaque error propagation"
+    detection: "Errors swallowed or rethrown without cause/context"
+    why_bad: "Poor observability and recovery"
+    fix: "Normalize errors with cause; log with correlation ids"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Decoupling Enforcement"
+    description: "Cross-imports blocked; participants interact only via Mediator"
+    validation: "automated"
+  - name: "Deterministic Ordering"
+    description: "Same inputs/policies → same sequence of events"
+    validation: "automated"
+  - name: "Subscription Cleanup"
+    description: "All listeners removed on participant dispose"
+    validation: "automated"

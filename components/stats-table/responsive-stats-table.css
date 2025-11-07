@@ -6,6 +6,7 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 .table-scroll-container {
@@ -66,6 +67,29 @@
 .desktop-table th,
 .desktop-table td {
   padding: var(--spacing-2, 8px) var(--spacing-3, 12px);
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid hsl(var(--border));
+  overflow: visible;  /* Изменено: не обрезать tooltip */
+}
+
+/* Overflow для внутреннего содержимого ячеек */
+.desktop-table th > span,
+.desktop-table td > span,
+.desktop-table th > div,
+.desktop-table td > div {
+  max-width: 100%;
+}
+
+/* Скрытые колонки (для collapse/expand групп) */
+.desktop-table th.column-hidden,
+.desktop-table td.column-hidden {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: hidden;
 }
 
 /* Заголовки групп - еще меньше padding */
@@ -85,7 +109,14 @@
 .desktop-table tbody td {
   position: relative;
   z-index: 1;
-  transition: background-color 0.15s ease;
+  outline: none;  /* Убрать browser outline при фокусе */
+  text-align: center;
+}
+
+/* Убрать outline при фокусе для всех ячеек и заголовков */
+.desktop-table td:focus,
+.desktop-table th:focus {
+  outline: none;
 }
 
 .desktop-table tbody td:not(.student-column):hover {
@@ -104,6 +135,7 @@
   border-bottom: 1px solid hsl(var(--border));
   font-size: 0.875rem;
   line-height: 1.2;
+  min-width: 120px;
 }
 
 /* Темная тема для заголовков */
@@ -124,9 +156,9 @@
 /* === КОЛОНКА СТУДЕНТА === */
 
 .desktop-table .student-column {
-  width: 200px;
-  min-width: 200px;
-  max-width: 200px;
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
   background: hsl(var(--muted));
   text-align: left;
   border-bottom: 1px solid hsl(var(--border));
@@ -135,8 +167,7 @@
 /* Обычные колонки данных - компактнее */
 .desktop-table th:not(.student-column),
 .desktop-table td:not(.student-column) {
-  min-width: 60px;
-  max-width: 80px;
+  min-width: 70px;
   width: 70px;
 }
 
@@ -210,10 +241,6 @@
 }
 
 /* === МОБИЛЬНАЯ ТАБЛИЦА === */
-
-.mobile-table {
-  display: none;
-}
 
 /* Фиксированный заголовок */
 .fixed-header {
@@ -381,14 +408,6 @@
 /* === АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ === */
 
 @media (max-width: 768px) {
-  .desktop-table {
-    display: none;
-  }
-
-  .mobile-table {
-    display: block;
-  }
-
   .student-header {
     flex: 0 0 150px;
   }

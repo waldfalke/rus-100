@@ -24,13 +24,20 @@ export function useGroupCollapse(columnGroups?: ColumnGroup[], columnsProp?: Sta
       return columnsProp || []
     }
 
+    // Вместо удаления колонок из DOM, помечаем их флагом isHidden
+    // Это позволяет использовать visibility: collapse для стабильной ширины таблицы
     return columnGroups.flatMap(group => {
       const isCollapsed = collapsedGroups.has(group.key)
-      if (isCollapsed) {
-        // Показываем только первую колонку (Всего)
-        return group.columns.slice(0, 1)
-      }
-      return group.columns
+
+      return group.columns.map((column, index) => {
+        // Первая колонка (Всего) всегда видима, остальные скрыты при collapse
+        const isHidden = isCollapsed && index > 0
+
+        return {
+          ...column,
+          isHidden
+        }
+      })
     })
   }, [columnGroups, columnsProp, collapsedGroups])
 

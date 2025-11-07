@@ -1,0 +1,103 @@
+id: CONTRACT-BRIDGE-001
+title: "Bridge — Abstraction/Implementation Separation Contract"
+type: service
+version: 1.0
+complexity_level: complicated
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for a Bridge that separates a stable abstraction from
+  multiple interchangeable implementations, allowing independent variation and
+  selection at runtime via configuration or DI while maintaining client
+  compatibility.
+
+cynefin_domain: Complicated
+
+props:
+  required:
+    - name: abstraction
+      type: BridgeInterface
+      description: Stable interface/abstract class representing client-visible API.
+    - name: implementations
+      type: Record<string, BridgeImplementation>
+      description: Named implementations that fulfill the abstraction contract.
+    - name: selector
+      type: ImplementationSelector
+      description: Strategy/DI token to choose implementation at runtime.
+    - name: capabilities
+      type: CapabilitySet
+      description: Declared features provided by each implementation.
+  optional:
+    - name: defaultImpl
+      type: string
+      default: ""
+      description: Default implementation name if selector yields none.
+    - name: featureFlags
+      type: Record<string, boolean>
+      default: {}
+      description: Flags to enable/disable optional behaviors per implementation.
+    - name: fallbackPolicy
+      type: FallbackPolicy
+      default: { enabled: true, onError: "next-available" }
+      description: Policy to fallback to alternative implementation on failure.
+
+invariants:
+  - "Swapping implementations MUST NOT break client code (stable abstraction)."
+  - "Capabilities MUST be explicitly declared; missing features raise CapabilityError."
+  - "All implementations MUST pass the same contract test suite for abstraction."
+  - "Selector MUST be deterministic given the same config/environment."
+  - "Implementation-specific details MUST NOT leak through abstraction types."
+
+dependencies:
+  - typescript
+  - tsyringe
+  - react
+
+anti_patterns:
+  - pattern: "Abstraction leakage"
+    detection: "Consumers import implementation types or use instanceof checks"
+    why_bad: "Couples clients to implementations and breaks swapability"
+    fix: "Expose only abstraction types; lint rule forbidding implementation imports"
+  - pattern: "Nondeterministic selector"
+    detection: "Selector relies on time/random/unseeded env"
+    why_bad: "Non-repeatable behavior harms testing and reliability"
+    fix: "Deterministic inputs; seed randomness; config-driven selection"
+  - pattern: "Single implementation masquerading as bridge"
+    detection: "Only one implementation registered"
+    why_bad: "Unnecessary complexity without benefits"
+    fix: "Add at least one alternative or drop the bridge abstraction"
+  - pattern: "Missing capability signaling"
+    detection: "Missing features return null/undefined without error"
+    why_bad: "Silent failures and unclear behavior"
+    fix: "Throw CapabilityError; document feature flags; provide graceful fallback"
+  - pattern: "Implementation state bleed"
+    detection: "Global mutable state shared across implementations"
+    why_bad: "Cross-implementation interference and hard-to-debug issues"
+    fix: "Isolate state via DI scopes; avoid shared singletons"
+  - pattern: "Feature flags leaking through abstraction"
+    detection: "Flags appear in abstraction types or client API"
+    why_bad: "Abstraction instability and client coupling to internals"
+    fix: "Keep flags internal; configure selector/DI only"
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Dual Implementation"
+    description: "At least two implementations pass a shared contract test suite"
+    validation: "automated"
+  - name: "Selector Determinism"
+    description: "Given fixed config, selector resolves same implementation"
+    validation: "automated"
+  - name: "Capability Errors"
+    description: "Missing features produce typed CapabilityError with code/message"
+    validation: "automated"

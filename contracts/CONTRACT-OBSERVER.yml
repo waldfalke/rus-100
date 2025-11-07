@@ -1,0 +1,80 @@
+id: CONTRACT-OBSERVER-001
+title: "Observer — Event Subscription Contract"
+type: utility
+version: 1.0
+complexity_level: simple
+
+meta_contract:
+  id: "METACONTRACT-001"
+  path: "docs/METACONTRACT.yml"
+  version: "1.0"
+
+description: |
+  Defines the contract for Observer pattern: typed Subject produces events and
+  Observers subscribe/unsubscribe safely. Guarantees cleanup, error normalization,
+  and minimal coupling via typed channels.
+
+cynefin_domain: Simple
+
+props:
+  required:
+    - name: subject
+      type: SubjectSpec
+      description: Event source with typed payloads and lifecycle hooks.
+    - name: events
+      type: string[]
+      description: Declared event names supported by the Subject.
+  optional:
+    - name: once
+      type: boolean
+      default: false
+      description: Subscribe once and auto-unsubscribe after first event.
+    - name: errorPolicy
+      type: { code: string }
+      default: { code: "OBSERVER_ERROR" }
+      description: Normalized error code for observer pipeline failures.
+
+invariants:
+  - "Observers MUST be able to unsubscribe without memory leaks."
+  - "Unknown events MUST be rejected with a typed error."
+  - "Errors in handlers MUST be caught and normalized (DomainError)."
+  - "Event names MUST be typed/declared; no magic strings."
+
+dependencies:
+  - typescript
+  - eventemitter3
+
+anti_patterns:
+  - pattern: "Global event bus"
+    detection: "Single shared emitter used across unrelated modules"
+    why_bad: "Implicit coupling and hard-to-track flows"
+    fix: "Use scoped subjects per domain; pass via DI"
+  - pattern: "Untyped events"
+    detection: "Handlers receive any payload without schema"
+    why_bad: "Runtime type errors and fragile contracts"
+    fix: "Define payload schemas; enforce at runtime/tests"
+  - pattern: "Leaking subscriptions"
+    detection: "Missing unsubscribe on unmount/teardown"
+    why_bad: "Memory leaks and ghost handlers"
+    fix: "Ensure cleanup in lifecycle; add tests that detect leaks"
+  - pattern: "Swallowed handler errors"
+    detection: "try/catch in handlers returning silently"
+    why_bad: "Hidden failures"
+    fix: "Normalize and propagate DomainError; log appropriately"
+
+acceptance_criteria:
+  - name: "Schema Validation"
+    description: "Contract YAML validates against meta-schema"
+    validation: "automated"
+  - name: "Implementation Compliance"
+    description: "Implementation matches contract specification"
+    validation: "automated"
+  - name: "Human Review"
+    description: "Contract reviewed and approved"
+    validation: "manual"
+  - name: "Unsubscribe Safety"
+    description: "No listeners remain after teardown"
+    validation: "automated"
+  - name: "Typed Events"
+    description: "Unknown events rejected; payloads validated"
+    validation: "automated"
