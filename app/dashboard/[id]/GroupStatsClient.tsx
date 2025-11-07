@@ -247,6 +247,246 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     console.log('Перенести выбранных учеников', selectedStudents);
   };
 
+  // ----- Лента решённых тестов (моки и компоненты) -----
+  interface TestAnswerItem {
+    id: string;
+    index: number;
+    question: string;
+    response: string;
+    expected?: string;
+    isCorrect: boolean;
+    timeSpent: number;
+  }
+
+  interface TestSubmissionItem {
+    id: string;
+    studentId: string;
+    studentName: string;
+    studentAvatar?: string;
+    testId: string;
+    testTitle: string;
+    testType: 'grammar' | 'vocabulary' | 'reading' | 'listening' | 'mixed';
+    difficulty: 'easy' | 'medium' | 'hard';
+    submittedAt: string;
+    totalAnswers: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    scorePercent: number;
+    answers: TestAnswerItem[];
+  }
+
+  interface GroupTestFeedData {
+    submissions: TestSubmissionItem[];
+    totalTests: number;
+    totalAnswers: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    averageScore?: number;
+  }
+
+  const mockTestFeed: GroupTestFeedData = {
+    totalTests: 3,
+    totalAnswers: 42,
+    correctAnswers: 31,
+    incorrectAnswers: 11,
+    averageScore: 78.2,
+    submissions: [
+      {
+        id: 'sub-1',
+        studentId: '1',
+        studentName: 'Иванов Алексей',
+        studentAvatar: undefined,
+        testId: 'task-1',
+        testTitle: 'Падежи существительных - Тест 1',
+        testType: 'grammar',
+        difficulty: 'medium',
+        submittedAt: '2024-12-17T14:50:05Z',
+        totalAnswers: 25,
+        correctAnswers: 22,
+        incorrectAnswers: 3,
+        scorePercent: 88,
+        answers: [
+          { id: 'a-1', index: 1, question: 'Определите падеж слова «лес».', response: 'Родительный', expected: 'Родительный', isCorrect: true, timeSpent: 45 }
+        ]
+      },
+      {
+        id: 'sub-2',
+        studentId: '2',
+        studentName: 'Петрова Мария',
+        testId: 'task-2',
+        testTitle: 'Синонимы и антонимы',
+        testType: 'vocabulary',
+        difficulty: 'easy',
+        submittedAt: '2024-12-17T14:40:12Z',
+        totalAnswers: 20,
+        correctAnswers: 19,
+        incorrectAnswers: 1,
+        scorePercent: 95,
+        answers: [
+          { id: 'b-1', index: 1, question: 'Синоним к слову «большой».', response: 'огромный', expected: 'огромный', isCorrect: true, timeSpent: 20 }
+        ]
+      },
+      {
+        id: 'sub-3',
+        studentId: '3',
+        studentName: 'Сидоров Дмитрий',
+        testId: 'task-3',
+        testTitle: 'Анализ текста Пушкина',
+        testType: 'reading',
+        difficulty: 'hard',
+        submittedAt: '2024-12-17T14:15:48Z',
+        totalAnswers: 10,
+        correctAnswers: 6,
+        incorrectAnswers: 4,
+        scorePercent: 60,
+        answers: [
+          { id: 'c-1', index: 1, question: 'Определите основную тему отрывка.', response: 'Любовь к родине', expected: 'Свобода и долг', isCorrect: false, timeSpent: 120 }
+        ]
+      }
+    ]
+  };
+
+  const TestSubmissionCard: React.FC<{ submission: TestSubmissionItem }> = ({ submission }) => {
+    const formatFullDateTime = (iso: string) => {
+      const s = new Date(iso).toLocaleString('ru-RU', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
+    const formatSpent = (sec: number) => (sec < 60 ? `${sec} сек` : `${Math.floor(sec / 60)} мин ${sec % 60} сек`);
+
+    const typeEmoji = (t: TestSubmissionItem['testType']) => {
+      switch (t) {
+        case 'grammar': return '📝';
+        case 'vocabulary': return '📚';
+        case 'reading': return '📖';
+        case 'listening': return '🎧';
+        default: return '📋';
+      }
+    };
+
+    return (
+      <Card className="mb-4">
+        <CardContent className="p-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              {submission.studentAvatar ? (
+                <img src={submission.studentAvatar} alt={submission.studentName} className="w-10 h-10 rounded-full" />
+              ) : (
+                <span className="text-blue-600 font-medium text-sm">
+                  {submission.studentName.split(' ').map((n) => n[0]).join('')}
+                </span>
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-gray-900">{submission.studentName}</span>
+                <span className="text-sm text-gray-500">•</span>
+                <span className="text-sm text-gray-500">{formatFullDateTime(submission.submittedAt)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{typeEmoji(submission.testType)}</span>
+                <span className="text-sm font-medium text-gray-700">{submission.testTitle}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mt-3">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-gray-600">Всего ответов</div>
+              <div className="font-semibold">{submission.totalAnswers}</div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-gray-600">Правильные</div>
+              <div className="font-semibold text-green-700">{submission.correctAnswers}</div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-gray-600">Неправильные</div>
+              <div className="font-semibold text-red-700">{submission.incorrectAnswers}</div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-gray-600">Итоговый балл</div>
+              <div className="font-semibold text-purple-700">{submission.scorePercent}%</div>
+            </div>
+          </div>
+
+          <div className="space-y-2 mt-3">
+            <h4 className="text-sm font-medium text-gray-900">Ответы</h4>
+            <div className="space-y-2">
+              {submission.answers.map((ans) => (
+                <div key={ans.id} className="rounded-md border p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">№{ans.index}. {ans.question}</div>
+                    <div className={`text-xs ${ans.isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                      {ans.isCorrect ? '✓ Правильно' : '✗ Неправильно'}
+                    </div>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <div className="text-gray-600">Ответ ученика</div>
+                      <div className="font-medium">{ans.response}</div>
+                    </div>
+                    {ans.expected && (
+                      <div>
+                        <div className="text-gray-600">Ожидалось</div>
+                        <div className="font-medium">{ans.expected}</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">Время на вопрос: {formatSpent(ans.timeSpent)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const TestFeed: React.FC<{ data: GroupTestFeedData }> = ({ data }) => (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-2xl font-bold text-blue-600">{data.totalTests}</h2>
+            <div className="text-sm text-gray-600">Всего тестов</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-2xl font-bold text-indigo-600">{data.totalAnswers}</h2>
+            <div className="text-sm text-gray-600">Всего ответов</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-2xl font-bold text-green-600">{data.correctAnswers}</h2>
+            <div className="text-sm text-gray-600">Правильные</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-2xl font-bold text-red-600">{data.incorrectAnswers}</h2>
+            <div className="text-sm text-gray-600">Неправильные</div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900">Последние тесты</h3>
+        {data.submissions.map((sub) => (
+          <TestSubmissionCard key={sub.id} submission={sub} />
+        ))}
+      </div>
+    </div>
+  );
+
 
   // Новая структура с группами колонок (по примеру из референса)
   const mockColumnGroups = [
@@ -428,6 +668,12 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
               >
                 Тесты
               </TabsTrigger>
+              <TabsTrigger
+                value="answers"
+                className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
+              >
+                Ответы
+              </TabsTrigger>
             </TabsList>
 
             {/* Таб "Навыки" - только для не-черновиков */}
@@ -553,6 +799,10 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
                   ))}
                 </section>
               )}
+            </TabsContent>
+            {/* Таб "Ответы" */}
+            <TabsContent value="answers" className="space-y-6">
+              <TestFeed data={mockTestFeed} />
             </TabsContent>
            </Tabs>
         </div>

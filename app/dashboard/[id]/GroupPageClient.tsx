@@ -57,6 +57,7 @@ import {
 import { cn } from '@/lib/utils';
 import { CustomTestsStats } from '@/components/CustomTestsStats';
 import { StatisticsCard, StatisticsCardData } from '@/components/ui/statistics-card';
+import { TestSubmissionCard, TestSubmission } from '@/components/answer-card';
 
 // Типы данных согласно контракту GRP-001
 // Интерфейсы для статистики заданий
@@ -1298,6 +1299,7 @@ export default function GroupPageClient() {
         <TabsList>
           <TabsTrigger value="students" expandToFill>Ученики</TabsTrigger>
           <TabsTrigger value="tests" expandToFill>Тесты</TabsTrigger>
+          <TabsTrigger value="answers" expandToFill>Ответы</TabsTrigger>
           <TabsTrigger value="analytics" expandToFill>Аналитика</TabsTrigger>
           <TabsTrigger value="settings" expandToFill>Настройки</TabsTrigger>
         </TabsList>
@@ -1408,7 +1410,12 @@ export default function GroupPageClient() {
             </div>
           )}
         </TabsContent>
-        
+
+        {/* Новая верхняя вкладка "Ответы" */}
+        <TabsContent value="answers" className="space-y-6">
+              <TestFeed data={mockTestFeed} />
+        </TabsContent>
+
         <TabsContent value="tests" className="space-y-6">
           <Tabs defaultValue="custom" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -1485,10 +1492,9 @@ export default function GroupPageClient() {
 
         <TabsContent value="analytics" className="space-y-6">
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="general">Общая статистика</TabsTrigger>
               <TabsTrigger value="tasks">Статистика заданий</TabsTrigger>
-              <TabsTrigger value="answers">Лента ответов</TabsTrigger>
             </TabsList>
             
             <TabsContent value="general" className="space-y-6">
@@ -1526,9 +1532,7 @@ export default function GroupPageClient() {
               </div>
             </TabsContent>
             
-            <TabsContent value="answers" className="space-y-6">
-              <AnswerFeed data={mockAnswerFeed} />
-            </TabsContent>
+            {/* Лента ответов перенесена на верхний уровень вкладок */}
           </Tabs>
         </TabsContent>
 
@@ -1660,29 +1664,14 @@ function TaskStatsCard({ task }: { task: TaskStats }) {
   );
 }
 
-// Интерфейсы для ленты ответов
-interface StudentAnswer {
-  id: string;
-  studentId: string;
-  studentName: string;
-  studentAvatar?: string;
-  taskId: string;
-  taskTitle: string;
-  taskType: 'grammar' | 'vocabulary' | 'reading' | 'listening';
-  answer: string;
-  isCorrect: boolean;
-  score: number;
-  maxScore: number;
-  submittedAt: string;
-  timeSpent: number; // в секундах
-  difficulty: 'easy' | 'medium' | 'hard';
-}
-
-interface AnswerFeedData {
-  answers: StudentAnswer[];
+// Интерфейс для ленты ответов
+interface TestFeedData {
+  submissions: TestSubmission[];
+  totalTests: number;
   totalAnswers: number;
   correctAnswers: number;
-  averageScore: number;
+  incorrectAnswers: number;
+  averageScore?: number;
 }
 
 // Mock данные для статистики заданий
@@ -1765,102 +1754,61 @@ const mockTaskStats: TaskStatsData = {
   ]
 };
 
-// Mock данные для ленты ответов
-const mockAnswerFeed: AnswerFeedData = {
+// Mock данные для ленты решённых тестов
+const mockTestFeed: TestFeedData = {
+  totalTests: 6,
   totalAnswers: 156,
   correctAnswers: 124,
+  incorrectAnswers: 32,
   averageScore: 79.5,
-  answers: [
+  submissions: [
     {
-      id: 'ans-1',
+      id: 'sub-1',
       studentId: 'student-1',
       studentName: 'Анна Петрова',
-      studentAvatar: '/avatars/anna.jpg',
-      taskId: 'task-1',
-      taskTitle: 'Падежи существительных - Тест 1',
-      taskType: 'grammar',
-      answer: 'В родительном падеже',
-      isCorrect: true,
-      score: 5,
-      maxScore: 5,
-      submittedAt: '2024-12-17T14:30:00Z',
-      timeSpent: 45,
-      difficulty: 'medium'
+      studentEmail: 'anna.petrova@school.ru',
+      testId: 'task-1',
+      testTitle: 'Падежи существительных - Тест 1',
+      submittedAt: new Date(Date.now() - 30 * 60000).toISOString(), // 30 мин назад
+      totalQuestions: 25,
+      correctAnswers: 22,
+      scorePercent: 88
     },
     {
-      id: 'ans-2',
+      id: 'sub-2',
       studentId: 'student-2',
       studentName: 'Михаил Сидоров',
-      taskId: 'task-2',
-      taskTitle: 'Синонимы и антонимы',
-      taskType: 'vocabulary',
-      answer: 'Большой - огромный',
-      isCorrect: true,
-      score: 3,
-      maxScore: 3,
-      submittedAt: '2024-12-17T14:25:00Z',
-      timeSpent: 32,
-      difficulty: 'easy'
+      studentEmail: 'mikhail.sidorov@school.ru',
+      testId: 'task-2',
+      testTitle: 'Синонимы и антонимы',
+      submittedAt: new Date(Date.now() - 2 * 3600000).toISOString(), // 2 часа назад
+      totalQuestions: 20,
+      correctAnswers: 19,
+      scorePercent: 95
     },
     {
-      id: 'ans-3',
+      id: 'sub-3',
       studentId: 'student-3',
       studentName: 'Елена Козлова',
-      taskId: 'task-3',
-      taskTitle: 'Анализ текста Пушкина',
-      taskType: 'reading',
-      answer: 'Основная тема - любовь к родине',
-      isCorrect: false,
-      score: 2,
-      maxScore: 4,
-      submittedAt: '2024-12-17T14:20:00Z',
-      timeSpent: 180,
-      difficulty: 'hard'
+      studentEmail: 'elena.kozlova@school.ru',
+      testId: 'task-3',
+      testTitle: 'Анализ текста Пушкина',
+      submittedAt: new Date(Date.now() - 5 * 3600000).toISOString(), // 5 часов назад
+      totalQuestions: 10,
+      correctAnswers: 6,
+      scorePercent: 60
     },
     {
-      id: 'ans-4',
+      id: 'sub-4',
       studentId: 'student-4',
       studentName: 'Дмитрий Волков',
-      taskId: 'task-4',
-      taskTitle: 'Восприятие диалогов',
-      taskType: 'listening',
-      answer: 'Собеседники обсуждают планы на выходные',
-      isCorrect: true,
-      score: 4,
-      maxScore: 4,
-      submittedAt: '2024-12-17T14:15:00Z',
-      timeSpent: 95,
-      difficulty: 'medium'
-    },
-    {
-      id: 'ans-5',
-      studentId: 'student-5',
-      studentName: 'Ольга Морозова',
-      taskId: 'task-1',
-      taskTitle: 'Падежи существительных - Тест 1',
-      taskType: 'grammar',
-      answer: 'В дательном падеже',
-      isCorrect: false,
-      score: 0,
-      maxScore: 5,
-      submittedAt: '2024-12-17T14:10:00Z',
-      timeSpent: 67,
-      difficulty: 'medium'
-    },
-    {
-      id: 'ans-6',
-      studentId: 'student-6',
-      studentName: 'Александр Новиков',
-      taskId: 'task-5',
-      taskTitle: 'Спряжение глаголов - Практика',
-      taskType: 'grammar',
-      answer: 'читаю, читаешь, читает',
-      isCorrect: true,
-      score: 5,
-      maxScore: 5,
-      submittedAt: '2024-12-17T14:05:00Z',
-      timeSpent: 120,
-      difficulty: 'hard'
+      studentEmail: 'dmitry.volkov@school.ru',
+      testId: 'task-4',
+      testTitle: 'Восприятие диалогов',
+      submittedAt: new Date(Date.now() - 24 * 3600000).toISOString(), // 1 день назад
+      totalQuestions: 15,
+      correctAnswers: 12,
+      scorePercent: 80
     }
   ]
 };
@@ -1927,118 +1875,41 @@ const mockModerators: GroupModerator[] = [
   }
 ];
 
-// Компонент карточки ответа студента
-const AnswerCard = ({ answer }: { answer: StudentAnswer }) => {
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'только что';
-    if (diffInMinutes < 60) return `${diffInMinutes} мин назад`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} ч назад`;
-    return `${Math.floor(diffInMinutes / 1440)} дн назад`;
-  };
-
-  const formatTimeSpent = (seconds: number) => {
-    if (seconds < 60) return `${seconds} сек`;
-    return `${Math.floor(seconds / 60)} мин ${seconds % 60} сек`;
-  };
-
-  const getTaskTypeIcon = (type: string) => {
-    switch (type) {
-      case 'grammar': return '📝';
-      case 'vocabulary': return '📚';
-      case 'reading': return '📖';
-      case 'listening': return '🎧';
-      default: return '📋';
-    }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-600';
-      case 'medium': return 'text-yellow-600';
-      case 'hard': return 'text-red-600';
-      default: return 'text-gray-600';
-    }
-  };
-
-  return (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-3 flex-1">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              {answer.studentAvatar ? (
-                <img src={answer.studentAvatar} alt={answer.studentName} className="w-10 h-10 rounded-full" />
-              ) : (
-                <span className="text-blue-600 font-medium text-sm">
-                  {answer.studentName.split(' ').map(n => n[0]).join('')}
-                </span>
-              )}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="font-medium text-gray-900">{answer.studentName}</span>
-                <span className="text-sm text-gray-500">•</span>
-                <span className="text-sm text-gray-500">{formatTimeAgo(answer.submittedAt)}</span>
-              </div>
-              <div className="flex items-center space-x-2 mb-2">
-                <span className="text-lg">{getTaskTypeIcon(answer.taskType)}</span>
-                <span className="text-sm font-medium text-gray-700">{answer.taskTitle}</span>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3 mb-2">
-                <p className="text-sm text-gray-800">{answer.answer}</p>
-              </div>
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>Время: {formatTimeSpent(answer.timeSpent)}</span>
-                <div className="flex items-center space-x-4">
-                  <span className={answer.isCorrect ? 'text-green-600' : 'text-red-600'}>
-                    {answer.isCorrect ? '✓ Правильно' : '✗ Неправильно'}
-                  </span>
-                  <span className="font-medium">
-                    {answer.score}/{answer.maxScore} баллов
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Компонент ленты ответов
-const AnswerFeed = ({ data }: { data: AnswerFeedData }) => {
+// Компонент ленты решённых тестов
+const TestFeed = ({ data }: { data: TestFeedData }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-blue-600">{data.totalAnswers}</h2>
+            <h2 className="text-2xl font-bold text-blue-600">{data.totalTests}</h2>
+            <div className="text-sm text-gray-600">Всего тестов</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-2xl font-bold text-indigo-600">{data.totalAnswers}</h2>
             <div className="text-sm text-gray-600">Всего ответов</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <h2 className="text-2xl font-bold text-green-600">{data.correctAnswers}</h2>
-            <div className="text-sm text-gray-600">Правильных ответов</div>
+            <div className="text-sm text-gray-600">Правильные</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-2xl font-bold text-purple-600">{data.averageScore.toFixed(1)}%</h2>
-            <div className="text-sm text-gray-600">Средний балл</div>
+            <h2 className="text-2xl font-bold text-red-600">{data.incorrectAnswers}</h2>
+            <div className="text-sm text-gray-600">Неправильные</div>
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Последние ответы</h3>
-        {data.answers.map((answer) => (
-          <AnswerCard key={answer.id} answer={answer} />
+        <h3 className="text-lg font-semibold text-gray-900">Последние тесты</h3>
+        {data.submissions.map((sub) => (
+          <TestSubmissionCard key={sub.id} submission={sub} />
         ))}
       </div>
     </div>

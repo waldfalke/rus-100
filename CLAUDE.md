@@ -23,6 +23,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Tailwind CSS
 - Design token system (for theming/consistency)
 
+### Note on README.md
+The `README.md` file is in Russian and presents the project as a "Functional Design Tokens" library. This reflects an experimental/exploratory aspect of the project. For development purposes, treat this codebase as a **UX/UI prototype** first, with the design token system as supporting infrastructure.
+
+## Repository
+- **GitHub**: https://github.com/waldfalke/rus-100
+- **Main Branch**: `main`
+- **Active Development Branch**: `enhanced-ui`
+- **GitHub Pages**: Published from `enhanced-ui` branch with basePath `/rus-100`
+
 ## Common Commands
 
 ### Development
@@ -64,6 +73,13 @@ npm run verify:css-injection   # Check for CSS injection vulnerabilities
 npm run verify:shadcn          # Verify shadcn components use tokens correctly
 ```
 
+### Project Management & Validation
+```bash
+npm run validate:backlog       # Validate master-backlog.md structure
+npm run validate:traceability  # Validate traceability-matrix.csv
+npm run find:orphaned          # Find orphaned tasks
+```
+
 ### Build Variants
 ```bash
 npm run build                  # Standard production build
@@ -73,16 +89,41 @@ npm run start:static           # Serve static build
 npm run start:static:local     # Serve static build on port 3000
 ```
 
-### Storybook
-```bash
-npm run storybook              # Component library (port 6006)
-```
-
 ### Other Utilities
 ```bash
 npm run audit:a11y             # Accessibility audit (requires server on 3001)
 npm run prepare:tests          # Update tests from components and sync tokens
 ```
+
+## Application Structure
+
+### Current Active Pages
+
+**Teacher Dashboard & Groups**:
+- [app/page.tsx](app/page.tsx) - Home/landing page
+- [app/dashboard/page.tsx](app/dashboard/page.tsx) - Teacher dashboard with groups overview
+- [app/dashboard/[id]/page.tsx](app/dashboard/[id]/page.tsx) - Group details view (with tabs: Students, Statistics)
+- [app/dashboard/[id]/statistics/page.tsx](app/dashboard/[id]/statistics/page.tsx) - Group statistics using ResponsiveStatsTable
+
+**Test Management**:
+- [app/tests/page.tsx](app/tests/page.tsx) - Test management and listing
+- [app/create-test/page.tsx](app/create-test/page.tsx) - Test creation workflow
+- [app/answers/page.tsx](app/answers/page.tsx) - Answer grading and review
+
+**Account**:
+- [app/account/page.tsx](app/account/page.tsx) - Teacher account settings
+
+**Legacy/Reference**:
+- `app/tests-old/page.tsx` - Legacy test page (kept for reference)
+
+### Deprecated/Removed Routes
+
+The following routes have been removed from the application (as of recent commits):
+- `/tasks` - Removed from app router
+- `/results` - Removed from app router
+- `/group-tables-demo` - Deprecated demo page
+
+**Navigation updated**: Home page and create-test navigation now avoid these broken links.
 
 ## Teacher-Focused Features
 
@@ -115,37 +156,24 @@ interface GroupCardData {
 
 **Current State**: Mock data only. Actions log to console.
 
-### 2. Groups List (`app/groups/page.tsx`)
+### 2. Group Details (`app/dashboard/[id]/page.tsx`)
 
-**What it does**: Dedicated page for viewing all groups with filtering
-
-**Key Features**:
-- Tabs: Active / Archived / All
-- Search by group name or description
-- Draft groups shown at top in "Active" tab
-- Group cards with participant count, tests count
-
-**Components Used**:
-- `HeaderOrganism` - Top navigation with breadcrumbs
-- `GroupFilters` - Search and create group button
-- `GroupCard` - Reusable group card component
-- `TokenGrid` - Grid layout using design tokens
-
-**Routing**: Groups are linked via router.push(`/groups/${id}`)
-
-### 3. Group Details (`app/groups/[id]/page.tsx`)
-
-**What it does**: Individual group view with statistics
+**What it does**: Individual group view with tabs for Students and Statistics
 
 **Structure**:
 - Server component wrapper for static generation
-- `GroupStatsClient` - Client component with actual UI
+- `GroupPageClient` - Client component with tabs UI
+- `GroupStatsClient` - Statistics tab with ResponsiveStatsTable
 - Static params generated for IDs: 1-6, 'demo'
 
-**Related Contract**: `CONTRACT-RESPONSIVE-STATS-TABLE-001-ADDENDUM.yml`
-- Defines responsive statistics table requirements
-- Known issues: sticky headers, hardcoded values
-- Priority fix: Sticky headers not working in desktop version
+### 3. Group Statistics (`app/dashboard/[id]/statistics/page.tsx`)
+
+**What it does**: Dedicated statistics view for a group
+
+**Key Features**:
+- Full-width statistics table
+- Task performance breakdown
+- Student performance tracking
 
 ### 4. Related Pages (Teacher Workflow)
 
@@ -366,20 +394,26 @@ This project uses **contracts** to define requirements before implementation.
 
 ### Current Contracts
 
-Located in `docs/contracts/`:
-- `CONTRACT-RESPONSIVE-STATS-TABLE-001-ADDENDUM.yml` - Stats table requirements & issues
-- More in `CONTRACT-REGISTRY.md`
+Located in `contracts/`:
+- `CONTRACT-DESIGN-SYSTEM-CONSISTENCY.yml` - Design system unification requirements
+- `CONTRACT-FACADE.yml`, `CONTRACT-ADAPTER.yml`, `CONTRACT-BRIDGE.yml` - Architecture pattern contracts
+- `CONTRACT-COMPOUND-COMPONENTS.yml` - Component composition patterns
+- `CONTRACT-MEDIATOR.yml`, `CONTRACT-OBSERVER.yml`, `CONTRACT-STRATEGY.yml` - Behavioral pattern contracts
+- Additional architecture pattern contracts for component design
 
-### Key Contract Findings
+### Key Contract: Design System Consistency
 
-**Responsive Stats Table Issues** (from addendum):
-- ❌ **CRITICAL**: Sticky headers not working in desktop version
-  - Root cause: CSS architecture issue with `.table-scroll-container`
-  - Headers scroll with content instead of staying fixed
-  - Priority #1 fix needed
-- ❌ Missing Esc key handler for fullscreen mode
-- ❌ 30+ hardcoded pixel values (should use design tokens)
-- ❌ Hardcoded breakpoints (should use Tailwind responsive utilities)
+**CONTRACT-DESIGN-SYSTEM-CONSISTENCY.yml** defines:
+- Typography standardization using H1/H2/H3 components
+- Transition from hardcoded colors to design tokens
+- Props synchronization between duplicate components
+- Panel padding and height consistency
+
+**Key Invariants**:
+- Use design tokens (`bg-background`, `text-muted-foreground`) instead of raw colors
+- Render headings through typography components (H1, H2, H3)
+- No hardcoded pixel values where design tokens exist
+- Consistent spacing using Tailwind utility classes
 
 ## Deployment Configuration
 
@@ -463,7 +497,7 @@ useEffect(() => {
 
 **Mock Data Locations**:
 - `app/dashboard/page.tsx` - Mock groups (10А класс, 11Б класс, etc.)
-- `app/groups/page.tsx` - Mock groups with realistic descriptions
+- `app/dashboard/[id]/GroupPageClient.tsx` - Mock student data
 - Other pages follow same pattern
 
 ## Common Prototyping Tasks
@@ -669,14 +703,6 @@ npm run dev                    # Start dev server
 npm run build                  # Test static export
 ```
 
-### For Component Development
-
-```bash
-npm run storybook              # Isolated component dev
-# Build component in Storybook first
-# Then integrate into pages
-```
-
 ### Before Demo/Deploy
 
 1. **Visual check** - Walk through all screens
@@ -689,8 +715,8 @@ npm run storybook              # Isolated component dev
 
 ### What's Implemented (Demo-Ready)
 - ✅ Dashboard with group cards
-- ✅ Group listing with filters/search/tabs
-- ✅ Group statistics view (needs sticky header fix)
+- ✅ Group details with student list
+- ✅ Group statistics view with responsive table
 - ✅ Navigation and routing
 - ✅ Responsive layouts
 - ✅ Design token system
@@ -698,7 +724,7 @@ npm run storybook              # Isolated component dev
 - ✅ Static export for demos
 
 ### What's Prototyped (In Progress)
-- 🚧 Group statistics table (fixing sticky headers)
+- 🚧 Group statistics table (ongoing refinements)
 - 🚧 Test creation workflow
 - 🚧 Additional filters and actions
 - 🚧 Student management screens
@@ -717,21 +743,23 @@ npm run storybook              # Isolated component dev
 ## Current Development State
 
 **Active Branch**: `enhanced-ui`
+**Main Branch**: `main`
 
-**Recent Commits** (as of latest):
-- `acb3fbe` - Force fixed column widths instead of auto-measuring
-- `29a21bc` - Improve table layout and fix visual issues
-- `55cf6e0` - Rename table tab and fix group 5 visibility
-- `0642c82` - Add comprehensive README for stats-table atomic architecture
-- `af9cfe2` - Refactor ResponsiveStatsTable using Atomic Design
+**Note**: The git status and recent commits shown below are a snapshot from when CLAUDE.md was last updated (November 2025). Always check `git status` and `git log` for the current state.
 
-**Modified Files** (uncommitted):
-- `components/stats-table/ResponsiveStatsTableOrganism.tsx`
-- `components/stats-table/atoms/TableCell.tsx`
-- `components/stats-table/hooks/useColumnWidths.ts`
-- `components/stats-table/molecules/*` (GroupHeader, StudentRow, TotalsRow)
-- `components/stats-table/organisms/DesktopStatsTable.tsx`
-- `components/stats-table/responsive-stats-table.css`
+**Recent Commits** (snapshot from 2025-11):
+- `45c746b` - docs: remove references to /tasks, /results, /group-tables-demo
+- `67d39a1` - Remove routes /tasks, /results, /group-tables-demo
+- `011208f` - chore: add design system consistency contract
+- `acb3fbe` - fix: force fixed column widths instead of auto-measuring
+- `29a21bc` - fix: improve table layout and fix visual issues
+- `55cf6e0` - fix: rename table tab and fix group 5 visibility
+- `0642c82` - docs: add comprehensive README for stats-table atomic architecture
+- `af9cfe2` - refactor: restructure ResponsiveStatsTable using Atomic Design
+
+**Modified Files** (uncommitted at time of snapshot):
+- `app/dashboard/[id]/GroupPageClient.tsx`
+- `app/dashboard/[id]/GroupStatsClient.tsx`
 
 **Current Focus**: Stats table refinement and visual polish
 
@@ -746,11 +774,6 @@ npm run dev              # Start dev server
 For design token work:
 ```bash
 npm run build:tokens:watch   # Auto-rebuild tokens on changes
-```
-
-For component development:
-```bash
-npm run storybook        # Open component library
 ```
 
 ---
