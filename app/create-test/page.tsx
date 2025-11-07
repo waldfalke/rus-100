@@ -541,8 +541,6 @@ export default function TestGenerator() {
   // Define static navLinks for TopNavBlock in this context
   const staticNavLinks: NavLink[] = [
     { label: "Дашборд", href: "/dashboard" },
-    { label: "Задания", href: "/tasks" },
-    { label: "Результаты", href: "/results" },
     { label: "Тесты", href: "/tests" },
     { label: "Профиль", href: "/account" },
   ];

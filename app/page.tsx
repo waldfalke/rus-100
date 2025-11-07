@@ -68,20 +68,7 @@ const allPages: PageLink[] = [
   },
   
   // Учебные материалы
-  {
-    href: "/tasks",
-    title: "Задания",
-    description: "Интерактивные упражнения и задания",
-    icon: <CheckSquare className="h-6 w-6" />,
-    category: "Обучение"
-  },
-  {
-    href: "/results",
-    title: "Результаты",
-    description: "Просмотр результатов тестов и прогресса",
-    icon: <BarChart3 className="h-6 w-6" />,
-    category: "Обучение"
-  },
+  
   {
     href: "/dashboard",
     title: "Дашборд",
@@ -106,13 +93,7 @@ const allPages: PageLink[] = [
     category: "Дополнительно"
   },
   // Демонстрации
-  {
-    href: "/group-tables-demo",
-    title: "Демо таблиц групп",
-    description: "Демонстрация статистики по таблицам групп",
-    icon: <TrendingUp className="h-6 w-6" />,
-    category: "Демонстрации"
-  }
+  
 ];
 
 export default function HomePage() {
