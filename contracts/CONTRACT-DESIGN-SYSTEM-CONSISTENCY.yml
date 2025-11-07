@@ -24,7 +24,7 @@ scope:
   - "Компонент `src/components/ui/group-card.tsx`"
   - "Компонент `components/feature/GroupCard.tsx`"
   - "Демо `src/app/group-cards-demo/page.tsx`"
-  - "Страницы с CardTitle и сырыми цветами: results/tests/tasks/answers/create-test"
+  - "Страницы с CardTitle и сырыми цветами: tests/answers/create-test"
   - "Файлы токенов/стилей: `styles/tokens.*.css`, `app/globals.css`"
 
 props:
@@ -55,11 +55,9 @@ props:
     - name: auditedPages
       type: string[]
       default:
-        - "app/results/page.tsx"
         - "app/tests/page.tsx"
         - "app/tests-old/page.tsx"
         - "app/create-test/page.tsx"
-        - "app/tasks/page.tsx"
         - "app/answers/page.tsx"
       description: Страницы для первичного аудита цветов и типографики.
     - name: testIds

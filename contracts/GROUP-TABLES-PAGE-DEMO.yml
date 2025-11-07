@@ -4,6 +4,8 @@ title: "Group Tables Page Demo"
 type: page
 version: 1.0
 complexity_level: complicated
+status: deprecated
+deprecation_note: "Next.js route `app/group-tables-demo` was removed; contract retained for archival reference. Do not reintroduce this route without revising this contract."
 
 meta_contract:
   id: "METACONTRACT-001"
@@ -46,7 +48,7 @@ invariants:
   - "Each card must display the 'table' name and relevant low-level statistics (e.g., average score, completion rate, number of associated tasks)."
   - "The page must be responsive and display correctly on mobile and desktop devices."
   blast_radius:
-    - "All changes must be confined to the new page `app/group-tables-demo/page.tsx` and its associated new components."
+    - "Historical note: the route `app/group-tables-demo/page.tsx` was removed. This contract is archival and must not be used to add or modify that route."
     - "No changes should be made to existing components or pages outside of the new page's scope unless explicitly approved."
     - "The `statistics-adapter.ts` may be extended, but not in a way that breaks existing functionality."
 

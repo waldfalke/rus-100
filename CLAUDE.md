@@ -150,9 +150,7 @@ interface GroupCardData {
 ### 4. Related Pages (Teacher Workflow)
 
 - `app/tests/` - Test creation and management
-- `app/tasks/` - Question bank management
 - `app/answers/` - Grading and review
-- `app/results/` - Student performance analytics
 - `app/account/` - Teacher profile
 
 ## Architecture Notes
