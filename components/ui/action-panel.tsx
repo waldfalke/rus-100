@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 import { SourceSwitcher } from "./source-switcher";
 import { FilterGroup } from "./filter-group";
 
@@ -42,15 +44,18 @@ export type SecondaryActionSpec = {
 export type PrimaryActionSpec = {
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
-  onClick: () => void;
+  onClick?: () => void;
+  items?: { id: string; label: string; icon?: React.ComponentType<{ className?: string }>; onClick: () => void }[];
   loading?: boolean;
   disabled?: boolean;
 };
 
 export type FilterControlSpec =
   | { type: "chip"; id: string; label: string; selected: boolean; onToggle: (selected: boolean) => void }
-  | { type: "select"; id: string; label: string; value: string; options: { label: string; value: string }[]; onChange: (value: string) => void }
-  | { type: "toggle"; id: string; label: string; checked: boolean; onChange: (checked: boolean) => void };
+  | { type: "select"; id: string; label: string; value: string; options: { label: string; value: string }[]; onChange: (value: string) => void; footer?: React.ReactNode }
+  | { type: "toggle"; id: string; label: string; checked: boolean; onChange: (checked: boolean) => void }
+  | { type: "menu"; id: string; label: string; items: { id: string; label: string; icon?: React.ComponentType<{ className?: string }>; onClick: () => void }[] }
+  | { type: "multiselect"; id: string; label: string; values: string[]; options: { label: string; value: string }[]; onChange: (values: string[]) => void; footer?: React.ReactNode };
 
 export type FilterGroupSpec = {
   id: string;
@@ -60,7 +65,7 @@ export type FilterGroupSpec = {
 
 export interface ActionPanelProps {
   filterGroups: FilterGroupSpec[];
-  primaryAction: PrimaryActionSpec;
+  primaryAction?: PrimaryActionSpec | null;
   sourceSwitcher?: SourceSwitcherSpec | null;
   search?: SearchSpec | null;
   selectAll?: SelectAllSpec | null;
@@ -72,12 +77,12 @@ export interface ActionPanelProps {
 const densityClasses: Record<Density, { container: string; control: string; icon: string }> = {
   compact: {
     container: "gap-2",
-    control: "h-9",
+    control: "h-9 px-3",
     icon: "h-4 w-4",
   },
   cozy: {
     container: "gap-3",
-    control: "h-10",
+    control: "h-10 px-3",
     icon: "h-5 w-5",
   },
 };
@@ -113,7 +118,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
   }, [debouncedQuery]);
 
   return (
-    <div className={cn("py-0 rounded-lg flex flex-col items-start sm:flex-row sm:items-center sm:justify-between", d.container, className)}>
+    <div className={cn("flex flex-row flex-wrap items-center sm:justify-between", d.container, className)}>
       {/* Left: source switcher, select-all, search, filters */}
       <div className={cn("flex flex-wrap items-center", d.container)}>
         {sourceSwitcher?.enabled !== false && sourceSwitcher && (
@@ -121,12 +126,11 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
         )}
 
         {selectAll && (
-          <div className={cn("inline-flex items-center gap-2 shrink-0 px-3 border border-border rounded-md bg-background", d.control)}>
+          <div className={cn("inline-flex items-center gap-2 shrink-0", d.control)}>
             <Checkbox
               id="action-panel-select-all"
               checked={selectAll.checked}
               onCheckedChange={(checked) => selectAll.onToggle(checked === true)}
-              className="data-[state=unchecked]:bg-muted"
             />
             <Label htmlFor="action-panel-select-all" className="cursor-pointer text-sm">
               {selectAll.label ?? "Выбрать всех"}
@@ -149,10 +153,10 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
       </div>
 
       {/* Right: secondary actions (mobile icon-only), primary action */}
-      <div className={cn("flex items-center", d.container)}>
+      <div className={cn("flex items-center ml-auto", d.container)}>
         {secondaryActions && secondaryActions.length > 0 && (
           <TooltipProvider>
-            <div className={cn("flex items-center", d.container)}>
+            <div className={cn("flex items-center gap-1")}>
               {secondaryActions.map((act) => {
                 const Icon = act.icon;
                 return (
@@ -176,9 +180,8 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
 
                     {/* Desktop/Tablet: outline with text */}
                     <Button
-                      size="sm"
                       variant="outline"
-                      className="hidden sm:inline-flex"
+                      className={cn(d.control, "hidden sm:inline-flex")}
                       onClick={act.onClick}
                       disabled={act.disabled}
                     >
@@ -193,17 +196,124 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
         )}
 
         {/* Primary action */}
-        <Button
-          size="sm"
-          variant="default"
-          onClick={primaryAction.onClick}
-          disabled={primaryAction.disabled}
-        >
-          {primaryAction.icon ? <primaryAction.icon className={cn(d.icon, "mr-2 hidden sm:inline")} /> : null}
-          <span className="hidden sm:inline">{primaryAction.label}</span>
-          {/* Mobile: compact, label visible to avoid ambiguity */}
-          <span className="sm:hidden">{primaryAction.label}</span>
-        </Button>
+        {primaryAction && (
+          primaryAction.items ? (
+            /* Dropdown menu with responsive variants */
+            primaryAction.icon ? (
+              <>
+                {/* Mobile: icon-only dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      disabled={primaryAction.disabled}
+                      className="sm:hidden"
+                      aria-label={primaryAction.label}
+                    >
+                      <primaryAction.icon className={d.icon} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {primaryAction.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <DropdownMenuItem key={item.id} onClick={item.onClick}>
+                          {Icon && <Icon className={cn(d.icon, "mr-2")} />}
+                          {item.label}
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                {/* Desktop: full button with text */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      disabled={primaryAction.disabled}
+                      className={cn(d.control, "hidden sm:inline-flex")}
+                    >
+                      <primaryAction.icon className={cn(d.icon, "mr-2")} />
+                      {primaryAction.label}
+                      <ChevronDown className={cn(d.icon, "ml-2")} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {primaryAction.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <DropdownMenuItem key={item.id} onClick={item.onClick}>
+                          {Icon && <Icon className={cn(d.icon, "mr-2")} />}
+                          {item.label}
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              /* No icon: same on mobile and desktop */
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    disabled={primaryAction.disabled}
+                    className={d.control}
+                  >
+                    {primaryAction.label}
+                    <ChevronDown className={cn(d.icon, "ml-2")} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {primaryAction.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <DropdownMenuItem key={item.id} onClick={item.onClick}>
+                        {Icon && <Icon className={cn(d.icon, "mr-2")} />}
+                        {item.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          ) : primaryAction.icon ? (
+            <>
+              {/* Mobile: icon-only outline */}
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={primaryAction.onClick}
+                disabled={primaryAction.disabled}
+                className="sm:hidden"
+                aria-label={primaryAction.label}
+              >
+                <primaryAction.icon className={d.icon} />
+              </Button>
+              {/* Desktop: full button with text */}
+              <Button
+                variant="outline"
+                onClick={primaryAction.onClick}
+                disabled={primaryAction.disabled}
+                className={cn(d.control, "hidden sm:inline-flex")}
+              >
+                <primaryAction.icon className={cn(d.icon, "mr-2")} />
+                {primaryAction.label}
+              </Button>
+            </>
+          ) : (
+            /* No icon: same on mobile and desktop */
+            <Button
+              variant="outline"
+              onClick={primaryAction.onClick}
+              disabled={primaryAction.disabled}
+              className={d.control}
+            >
+              {primaryAction.label}
+            </Button>
+          )
+        )}
       </div>
     </div>
   );

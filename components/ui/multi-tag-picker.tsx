@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 
 export type Option = { value: string; label: string };
 
@@ -77,7 +77,7 @@ export function MultiTagPicker({
             className={cn("justify-between", showChips ? "w-full" : "w-auto", triggerClassName)}
           >
             {placeholder}
-            <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[280px]">

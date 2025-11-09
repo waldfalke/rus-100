@@ -715,12 +715,12 @@ function CustomTestCard({
 }) {
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'grammar': return <BookOpen className="h-4 w-4" />;
-      case 'vocabulary': return <Target className="h-4 w-4" />;
-      case 'reading': return <BookOpen className="h-4 w-4" />;
-      case 'listening': return <Clock className="h-4 w-4" />;
-      case 'mixed': return <Grid3X3 className="h-4 w-4" />;
-      default: return <BookOpen className="h-4 w-4" />;
+      case 'grammar': return <BookOpen className="h-4 w-4 text-muted-foreground" />;
+      case 'vocabulary': return <Target className="h-4 w-4 text-muted-foreground" />;
+      case 'reading': return <BookOpen className="h-4 w-4 text-muted-foreground" />;
+      case 'listening': return <Clock className="h-4 w-4 text-muted-foreground" />;
+      case 'mixed': return <Grid3X3 className="h-4 w-4 text-muted-foreground" />;
+      default: return <BookOpen className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -732,109 +732,61 @@ function CustomTestCard({
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'hard': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+  
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'published': return 'Опубликован';
+      case 'draft': return 'Черновик';
+      case 'archived': return 'Архив';
+      default: return 'Неизвестно';
     }
   };
 
   return (
-    <Card className="hover:border-green-600 hover:shadow-md transition-all duration-200">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            {getTypeIcon(test.type)}
-            <CardTitle className="text-lg">{test.title}</CardTitle>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onAction('edit', test.id)}>
-                <Edit className="h-4 w-4 mr-2" />
-                Редактировать
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAction('duplicate', test.id)}>
-                <Copy className="h-4 w-4 mr-2" />
-                Дублировать
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAction('archive', test.id)}>
-                <Archive className="h-4 w-4 mr-2" />
-                Архивировать
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onAction('delete', test.id)}
-                className="text-red-600"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Удалить
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div className="group flex items-center justify-between p-3 transition-all duration-200 hover:bg-gray-50">
+      <div className="flex items-center gap-3 flex-1 truncate">
+        {getTypeIcon(test.type)}
+        <div className="truncate">
+          <p className="font-medium truncate">{test.title}</p>
         </div>
-        {test.description && (
-          <p className="text-sm text-gray-600 mt-2">{test.description}</p>
-        )}
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="flex gap-2">
-            <Badge className={getStatusColor(test.status)}>
-              {test.status === 'published' ? 'Опубликован' : 
-               test.status === 'draft' ? 'Черновик' : 'Архив'}
-            </Badge>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-gray-500">Вопросов:</span>
-              <span className="ml-2 font-medium">{test.questionsCount}</span>
-            </div>
-            {test.timeLimit && (
-              <div>
-                <span className="text-gray-500">Время:</span>
-                <span className="ml-2 font-medium">{test.timeLimit} мин</span>
-              </div>
-            )}
-            <div>
-              <span className="text-gray-500">Назначен:</span>
-              <span className="ml-2 font-medium">{test.assignedStudents}</span>
-            </div>
-            <div>
-              <span className="text-gray-500">Выполнен:</span>
-              <span className="ml-2 font-medium">{test.completedStudents}</span>
-            </div>
-          </div>
-
-          {test.averageScore && (
-            <div className="pt-2">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-500">Средний балл</span>
-                <span className="font-medium">{test.averageScore}%</span>
-              </div>
-              <Progress value={test.averageScore} className="h-2" />
-            </div>
-          )}
-
-          {test.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 pt-2">
-              {test.tags.map((tag, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex items-center gap-4 text-sm mx-4">
+        <Badge variant="outline" className={getStatusColor(test.status)}>{getStatusText(test.status)}</Badge>
+        <span className="hidden lg:inline w-24 text-muted-foreground">{test.questionsCount} {pluralizeWord(test.questionsCount, 'вопрос', 'вопроса', 'вопросов')}</span>
+        <span className="hidden md:inline w-28 text-muted-foreground">{test.completedStudents} / {test.assignedStudents} выполнили</span>
+        {test.averageScore != null && <span className="font-bold w-12 text-foreground">{test.averageScore}%</span>}
+      </div>
+      <div className="ml-auto">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onAction('edit', test.id)}>
+              <Edit className="h-4 w-4 mr-2" />
+              Редактировать
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction('duplicate', test.id)}>
+              <Copy className="h-4 w-4 mr-2" />
+              Дублировать
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction('archive', test.id)}>
+              <Archive className="h-4 w-4 mr-2" />
+              Архивировать
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => onAction('delete', test.id)}
+              className="text-red-600"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Удалить
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
   );
 }
 
@@ -1303,7 +1255,7 @@ export default function GroupPageClient() {
       <GroupStatsOverview stats={stats} />
       
       {/* Вкладки */}
-      <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
+      <Tabs value={mainTab} onValueChange={(value) => setMainTab(value as 'students' | 'tests' | 'answers' | 'analytics' | 'settings')} className="w-full">
         <TabsList>
           <TabsTrigger value="students" expandToFill>Ученики</TabsTrigger>
           <TabsTrigger value="tests" expandToFill>Тесты</TabsTrigger>
@@ -1336,8 +1288,16 @@ export default function GroupPageClient() {
         {mainTab === 'tests' && (
           <ActionPanel
             density="compact"
-            filterGroups={[]}
-            sourceSwitcher={{ enabled: true, value: testsSource, onChange: (v) => setTestsSource(v as 'all' | 'platform' | 'mine') }}
+            filterGroups={[
+              {
+                id: 'source',
+                controls: [
+                  { type: 'chip', id: 'all', label: 'Все', selected: testsSource === 'all', onToggle: () => setTestsSource('all') },
+                  { type: 'chip', id: 'platform', label: 'Тесты платформы', selected: testsSource === 'platform', onToggle: () => setTestsSource('platform') },
+                  { type: 'chip', id: 'mine', label: 'Мои тесты', selected: testsSource === 'mine', onToggle: () => setTestsSource('mine') },
+                ],
+              },
+            ]}
             primaryAction={{ label: 'Создать тест', icon: BookOpen, onClick: () => router.push('/create-test') }}
           />
         )}
@@ -1450,79 +1410,8 @@ export default function GroupPageClient() {
         </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
-          <Tabs value={testsSource} onValueChange={setTestsSource} className="w-full">
-
-            <TabsContent value="all" className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold">Все тесты</h3>
-                <p className="text-sm text-muted-foreground">
-                  Отображаются тесты платформы (мои тесты пока пусты)
-                </p>
-              </div>
-
-              <CustomTestsStats data={mockCustomTests} />
-
-              <TestsFilterBar 
-                filters={{
-                  search: '',
-                  type: 'all',
-                  status: 'all',
-                  difficulty: 'all',
-                  sortBy: 'title',
-                  sortOrder: 'asc'
-                }}
-                onFiltersChange={() => {}}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockCustomTests.tests.map((test) => (
-                  <CustomTestCard 
-                    key={test.id} 
-                    test={test} 
-                    onAction={(action, testId) => {
-                      console.log(`Action: ${action} for test ${testId}`);
-                    }}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="platform" className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold">Тесты платформы</h3>
-                <p className="text-sm text-muted-foreground">
-                  Библиотека тестов платформы, доступных группе
-                </p>
-              </div>
-
-              <CustomTestsStats data={mockCustomTests} />
-
-              <TestsFilterBar 
-                filters={{
-                  search: '',
-                  type: 'all',
-                  status: 'all',
-                  difficulty: 'all',
-                  sortBy: 'title',
-                  sortOrder: 'asc'
-                }}
-                onFiltersChange={() => {}}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockCustomTests.tests.map((test) => (
-                  <CustomTestCard 
-                    key={test.id} 
-                    test={test} 
-                    onAction={(action, testId) => {
-                      console.log(`Action: ${action} for test ${testId}`);
-                    }}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="mine" className="space-y-6">
+          {testsSource === 'mine' ? (
+            <div className="space-y-6">
               <div className="text-center py-12">
                 <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Мои тесты пусты</h3>
@@ -1534,8 +1423,35 @@ export default function GroupPageClient() {
                   Создать тест
                 </Button>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <CustomTestsStats data={mockCustomTests} />
+              <TestsFilterBar
+                filters={{
+                  search: '',
+                  type: 'all',
+                  status: 'all',
+                  difficulty: 'all',
+                  sortBy: 'title',
+                  sortOrder: 'asc'
+                }}
+                onFiltersChange={() => {}}
+              />
+              <div className="border rounded-lg bg-card">
+                {mockCustomTests.tests.map((test, index) => (
+                  <div key={test.id} className={index > 0 ? 'border-t' : ''}>
+                    <CustomTestCard
+                      test={test}
+                      onAction={(action, testId) => {
+                        console.log(`Action: ${action} for test ${testId}`);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
@@ -1925,17 +1841,17 @@ const mockModerators: GroupModerator[] = [
 
 // Компонент ленты решённых тестов
 const TestFeed = ({ data }: { data: TestFeedData }) => {
+  const [selectedStudentIds, setSelectedStudentIds] = React.useState<string[]>([]);
+  const [selectedTestIds, setSelectedTestIds] = React.useState<string[]>([]);
+  const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = React.useState<Date | undefined>(undefined);
+
   const studentOptions: MultiOption[] = Array.from(
     new Map(data.submissions.map((s) => [s.studentId, s.studentName])).entries()
   ).map(([value, label]) => ({ value, label }));
   const testOptions: MultiOption[] = Array.from(
     new Map(data.submissions.map((s) => [s.testId, s.testTitle])).entries()
   ).map(([value, label]) => ({ value, label }));
-
-  const [selectedStudentIds, setSelectedStudentIds] = React.useState<string[]>([]);
-  const [selectedTestIds, setSelectedTestIds] = React.useState<string[]>([]);
-  const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = React.useState<Date | undefined>(undefined);
 
   const toInputDate = (d?: Date): string => {
     if (!d) return "";
@@ -1977,59 +1893,49 @@ const TestFeed = ({ data }: { data: TestFeedData }) => {
     incorrectAnswers: filtered.reduce((sum, s) => sum + ((s.totalQuestions ?? 0) - (s.correctAnswers ?? 0)), 0),
   };
 
-  const resetFilters = () => {
-    setSelectedStudentIds([]);
-    setSelectedTestIds([]);
-    setStartDate(undefined);
-    setEndDate(undefined);
-  };
-
   return (
     <div className="space-y-4">
-      {/* Компактная панель фильтров */}
-      <div className="mb-2">
-        {(() => {
-          const getSummary = (title: string, ids: string[], options: MultiOption[]) => {
-            if (!ids || ids.length === 0) return `${title} · все`;
-            const labels = ids
-              .map((id) => options.find((o) => o.value === id)?.label || id)
-              .filter(Boolean);
-            if (labels.length === 1) return `${title} · ${labels[0]}`;
-            return `${title} · ${labels[0]} +${labels.length - 1}`;
-          };
-          const studentSummary = getSummary('Ученики', selectedStudentIds, studentOptions);
-          const testSummary = getSummary('Тесты', selectedTestIds, testOptions);
-          return (
-            <div className="flex flex-wrap items-center gap-2">
-              <MultiTagPicker
-                options={studentOptions}
-                value={selectedStudentIds}
-                onChange={setSelectedStudentIds}
-                showChips={false}
-                placeholder={studentSummary}
-                triggerClassName="h-9 px-3"
-              />
-              <MultiTagPicker
-                options={testOptions}
-                value={selectedTestIds}
-                onChange={setSelectedTestIds}
-                showChips={false}
-                placeholder={testSummary}
-                triggerClassName="h-9 px-3"
-              />
-              <DateRangePopover
-                onChange={(start, end) => { setStartDate(start); setEndDate(end); }}
-                startDate={startDate}
-                endDate={endDate}
-                triggerClassName="h-9 px-3"
-              />
-              <Button variant="ghost" size="sm" onClick={resetFilters}>
-                Сброс
-              </Button>
-            </div>
-          );
-        })()}
-      </div>
+      <ActionPanel
+        filterGroups={[
+          {
+            id: 'test-feed-filters',
+            controls: [
+              {
+                type: 'multiselect',
+                id: 'students',
+                label: 'Ученики',
+                values: selectedStudentIds,
+                options: studentOptions,
+                onChange: setSelectedStudentIds,
+              },
+              {
+                type: 'multiselect',
+                id: 'tests',
+                label: 'Тесты',
+                values: selectedTestIds,
+                options: testOptions,
+                onChange: setSelectedTestIds,
+              },
+              {
+                type: 'daterange',
+                id: 'date-range',
+                startDate: startDate,
+                endDate: endDate,
+                onChange: (start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                },
+              },
+            ],
+          },
+        ]}
+        primaryAction={{
+          label: 'Экспорт',
+          icon: BookOpen,
+          onClick: () => console.log('Export feed'),
+        }}
+        density="compact"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
@@ -2092,12 +1998,63 @@ interface CustomTest {
 
 interface CustomTestsData {
   tests: CustomTest[];
-  totalTests: number;
-  publishedTests: number;
-  draftTests: number;
 }
 
-// GroupSettings and GroupModerator interfaces
+// Mock данные для пользовательских тестов
+const mockCustomTests: CustomTestsData = {
+  tests: [
+    {
+      id: 'ct-1',
+      title: 'Итоговый тест по орфографии',
+      description: 'Проверка знаний по всем правилам орфографии за курс.',
+      type: 'grammar',
+      difficulty: 'hard',
+      questionsCount: 50,
+      timeLimit: 60,
+      status: 'published',
+      createdAt: '2024-11-20T10:00:00Z',
+      updatedAt: '2024-11-22T14:30:00Z',
+      assignedStudents: 25,
+      completedStudents: 18,
+      averageScore: 76,
+      tags: ['орфография', 'итоги'],
+      isPublic: false,
+    },
+    {
+      id: 'ct-2',
+      title: 'Лексический минимум (A1)',
+      type: 'vocabulary',
+      difficulty: 'easy',
+      questionsCount: 30,
+      timeLimit: 20,
+      status: 'published',
+      createdAt: '2024-10-15T09:00:00Z',
+      updatedAt: '2024-10-15T09:00:00Z',
+      assignedStudents: 25,
+      completedStudents: 25,
+      averageScore: 92,
+      tags: ['лексика', 'A1'],
+      isPublic: true,
+    },
+    {
+      id: 'ct-3',
+      title: 'Анализ поэзии Серебряного века',
+      type: 'reading',
+      difficulty: 'hard',
+      questionsCount: 10,
+      timeLimit: 45,
+      status: 'draft',
+      createdAt: '2024-12-01T18:00:00Z',
+      updatedAt: '2024-12-05T11:00:00Z',
+      assignedStudents: 0,
+      completedStudents: 0,
+      tags: ['поэзия', 'анализ'],
+      isPublic: false,
+    },
+  ],
+};
+
+// Интерфейсы для настроек группы
 interface GroupSettings {
   general: {
     name: string;
@@ -2110,8 +2067,8 @@ interface GroupSettings {
     isPublic: boolean;
     allowSelfEnrollment: boolean;
     requireApproval: boolean;
-    maxStudents?: number;
-    inviteCode?: string;
+    maxStudents: number;
+    inviteCode: string;
   };
   notifications: {
     emailNotifications: boolean;
@@ -2134,21 +2091,21 @@ interface GroupModerator {
   name: string;
   email: string;
   avatar?: string;
-  role: 'owner' | 'admin' | 'moderator';
+  role: 'owner' | 'moderator';
   permissions: {
+    manageSettings: boolean;
     manageStudents: boolean;
     createTests: boolean;
     viewAnalytics: boolean;
-    manageSettings: boolean;
   };
   addedAt: string;
 }
 
-// Mock data for group settings
+// Mock данные для настроек (новый формат)
 const mockGroupSettingsNew: GroupSettings = {
   general: {
     name: 'Русский язык - 10 класс',
-    description: 'Изучение русского языка для учеников 10 класса с акцентом на грамматику и литературу',
+    description: 'Изучение русского языка для учеников 10 класса с углубленным изучением литературы',
     category: 'Русский язык',
     language: 'ru',
     timezone: 'Europe/Moscow'
@@ -2156,22 +2113,22 @@ const mockGroupSettingsNew: GroupSettings = {
   access: {
     isPublic: false,
     allowSelfEnrollment: true,
-    requireApproval: false,
+    requireApproval: true,
     maxStudents: 30,
     inviteCode: 'RUS10-2024'
   },
   notifications: {
     emailNotifications: true,
-    pushNotifications: true,
+    pushNotifications: false,
     weeklyReports: true,
     studentProgress: true,
-    newSubmissions: false
+    newSubmissions: true
   },
   advanced: {
-    allowStudentChat: false,
-    showLeaderboard: true,
+    allowStudentChat: true,
+    showLeaderboard: false,
     allowRetakes: true,
-    autoGrading: true,
+    autoGrading: false,
     exportData: true
   }
 };
@@ -2179,542 +2136,177 @@ const mockGroupSettingsNew: GroupSettings = {
 const mockModeratorsNew: GroupModerator[] = [
   {
     id: 'mod-1',
-    name: 'Елена Васильевна Смирнова',
-    email: 'elena.smirnova@school.ru',
-    avatar: '/avatars/elena.jpg',
+    name: 'Елена Викторовна Смирнова',
+    email: 'e.smirnova@school.ru',
+    avatar: '/avatars/teacher1.jpg',
     role: 'owner',
     permissions: {
+      manageSettings: true,
       manageStudents: true,
       createTests: true,
-      viewAnalytics: true,
-      manageSettings: true
+      viewAnalytics: true
     },
     addedAt: '2024-09-01T08:00:00Z'
   },
   {
     id: 'mod-2',
-    name: 'Андрей Петрович Козлов',
-    email: 'andrey.kozlov@school.ru',
-    role: 'admin',
+    name: 'Андрей Петрович Иванов',
+    email: 'a.ivanov@school.ru',
+    role: 'moderator',
     permissions: {
+      manageSettings: false,
       manageStudents: true,
       createTests: true,
-      viewAnalytics: true,
-      manageSettings: false
+      viewAnalytics: true
     },
-    addedAt: '2024-09-15T10:30:00Z'
+    addedAt: '2024-10-15T10:30:00Z'
   }
 ];
 
-// Mock data for custom tests
-const mockCustomTests: CustomTestsData = {
-  totalTests: 5,
-  publishedTests: 3,
-  draftTests: 2,
-  tests: [
-    {
-      id: 'custom-1',
-      title: 'Тест по падежам - Авторский',
-      description: 'Углубленное изучение падежной системы русского языка',
-      type: 'grammar',
-      difficulty: 'medium',
-      questionsCount: 15,
-      timeLimit: 20,
-      status: 'published',
-      createdAt: '2024-12-10T10:00:00Z',
-      updatedAt: '2024-12-15T14:30:00Z',
-      assignedStudents: 25,
-      completedStudents: 18,
-      averageScore: 82,
-      tags: ['падежи', 'грамматика', 'склонение'],
-      isPublic: false
-    },
-    {
-      id: 'custom-2',
-      title: 'Словарный запас - Синонимы',
-      description: 'Проверка знания синонимов и их правильного употребления',
-      type: 'vocabulary',
-      difficulty: 'easy',
-      questionsCount: 20,
-      timeLimit: 15,
-      status: 'published',
-      createdAt: '2024-12-08T09:15:00Z',
-      updatedAt: '2024-12-12T16:45:00Z',
-      assignedStudents: 25,
-      completedStudents: 22,
-      averageScore: 89,
-      tags: ['синонимы', 'лексика', 'словарь'],
-      isPublic: true
-    },
-    {
-      id: 'custom-3',
-      title: 'Анализ стихотворения Есенина',
-      description: 'Комплексный анализ поэтического текста',
-      type: 'reading',
-      difficulty: 'hard',
-      questionsCount: 10,
-      timeLimit: 30,
-      status: 'published',
-      createdAt: '2024-12-05T11:20:00Z',
-      updatedAt: '2024-12-14T13:10:00Z',
-      assignedStudents: 25,
-      completedStudents: 12,
-      averageScore: 74,
-      tags: ['поэзия', 'анализ', 'Есенин'],
-      isPublic: false
-    },
-    {
-      id: 'custom-4',
-      title: 'Орфоэпия - Ударения',
-      description: 'Правильная постановка ударений в словах',
-      type: 'listening',
-      difficulty: 'medium',
-      questionsCount: 25,
-      timeLimit: 18,
-      status: 'draft',
-      createdAt: '2024-12-16T15:30:00Z',
-      updatedAt: '2024-12-17T10:15:00Z',
-      assignedStudents: 0,
-      completedStudents: 0,
-      tags: ['орфоэпия', 'ударения', 'произношение'],
-      isPublic: false
-    },
-    {
-      id: 'custom-5',
-      title: 'Комплексный тест - Итоговый',
-      description: 'Итоговая проверка знаний по всем разделам',
-      type: 'mixed',
-      difficulty: 'hard',
-      questionsCount: 40,
-      timeLimit: 45,
-      status: 'draft',
-      createdAt: '2024-12-17T08:00:00Z',
-      updatedAt: '2024-12-17T12:30:00Z',
-      assignedStudents: 0,
-      completedStudents: 0,
-      tags: ['итоговый', 'комплексный', 'все разделы'],
-      isPublic: false
-    }
-  ]
-};
-
-// GroupSettingsPanel component
-const GroupSettingsPanel = ({ 
-  settings, 
-  moderators, 
-  onSettingsChange, 
-  onModeratorAction 
-}: { 
+// Компонент панели настроек
+function GroupSettingsPanel({
+  settings,
+  moderators,
+  onSettingsChange,
+  onModeratorAction,
+}: {
   settings: GroupSettings;
   moderators: GroupModerator[];
   onSettingsChange: (settings: GroupSettings) => void;
-  onModeratorAction: (action: string, moderatorId?: string) => void;
-}) => {
-  const [activeTab, setActiveTab] = useState('general');
+  onModeratorAction: (action: string, moderatorId: string) => void;
+}) {
+  const [currentSettings, setCurrentSettings] = useState(settings);
+
+  const handleSettingChange = (section: keyof GroupSettings, key: any, value: any) => {
+    const newSettings = {
+      ...currentSettings,
+      [section]: {
+        ...currentSettings[section],
+        [key]: value,
+      },
+    };
+    setCurrentSettings(newSettings);
+    onSettingsChange(newSettings);
+  };
 
   return (
-    <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="general">Основные</TabsTrigger>
-          <TabsTrigger value="access">Доступ</TabsTrigger>
-          <TabsTrigger value="notifications">Уведомления</TabsTrigger>
-          <TabsTrigger value="advanced">Дополнительно</TabsTrigger>
-        </TabsList>
+    <div className="space-y-8">
+      {/* General Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Общие настройки</CardTitle>
+          <CardDescription>Основные параметры вашей группы.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="group-name">Название группы</Label>
+            <Input
+              id="group-name"
+              value={currentSettings.general.name}
+              onChange={(e) => handleSettingChange('general', 'name', e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="group-description">Описание</Label>
+            <Input
+              id="group-description"
+              value={currentSettings.general.description}
+              onChange={(e) => handleSettingChange('general', 'description', e.target.value)}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-        <TabsContent value="general" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Основная информация</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Название группы</label>
-                <Input 
-                  value={settings.general.name}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    general: { ...settings.general, name: e.target.value }
-                  })}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block">Описание</label>
-                <Input 
-                  value={settings.general.description}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    general: { ...settings.general, description: e.target.value }
-                  })}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Категория</label>
-                  <Select 
-                    value={settings.general.category}
-                    onValueChange={(value) => onSettingsChange({
-                      ...settings,
-                      general: { ...settings.general, category: value }
-                    })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Русский язык">Русский язык</SelectItem>
-                      <SelectItem value="Математика">Математика</SelectItem>
-                      <SelectItem value="История">История</SelectItem>
-                      <SelectItem value="Физика">Физика</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Часовой пояс</label>
-                  <Select 
-                    value={settings.general.timezone}
-                    onValueChange={(value) => onSettingsChange({
-                      ...settings,
-                      general: { ...settings.general, timezone: value }
-                    })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Europe/Moscow">Москва (UTC+3)</SelectItem>
-                      <SelectItem value="Europe/Kiev">Киев (UTC+2)</SelectItem>
-                      <SelectItem value="Asia/Almaty">Алматы (UTC+6)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {/* Access Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Доступ</CardTitle>
+          <CardDescription>Управление доступом и приглашениями.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="allow-self-enrollment">Разрешить самостоятельное вступление</Label>
+            <Switch
+              id="allow-self-enrollment"
+              checked={currentSettings.access.allowSelfEnrollment}
+              onCheckedChange={(checked) => handleSettingChange('access', 'allowSelfEnrollment', checked)}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="require-approval">Требовать подтверждения</Label>
+            <Switch
+              id="require-approval"
+              checked={currentSettings.access.requireApproval}
+              onCheckedChange={(checked) => handleSettingChange('access', 'requireApproval', checked)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="invite-code">Код приглашения</Label>
+            <div className="flex items-center gap-2">
+              <Input id="invite-code" value={currentSettings.access.inviteCode} readOnly />
+              <Button variant="outline" size="sm">
+                <Copy className="h-4 w-4 mr-2" />
+                Копировать
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        <TabsContent value="access" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Настройки доступа</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Публичная группа</p>
-                  <p className="text-sm text-gray-600">Группа видна в поиске</p>
-                </div>
-                <Switch 
-                  checked={settings.access.isPublic}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    access: { ...settings.access, isPublic: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Самостоятельная запись</p>
-                  <p className="text-sm text-gray-600">Студенты могут присоединиться сами</p>
-                </div>
-                <Switch 
-                  checked={settings.access.allowSelfEnrollment}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    access: { ...settings.access, allowSelfEnrollment: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Требовать одобрение</p>
-                  <p className="text-sm text-gray-600">Модерация новых участников</p>
-                </div>
-                <Switch 
-                  checked={settings.access.requireApproval}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    access: { ...settings.access, requireApproval: checked }
-                  })}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block">Максимум студентов</label>
-                <Input 
-                  type="number"
-                  value={settings.access.maxStudents || ''}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    access: { ...settings.access, maxStudents: parseInt(e.target.value) || undefined }
-                  })}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block">Код приглашения</label>
-                <div className="flex space-x-2">
-                  <Input 
-                    value={settings.access.inviteCode || ''}
-                    readOnly
-                  />
-                  <Button variant="outline" size="sm">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="notifications" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Уведомления</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Email уведомления</p>
-                  <p className="text-sm text-gray-600">Получать уведомления на почту</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.emailNotifications}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    notifications: { ...settings.notifications, emailNotifications: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Push уведомления</p>
-                  <p className="text-sm text-gray-600">Уведомления в браузере</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.pushNotifications}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    notifications: { ...settings.notifications, pushNotifications: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Еженедельные отчеты</p>
-                  <p className="text-sm text-gray-600">Сводка активности группы</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.weeklyReports}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    notifications: { ...settings.notifications, weeklyReports: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Прогресс студентов</p>
-                  <p className="text-sm text-gray-600">Уведомления о достижениях</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.studentProgress}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    notifications: { ...settings.notifications, studentProgress: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Новые ответы</p>
-                  <p className="text-sm text-gray-600">Уведомления о новых ответах</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.newSubmissions}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    notifications: { ...settings.notifications, newSubmissions: checked }
-                  })}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="advanced" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Дополнительные настройки</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Чат студентов</p>
-                  <p className="text-sm text-gray-600">Разрешить общение между студентами</p>
-                </div>
-                <Switch 
-                  checked={settings.advanced.allowStudentChat}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    advanced: { ...settings.advanced, allowStudentChat: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Таблица лидеров</p>
-                  <p className="text-sm text-gray-600">Показывать рейтинг студентов</p>
-                </div>
-                <Switch 
-                  checked={settings.advanced.showLeaderboard}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    advanced: { ...settings.advanced, showLeaderboard: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Пересдача тестов</p>
-                  <p className="text-sm text-gray-600">Разрешить повторное прохождение</p>
-                </div>
-                <Switch 
-                  checked={settings.advanced.allowRetakes}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    advanced: { ...settings.advanced, allowRetakes: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Автоматическая проверка</p>
-                  <p className="text-sm text-gray-600">Автоматически оценивать ответы</p>
-                </div>
-                <Switch 
-                  checked={settings.advanced.autoGrading}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    advanced: { ...settings.advanced, autoGrading: checked }
-                  })}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Экспорт данных</p>
-                  <p className="text-sm text-gray-600">Разрешить экспорт результатов</p>
-                </div>
-                <Switch 
-                  checked={settings.advanced.exportData}
-                  onCheckedChange={(checked) => onSettingsChange({
-                    ...settings,
-                    advanced: { ...settings.advanced, exportData: checked }
-                  })}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Модераторы</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {moderators.map((moderator) => (
-                  <div key={moderator.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <Avatar>
-                        <AvatarImage src={moderator.avatar} />
-                        <AvatarFallback>{moderator.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{moderator.name}</p>
-                        <p className="text-sm text-gray-600">{moderator.email}</p>
-                        <Badge variant={moderator.role === 'owner' ? 'default' : 'secondary'}>
-                          {moderator.role === 'owner' ? 'Владелец' : moderator.role === 'admin' ? 'Администратор' : 'Модератор'}
-                        </Badge>
-                      </div>
-                    </div>
-                    {moderator.role !== 'owner' && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem onClick={() => onModeratorAction('edit', moderator.id)}>
-                            Изменить права
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onModeratorAction('remove', moderator.id)}
-                            className="text-red-600"
-                          >
-                            Удалить
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
+      {/* Moderators */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Модераторы</CardTitle>
+          <CardDescription>Управление командой преподавателей.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {moderators.map((moderator) => (
+              <div key={moderator.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarImage src={moderator.avatar} />
+                    <AvatarFallback>{moderator.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">{moderator.name}</p>
+                    <p className="text-sm text-muted-foreground">{moderator.email}</p>
                   </div>
-                ))}
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => onModeratorAction('add')}
-                >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Добавить модератора
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-red-200">
-            <CardHeader>
-              <CardTitle className="text-red-600">Опасная зона</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Архивировать группу</p>
-                  <p className="text-sm text-gray-600">Группа станет недоступна для студентов</p>
                 </div>
-                <Button variant="outline" onClick={() => onModeratorAction('archive')}>
-                  <Archive className="h-4 w-4 mr-2" />
-                  Архивировать
-                </Button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-red-600">Удалить группу</p>
-                  <p className="text-sm text-gray-600">Это действие нельзя отменить</p>
+                <div className="flex items-center gap-2">
+                  <Badge variant={moderator.role === 'owner' ? 'default' : 'secondary'}>
+                    {moderator.role === 'owner' ? 'Владелец' : 'Модератор'}
+                  </Badge>
+                  {moderator.role !== 'owner' && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => onModeratorAction('edit', moderator.id)}>
+                          Изменить права
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => onModeratorAction('remove', moderator.id)}
+                        >
+                          Удалить
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
-                <Button variant="destructive" onClick={() => onModeratorAction('delete')}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Удалить
-                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            ))}
+          </div>
+          <Button variant="outline" className="mt-4">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Добавить модератора
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
-};
+}

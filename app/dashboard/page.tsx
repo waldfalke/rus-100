@@ -4,21 +4,25 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeaderOrganism } from "@/components/ui/HeaderOrganism";
 import { GroupCard } from "@/components/feature/GroupCard";
-import { GroupFilters } from "@/components/feature/GroupFilters";
+import { ActionPanel } from "@/components/ui/action-panel";
+import { Switch } from "@/components/ui/switch";
 import { H1, P } from "@/components/ui/typography";
-import { 
-  fontSize3Xl, 
-  fontSizeBase, 
-  fontWeightBold, 
+import {
+  MoreHorizontal,
+  FileText,
+  Sparkles,
+  Users,
+  UserPlus,
+} from "lucide-react";
+import {
+  fontSize3Xl,
+  fontSizeBase,
+  fontWeightBold,
   fontWeightNormal,
   lineHeightTight,
   lineHeightNormal,
-  spacingLg,
-  spacingXl,
-  gridGap,
   radiusMd
 } from "@/lib/tokens";
-import ResponsiveContainer from "@/components/layout/ResponsiveContainer";
 import TokenGrid from "@/components/layout/TokenGrid";
 
 const mockGroups = [
@@ -196,6 +200,7 @@ function GroupList({ groups, onEdit, onArchive, onDelete, onOpen }: GroupListPro
 export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [groupsOwners, setGroupsOwners] = useState<string[]>([]);
   const router = useRouter();
 
   // Фильтрация групп
@@ -232,12 +237,6 @@ export default function GroupsPage() {
     console.log("Delete group:", id);
   };
 
-  // Обработчик поиска
-  const handleSearch = (query: string) => {
-    console.log('Поиск по запросу:', query);
-    // Здесь можно добавить логику поиска
-  };
-
   const handleCreateGroup = () => {
     // TODO: Implement group creation logic
     console.log("Create group clicked");
@@ -265,15 +264,70 @@ export default function GroupsPage() {
             Обзор и статистика по всем группам
           </P>
 
-        {/* Фильтры и поиск */}
+        {/* Фильтры и действия */}
         <div className="mb-8">
-          <GroupFilters
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onSearch={handleSearch}
-            showArchived={showArchived}
-            onShowArchivedChange={setShowArchived}
-            onCreateGroup={handleCreateGroup}
+          <ActionPanel
+            filterGroups={[
+              {
+                id: 'filters',
+                controls: [
+                  {
+                    type: 'multiselect',
+                    id: 'owner',
+                    label: 'Аккаунты',
+                    values: groupsOwners,
+                    options: [
+                      { label: 'Курсы Марьям', value: 'maryam' },
+                      { label: 'Аккаунт Аллы', value: 'alla' },
+                      { label: 'Аккаунт Марины', value: 'marina' },
+                    ],
+                    onChange: setGroupsOwners,
+                    footer: (
+                      <div className="px-2 py-1.5 flex items-center gap-2">
+                        <Switch checked={showArchived} onCheckedChange={setShowArchived} />
+                        <span className="text-sm">Показать архивные</span>
+                      </div>
+                    ),
+                  },
+                ],
+              },
+            ]}
+            search={{
+              placeholder: 'Поиск по группам...',
+              query: searchQuery,
+              onQueryChange: setSearchQuery,
+            }}
+            primaryAction={{
+              label: 'Действия',
+              icon: MoreHorizontal,
+              items: [
+                {
+                  id: 'my-tests',
+                  label: 'Мои тесты',
+                  icon: FileText,
+                  onClick: () => console.log('Мои тесты'),
+                },
+                {
+                  id: 'generate',
+                  label: 'Сгенерировать тест',
+                  icon: Sparkles,
+                  onClick: () => console.log('Сгенерировать тест'),
+                },
+                {
+                  id: 'team',
+                  label: 'Наша команда',
+                  icon: Users,
+                  onClick: () => console.log('Наша команда'),
+                },
+                {
+                  id: 'create',
+                  label: 'Создать группу',
+                  icon: UserPlus,
+                  onClick: handleCreateGroup,
+                },
+              ],
+            }}
+            density="compact"
           />
         </div>
 

@@ -15,16 +15,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { 
-  MessageSquare, 
-  Filter, 
-  Search, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  Flag, 
-  Star, 
-  Eye, 
+import { ActionPanel } from "@/components/ui/action-panel";
+import {
+  MessageSquare,
+  Filter,
+  Search,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Flag,
+  Star,
+  Eye,
   Bell,
   Settings,
   Download,
@@ -923,12 +924,103 @@ export default function AnswersFeedPage() {
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
           <FeedHeader />
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Filters Sidebar */}
-            <div className="lg:col-span-1">
-              <FeedFiltersPanel />
-            </div>
+          <ActionPanel
+            filterGroups={[
+              {
+                id: 'answers-filters',
+                controls: [
+                  {
+                    type: 'select',
+                    id: 'moderation-status',
+                    label: 'Статус модерации',
+                    value: filters.moderationStatus,
+                    options: [
+                      { value: 'all', label: 'Все статусы' },
+                      { value: 'pending', label: 'Ожидает' },
+                      { value: 'approved', label: 'Одобрен' },
+                      { value: 'rejected', label: 'Отклонен' },
+                      { value: 'flagged', label: 'Помечен' },
+                      { value: 'needs_review', label: 'Требует проверки' },
+                    ],
+                    onChange: (value) => setFilters(prev => ({ ...prev, moderationStatus: value as ModerationStatus | 'all' })),
+                  },
+                  {
+                    type: 'select',
+                    id: 'correctness',
+                    label: 'Правильность',
+                    value: filters.correctnessFilter,
+                    options: [
+                      { value: 'all', label: 'Все ответы' },
+                      { value: 'correct', label: 'Правильные' },
+                      { value: 'incorrect', label: 'Неправильные' },
+                      { value: 'ungraded', label: 'Не оценены' },
+                    ],
+                    onChange: (value) => setFilters(prev => ({ ...prev, correctnessFilter: value as any })),
+                  },
+                  {
+                    type: 'toggle',
+                    id: 'show-flagged',
+                    label: 'Только помеченные',
+                    checked: filters.showOnlyFlagged,
+                    onChange: (checked) => setFilters(prev => ({ ...prev, showOnlyFlagged: checked })),
+                  },
+                  {
+                    type: 'toggle',
+                    id: 'show-ungraded',
+                    label: 'Только не оцененные',
+                    checked: filters.showOnlyUngraded,
+                    onChange: (checked) => setFilters(prev => ({ ...prev, showOnlyUngraded: checked })),
+                  },
+                  {
+                    type: 'select',
+                    id: 'sort-by',
+                    label: 'Сортировка',
+                    value: filters.sortBy,
+                    options: [
+                      { value: 'timestamp', label: 'По времени' },
+                      { value: 'score', label: 'По баллам' },
+                      { value: 'student', label: 'По ученику' },
+                      { value: 'test', label: 'По тесту' },
+                    ],
+                    onChange: (value) => setFilters(prev => ({ ...prev, sortBy: value as any })),
+                  },
+                ],
+              },
+            ]}
+            search={{
+              query: filters.searchQuery,
+              onQueryChange: (query) => setFilters(prev => ({ ...prev, searchQuery: query })),
+              placeholder: 'Поиск по содержимому...',
+            }}
+            secondaryActions={selectedAnswers.length > 0 ? [
+              {
+                id: 'approve',
+                label: 'Одобрить',
+                icon: CheckCircle,
+                onClick: () => console.log('Approve selected'),
+              },
+              {
+                id: 'reject',
+                label: 'Отклонить',
+                icon: XCircle,
+                onClick: () => console.log('Reject selected'),
+              },
+              {
+                id: 'flag',
+                label: 'Пометить',
+                icon: Flag,
+                onClick: () => console.log('Flag selected'),
+              },
+            ] : []}
+            primaryAction={{
+              label: 'Экспорт',
+              icon: Download,
+              onClick: () => console.log('Export answers'),
+            }}
+            density="compact"
+          />
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
             {/* Main Feed */}
             <div className="lg:col-span-2">
               <div className="space-y-4">

@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from "react"
 import { redirect } from "next/navigation"
-import { ChevronDown, ChevronUp, Edit2, ArrowLeft, User, FolderPlus, Dice3 } from "lucide-react"
+import { ChevronDown, ChevronUp, Edit2, ArrowLeft, User, Dice3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
@@ -25,6 +23,8 @@ import { ResponsiveStatsTable } from "@/components/stats-table";
 import { H1, P, H2, H3 } from "@/components/ui/typography"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import TokenGrid from "@/components/layout/TokenGrid";
+import { Option } from '@/components/ui/searchable-select';
+import { TestFormInline, TestFormData } from '@/components/ui/test-form-inline';
 
 // --- Мок-данные для ResponsiveStatsTable ---
 const mockStudentsData = [
@@ -238,10 +238,12 @@ interface NavLink {
 }
 
 export default function TestGenerator() {
-  // --- Инициализируем состояния пустыми массивами --- 
-  const [testName, setTestName] = useState("")
-  const [testGroup, setTestGroup] = useState<string | undefined>(undefined)
-  const [account, setAccount] = useState<string | undefined>(undefined)
+  // --- Инициализируем состояния пустыми массивами ---
+  const [testFormData, setTestFormData] = useState<TestFormData>({
+    testName: '',
+    account: undefined,
+    testGroup: undefined,
+  })
   const [tasksDataState, setTasksDataState] = useState<TestCategory[] | null>(null);
   const [egeFormatDataState, setEgeFormatDataState] = useState<EGESection[] | null>(null);
   const [exercisesDataState, setExercisesDataState] = useState<EGESection[] | null>(null);
@@ -250,6 +252,41 @@ export default function TestGenerator() {
   const [selectedTab, setSelectedTab] = useState("tasks");
   const [newGroup, setNewGroup] = useState("")
   const [buttonText, setButtonText] = useState("Создать тест")
+
+  const accountOptions: Option[] = [
+    { value: '1', label: 'Аккаунт 1' },
+    { value: '2', label: 'Аккаунт 2' },
+    { value: '3', label: 'Аккаунт 3' },
+  ]
+
+  const testGroupOptions: Option[] = [
+    { value: '3', label: 'Тесты-25' },
+    { value: '4', label: 'Пунктуация' },
+    { value: '5', label: 'Пунктуация. Контроль.' },
+    { value: '6', label: 'Чекапы' },
+    { value: '7', label: 'Сочинение' },
+    { value: '8', label: 'Сочинение. Контроль.' },
+    { value: '9', label: 'Грамматика' },
+    { value: '10', label: 'Грамматика контроль' },
+    { value: '29', label: 'Сгенерированные тесты' },
+    { value: '60', label: 'ЕГКР (от ФИПИ)' },
+    { value: '127', label: 'Орфография' },
+    { value: '128', label: 'Орфография. Контроль' },
+    { value: '255', label: 'Орфография (тексты с пропущенными буквами)' },
+    { value: '333', label: 'Речь' },
+    { value: '9-task', label: 'Задание 9' },
+    { value: '14', label: 'Наречия (задание 14)' },
+    { value: '4-task', label: 'Задание 4' },
+    { value: '22', label: 'Тренировочные варианты (задание 22)' },
+    { value: '21', label: 'Тренировочные варианты (задание 21)' },
+    { value: 'school', label: 'Школа, 11 класс' },
+    { value: 'test-group', label: 'Тестовая группа' },
+    { value: 'marketing', label: 'Маркетинговые тесты' },
+    { value: 'repeat', label: 'Повторение' },
+    { value: 'hard-words', label: 'Сложные слова для блока "Орфография"' },
+    { value: 'ege', label: 'Тесты в формате ЕГЭ' },
+    { value: 'guests', label: 'Для гостей' },
+  ]
 
   const totalLimit = 50
   const [totalSelected, setTotalSelected] = useState(0)
@@ -311,6 +348,10 @@ export default function TestGenerator() {
     } else {
       setButtonText(`Создать тест ${selectedTabs[0]}, ${selectedTabs[1]} и ${selectedTabs[2]}`)
     }
+  }
+
+  const handleCreateGroup = (groupName: string) => {
+    alert(`Создана группа: ${groupName}`)
   }
 
   // Добавляем типы к параметрам handleCountChange
@@ -563,70 +604,14 @@ export default function TestGenerator() {
             Выберите задания для включения в тест (не более 50), укажите название, аккаунт и группу, затем нажмите {"Создать тест"}.
           </P>
 
-          <div className="bg-card rounded-xl p-4 sm:p-6 shadow-sm border border-border mb-4 sm:mb-6">
-            <TokenGrid variant="tests" autoFit>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="test-name" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Название теста <span className="text-destructive">*</span></label>
-                  <Input
-                    id="test-name"
-                    value={testName}
-                    onChange={(e) => setTestName(e.target.value)}
-                    placeholder="Введите название теста"
-                    className="w-full"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="test-group" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Группа тестов</label>
-                  <div className="flex items-center gap-2">
-                    <Select value={testGroup} onValueChange={setTestGroup}>
-                      <SelectTrigger className="w-full font-inter text-app-small leading-5 font-normal">
-                        <SelectValue placeholder="-- Выберите --" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="3">Тесты-25</SelectItem>
-                        <SelectItem value="4">Пунктуация</SelectItem>
-                        <SelectItem value="5">Пунктуация. Контроль.</SelectItem>
-                        <SelectItem value="6">Чекапы</SelectItem>
-                        <SelectItem value="7">Сочинение</SelectItem>
-                        <SelectItem value="8">Сочинение. Контроль.</SelectItem>
-                        <SelectItem value="9">Грамматика</SelectItem>
-                        <SelectItem value="10">Грамматика контроль</SelectItem>
-                        <SelectItem value="29">Сгенерированные тесты</SelectItem>
-                        <SelectItem value="60">ЕГКР (от ФИПИ)</SelectItem>
-                        <SelectItem value="127">Орфография</SelectItem>
-                        <SelectItem value="128">Орфография. Контроль</SelectItem>
-                        <SelectItem value="255">Орфография (тексты с пропущенными буквами)</SelectItem>
-                        <SelectItem value="333">Речь</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="icon" className="flex-shrink-0">
-                      <FolderPlus className="h-5 w-5 text-primary" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="account-select" className="block font-inter text-app-small leading-5 font-normal text-foreground mb-1">Аккаунт</label>
-                  <Select value={account} onValueChange={setAccount}>
-                    <SelectTrigger className="w-full font-inter text-app-small leading-5 font-normal">
-                      <SelectValue placeholder="-- Выберите аккаунт --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Аккаунт 1</SelectItem>
-                      <SelectItem value="2">Аккаунт 2</SelectItem>
-                      <SelectItem value="3">Аккаунт 3</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </TokenGrid>
-           </div>
+          <TestFormInline
+            value={testFormData}
+            onChange={setTestFormData}
+            accountOptions={accountOptions}
+            testGroupOptions={testGroupOptions}
+            onCreateGroup={handleCreateGroup}
+            className="mb-4 sm:mb-6"
+          />
 
           <div className="mb-4">
             <SelectableExamText />

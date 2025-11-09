@@ -1,26 +1,61 @@
 "use client";
 
 import * as React from "react";
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import type { Density } from "@/components/ui/action-panel";
-import { cn } from "@/lib/utils";
 
 export const SourceSwitcher: React.FC<{
   value?: "all" | "platform" | "mine";
   onChange?: (value: "all" | "platform" | "mine") => void;
   density?: Density;
-}> = ({ value, onChange, density = "compact" }) => {
+  labelAll?: string;
+  labelPlatform?: string;
+  labelMine?: string;
+}> = ({
+  value = "platform",
+  onChange,
+  density = "compact",
+  labelAll = "Все",
+  labelPlatform = "Тесты платформы",
+  labelMine = "Мои тесты",
+}) => {
   const controlClass = density === "cozy" ? "h-10 px-3" : "h-9 px-3";
   const handleChange = (v: "all" | "platform" | "mine") => () => onChange?.(v);
+
   return (
-    <TabsList className={cn("grid w-auto grid-cols-3")}
-      aria-label="Переключатель источника"
+    <div
+      className="inline-flex items-center gap-1"
       role="tablist"
+      aria-label="Переключатель источника"
     >
-      <TabsTrigger value="all" className={controlClass} onClick={handleChange("all")}>Все</TabsTrigger>
-      <TabsTrigger value="platform" className={controlClass} onClick={handleChange("platform")}>Тесты платформы</TabsTrigger>
-      <TabsTrigger value="mine" className={controlClass} onClick={handleChange("mine")}>Мои тесты</TabsTrigger>
-    </TabsList>
+      <Button
+        variant={value === "all" ? "default" : "ghost"}
+        className={controlClass}
+        onClick={handleChange("all")}
+        role="tab"
+        aria-selected={value === "all"}
+      >
+        {labelAll}
+      </Button>
+      <Button
+        variant={value === "platform" ? "default" : "ghost"}
+        className={controlClass}
+        onClick={handleChange("platform")}
+        role="tab"
+        aria-selected={value === "platform"}
+      >
+        {labelPlatform}
+      </Button>
+      <Button
+        variant={value === "mine" ? "default" : "ghost"}
+        className={controlClass}
+        onClick={handleChange("mine")}
+        role="tab"
+        aria-selected={value === "mine"}
+      >
+        {labelMine}
+      </Button>
+    </div>
   );
 };
 

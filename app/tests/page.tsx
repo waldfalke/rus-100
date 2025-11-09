@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ActionPanel } from '@/components/ui/action-panel';
 import { 
   Clock, 
   Users, 
@@ -36,9 +38,13 @@ interface Test {
   participants: number;
   rating: number;
   type: 'grammar' | 'vocabulary' | 'reading' | 'listening' | 'speaking' | 'writing';
+  source: 'platform' | 'mine';
 }
 
 export default function TestsPage() {
+  const [testsSource, setTestsSource] = useState<'all' | 'platform' | 'mine'>('platform');
+  const router = useRouter();
+
   const navLinks: NavLink[] = [
     { label: 'Главная', href: '/' },
     { label: 'Тесты', href: '/tests' },
@@ -47,103 +53,20 @@ export default function TestsPage() {
   ];
 
   const tests: Test[] = [
-    {
-      id: "1",
-      title: "Падежи существительных",
-      description: "Проверьте знание склонения существительных в русском языке",
-      category: "Грамматика",
-      difficulty: "medium",
-      duration: "20 мин",
-      questions: 25,
-      participants: 1247,
-      rating: 4.8,
-      type: "grammar"
-    },
-    {
-      id: "2",
-      title: "Глаголы движения",
-      description: "Тест на знание глаголов движения с приставками и без",
-      category: "Грамматика",
-      difficulty: "hard",
-      duration: "30 мин",
-      questions: 20,
-      participants: 892,
-      rating: 4.6,
-      type: "grammar"
-    },
-    {
-      id: "3",
-      title: "Словарь: Семья и родственники",
-      description: "Проверьте знание лексики по теме семьи",
-      category: "Лексика",
-      difficulty: "easy",
-      duration: "15 мин",
-      questions: 30,
-      participants: 2156,
-      rating: 4.9,
-      type: "vocabulary"
-    },
-    {
-      id: "4",
-      title: "Понимание художественного текста",
-      description: "Анализ отрывка из произведения русской литературы",
-      category: "Чтение",
-      difficulty: "hard",
-      duration: "45 мин",
-      questions: 15,
-      participants: 634,
-      rating: 4.7,
-      type: "reading"
-    },
-    {
-      id: "5",
-      title: "Аудирование: Диалоги",
-      description: "Понимание разговорной речи в различных ситуациях",
-      category: "Аудирование",
-      difficulty: "medium",
-      duration: "25 мин",
-      questions: 20,
-      participants: 1089,
-      rating: 4.5,
-      type: "listening"
-    },
-    {
-      id: "6",
-      title: "Произношение: Ударения",
-      description: "Правильная постановка ударений в словах",
-      category: "Произношение",
-      difficulty: "medium",
-      duration: "18 мин",
-      questions: 40,
-      participants: 756,
-      rating: 4.4,
-      type: "speaking"
-    },
-    {
-      id: "7",
-      title: "Сочинение: Описание",
-      description: "Написание описательного текста по заданной теме",
-      category: "Письмо",
-      difficulty: "hard",
-      duration: "60 мин",
-      questions: 1,
-      participants: 423,
-      rating: 4.3,
-      type: "writing"
-    },
-    {
-      id: "8",
-      title: "Быстрый тест: Орфография",
-      description: "Проверка знания правил русской орфографии",
-      category: "Грамматика",
-      difficulty: "easy",
-      duration: "10 мин",
-      questions: 50,
-      participants: 3421,
-      rating: 4.7,
-      type: "grammar"
-    }
+    { id: "1", title: "Падежи существительных", description: "Проверьте знание склонения существительных в русском языке", category: "Грамматика", difficulty: "medium", duration: "20 мин", questions: 25, participants: 1247, rating: 4.8, type: "grammar", source: "platform" },
+    { id: "2", title: "Глаголы движения", description: "Тест на знание глаголов движения с приставками и без", category: "Грамматика", difficulty: "hard", duration: "30 мин", questions: 20, participants: 892, rating: 4.6, type: "grammar", source: "platform" },
+    { id: "3", title: "Словарь: Семья и родственники", description: "Проверьте знание лексики по теме семьи", category: "Лексика", difficulty: "easy", duration: "15 мин", questions: 30, participants: 2156, rating: 4.9, type: "vocabulary", source: "platform" },
+    { id: "4", title: "Понимание художественного текста", description: "Анализ отрывка из произведения русской литературы", category: "Чтение", difficulty: "hard", duration: "45 мин", questions: 15, participants: 634, rating: 4.7, type: "reading", source: "mine" },
+    { id: "5", title: "Аудирование: Диалоги", description: "Понимание разговорной речи в различных ситуациях", category: "Аудирование", difficulty: "medium", duration: "25 мин", questions: 20, participants: 1089, rating: 4.5, type: "listening", source: "platform" },
+    { id: "6", title: "Произношение: Ударения", description: "Правильная постановка ударений в словах", category: "Произношение", difficulty: "medium", duration: "18 мин", questions: 40, participants: 756, rating: 4.4, type: "speaking", source: "mine" },
+    { id: "7", title: "Сочинение: Описание", description: "Написание описательного текста по заданной теме", category: "Письмо", difficulty: "hard", duration: "60 мин", questions: 1, participants: 423, rating: 4.3, type: "writing", source: "mine" },
+    { id: "8", title: "Быстрый тест: Орфография", description: "Проверка знания правил русской орфографии", category: "Грамматика", difficulty: "easy", duration: "10 мин", questions: 50, participants: 3421, rating: 4.7, type: "grammar", source: "platform" }
   ];
+
+  const filteredTests = tests.filter(test => {
+    if (testsSource === 'all') return true;
+    return test.source === testsSource;
+  });
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -173,11 +96,6 @@ export default function TestsPage() {
       case 'writing': return <PenTool className="h-5 w-5" />;
       default: return <BookOpen className="h-5 w-5" />;
     }
-  };
-
-  const filterTestsByCategory = (category: string) => {
-    if (category === 'all') return tests;
-    return tests.filter(test => test.category === category);
   };
 
   const TestCard = ({ test }: { test: Test }) => (
@@ -240,151 +158,114 @@ export default function TestsPage() {
         </p>
       </div>
 
-          {/* Статистика тестов */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <BookOpen className="h-8 w-8 text-blue-500" />
-                  <div>
-                    <p className="text-2xl font-bold">{tests.length}</p>
-                    <p className="text-sm text-muted-foreground">Доступных тестов</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Target className="h-8 w-8 text-green-500" />
-                  <div>
-                    <p className="text-2xl font-bold">12</p>
-                    <p className="text-sm text-muted-foreground">Пройдено</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Trophy className="h-8 w-8 text-yellow-500" />
-                  <div>
-                    <p className="text-2xl font-bold">85%</p>
-                    <p className="text-sm text-muted-foreground">Средний результат</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="h-8 w-8 text-purple-500" />
-                  <div>
-                    <p className="text-2xl font-bold">6ч</p>
-                    <p className="text-sm text-muted-foreground">Время тестирования</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+      <div className="mb-8">
+        <ActionPanel
+          filterGroups={[
+            {
+              id: 'source',
+              controls: [
+                { type: 'chip', id: 'all', label: 'Все', selected: testsSource === 'all', onToggle: () => setTestsSource('all') },
+                { type: 'chip', id: 'platform', label: 'Тесты платформы', selected: testsSource === 'platform', onToggle: () => setTestsSource('platform') },
+                { type: 'chip', id: 'mine', label: 'Мои тесты', selected: testsSource === 'mine', onToggle: () => setTestsSource('mine') },
+              ],
+            },
+          ]}
+          primaryAction={{
+            label: 'Создать тест',
+            icon: BookOpen,
+            onClick: () => router.push('/create-test'),
+          }}
+          density="compact"
+        />
+      </div>
 
-          {/* Рекомендуемые тесты */}
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Рекомендуемые тесты</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {tests.slice(0, 3).map(test => (
-                <Card key={test.id} className="border-primary/20 bg-primary/5">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      {getTypeIcon(test.type)}
-                      <CardTitle className="text-base">{test.title}</CardTitle>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getDifficultyColor(test.difficulty)}>
-                        {getDifficultyText(test.difficulty)}
-                      </Badge>
-                      <Badge variant="outline">{test.duration}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Button size="sm" className="w-full">
-                      <Play className="h-3 w-3 mr-2" />
-                      Начать
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+      {/* Статистика тестов */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <BookOpen className="h-8 w-8 text-blue-500" />
+              <div>
+                <p className="text-2xl font-bold">{tests.length}</p>
+                <p className="text-sm text-muted-foreground">Доступных тестов</p>
+              </div>
             </div>
-          </div>
-
-          {/* Фильтры по категориям */}
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-7">
-              <TabsTrigger value="all">Все</TabsTrigger>
-              <TabsTrigger value="Грамматика">Грамматика</TabsTrigger>
-              <TabsTrigger value="Лексика">Лексика</TabsTrigger>
-              <TabsTrigger value="Чтение">Чтение</TabsTrigger>
-              <TabsTrigger value="Аудирование">Аудирование</TabsTrigger>
-              <TabsTrigger value="Произношение">Произношение</TabsTrigger>
-              <TabsTrigger value="Письмо">Письмо</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="all" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {tests.map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Target className="h-8 w-8 text-green-500" />
+              <div>
+                <p className="text-2xl font-bold">12</p>
+                <p className="text-sm text-muted-foreground">Пройдено</p>
               </div>
-            </TabsContent>
-
-            <TabsContent value="Грамматика" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Грамматика').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Trophy className="h-8 w-8 text-yellow-500" />
+              <div>
+                <p className="text-2xl font-bold">85%</p>
+                <p className="text-sm text-muted-foreground">Средний результат</p>
               </div>
-            </TabsContent>
-
-            <TabsContent value="Лексика" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Лексика').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Clock className="h-8 w-8 text-purple-500" />
+              <div>
+                <p className="text-2xl font-bold">6ч</p>
+                <p className="text-sm text-muted-foreground">Время тестирования</p>
               </div>
-            </TabsContent>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-            <TabsContent value="Чтение" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Чтение').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
-              </div>
-            </TabsContent>
+      {/* Рекомендуемые тесты */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Рекомендуемые тесты</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {tests.slice(0, 3).map(test => (
+            <Card key={test.id} className="border-primary/20 bg-primary/5">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  {getTypeIcon(test.type)}
+                  <CardTitle className="text-base">{test.title}</CardTitle>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge className={getDifficultyColor(test.difficulty)}>
+                    {getDifficultyText(test.difficulty)}
+                  </Badge>
+                  <Badge variant="outline">{test.duration}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Button size="sm" className="w-full">
+                  <Play className="h-3 w-3 mr-2" />
+                  Начать
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
 
-            <TabsContent value="Аудирование" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Аудирование').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="Произношение" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Произношение').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="Письмо" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filterTestsByCategory('Письмо').map(test => (
-                  <TestCard key={test.id} test={test} />
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {filteredTests.map(test => (
+          <TestCard key={test.id} test={test} />
+        ))}
+      </div>
+      {filteredTests.length === 0 && (
+        <div className="text-center py-16 text-muted-foreground bg-muted rounded-lg">
+          <p>Тесты, соответствующие выбранным фильтрам, не найдены.</p>
+        </div>
+      )}
     </PageLayout>
   );
 }

@@ -63,15 +63,16 @@ invariants:
   - "Source switcher values are one of: all | platform | my."
   - "No component-owned business logic; callbacks surface changes upstream."
   - "Density consistently maps to spacing and control size tokens."
-  - "On <sm screens, secondary actions render as icon-only ghost buttons with aria-labels."
+  - "On <sm screens, secondary actions render as icon-only ghost buttons with tooltips."
+  - "On <sm screens, primary action renders as icon-only outline button with aria-label."
   - "No full-width action buttons on mobile (no implicit `w-full` for actions)."
-  - "Primary action remains compact; secondary actions visually de-emphasized on mobile."
+  - "On mobile, all actions are visually de-emphasized (icon-only, outline/ghost variants)."
 
 policy:
   responsive_behavior:
     mobile_breakpoint: "sm"
-    secondary_actions_on_mobile: "icon-only ghost; text hidden"
-    primary_action_on_mobile: "compact button; outline variant preferred when action is auxiliary"
+    secondary_actions_on_mobile: "icon-only ghost buttons with tooltips; text hidden"
+    primary_action_on_mobile: "icon-only outline button; text replaced with aria-label for accessibility"
     layout_mobile: "flex-col with items-start; actions do not stretch"
 
 dependencies:
@@ -84,6 +85,9 @@ dependencies:
   - components/ui/badge
   - components/ui/switch
   - components/ui/card
+  - components/ui/searchable-select
+  - components/ui/test-form-inline
+  - components/ui/dialog
 
 anti_patterns:
   - pattern: "Actions intermixed with content"
@@ -104,10 +108,13 @@ anti_patterns:
     fix: "Promote global filters to ActionPanel; cards remain passive"
 
 integration_targets:
+  - app/dashboard/page.tsx: Main dashboard groups list (search, toggle archived, create group action)
   - app/dashboard/[id]/GroupStatsClient.tsx: Tests tab header
   - app/dashboard/[id]/GroupPageClient.tsx: Legacy tests tab header (if rendered)
-  - app/answers/page.tsx: Answers list header
+  - app/answers/page.tsx: Answers list header (to be migrated)
   - app/dashboard/[id]/students: Students tab header (file to be identified)
+  - app/action-panel-demo/page.tsx: Demo page showcasing ActionPanel patterns and TestFormInline
+  - app/create-test/page.tsx: Test creation page using TestFormInline organism
 
 deliverables:
   - file: components/ui/action-panel.tsx
@@ -116,6 +123,10 @@ deliverables:
     description: "Declarative filter group renderer (chips/selects/toggles)"
   - file: components/ui/source-switcher.tsx
     description: "Three-way source switcher with keyboard support and ARIA"
+  - file: components/ui/searchable-select.tsx
+    description: "Single-select dropdown with Command palette search for large option lists (molecule)"
+  - file: components/ui/test-form-inline.tsx
+    description: "Centralized test creation form organism (Input, Select, SearchableSelect, Dialog, responsive buttons)"
   - file: docs/contracts/ACTION-PANEL.md
     description: "Usage examples and composition guidelines"
 
@@ -154,3 +165,7 @@ evidence_requirements:
 notes:
   - "This contract excludes the Tabs component; focus on the top header panel."
   - "Adoption will occur incrementally per tab to avoid regressions."
+  - "TestFormInline establishes minimalist form pattern: no cards/labels, placeholders only, uniform h-9 height, flex-wrap layout with gap-2, responsive buttons (icon-only on mobile, full text on desktop from sm: breakpoint)."
+  - "SearchableSelect uses Command component for filtering large option lists (26+ items). Consistent with MultiTagPicker but single-select. Minimum popover width: min-w-[280px]."
+  - "Form sizing standards: Input h-9 w-full sm:w-auto sm:min-w-[360px], Selects h-9 w-auto min-w-[180px], buttons use sm:ml-auto for right alignment on desktop."
+  - "TestFormInline organism centralizes form pattern to prevent code duplication and AI confusion. Single source of truth for test creation forms across all pages."

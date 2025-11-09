@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { CalendarDays, ChevronsUpDown } from "lucide-react";
+import { CalendarDays, ChevronDown } from "lucide-react";
 
 type Props = {
   label?: string;
@@ -121,7 +121,7 @@ export function DateRangePopover({ label, startDate, endDate, onChange, triggerC
           >
             <CalendarDays className="mr-2 h-4 w-4" />
             {summary}
-            <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-3 w-[var(--radix-popover-trigger-width)] min-w-[320px]">
