@@ -66,45 +66,9 @@ const allPages: PageLink[] = [
     icon: <User className="h-6 w-6" />,
     category: "Основные"
   },
-  
-  // Учебные материалы
-  
-  {
-    href: "/dashboard",
-    title: "Дашборд",
-    description: "Общая статистика и обзор активности",
-    icon: <BarChart3 className="h-6 w-6" />,
-    category: "Обучение"
-  },
-  {
-    href: "/answers",
-    title: "Ответы",
-    description: "Проверка и оценка ответов студентов",
-    icon: <MessageSquare className="h-6 w-6" />,
-    category: "Обучение"
-  },
-  
-  // Дополнительные страницы
-  {
-    href: "/statistics",
-    title: "Статистика",
-    description: "Подробная аналитика и отчеты",
-    icon: <BarChart3 className="h-6 w-6" />,
-    category: "Дополнительно"
-  },
-  // Демонстрации
-  
 ];
 
 export default function HomePage() {
-  const groupedPages = allPages.reduce((acc, page) => {
-    if (!acc[page.category]) {
-      acc[page.category] = [];
-    }
-    acc[page.category].push(page);
-    return acc;
-  }, {} as Record<string, PageLink[]>);
-
   return (
     <div className="min-h-screen bg-background">
       <TopNavBlock 
@@ -122,35 +86,30 @@ export default function HomePage() {
             </p>
           </div>
 
-          {Object.entries(groupedPages).map(([category, pages]) => (
-            <div key={category} className="space-y-4">
-              <h2 className="text-2xl font-semibold text-foreground">{category}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {pages.map((page) => (
-                  <Card key={page.href} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                          {page.icon}
-                        </div>
-                        <CardTitle className="text-lg">{page.title}</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="mb-4">
-                        {page.description}
-                      </CardDescription>
-                      <Link href={page.href}>
-                        <Button className="w-full">
-                          Перейти
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allPages.map((page) => (
+              <Card key={page.href} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                      {page.icon}
+                    </div>
+                    <CardTitle className="text-lg">{page.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-4">
+                    {page.description}
+                  </CardDescription>
+                  <Link href={page.href}>
+                    <Button className="w-full">
+                      Перейти
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </ResponsiveContainer>
     </div>
