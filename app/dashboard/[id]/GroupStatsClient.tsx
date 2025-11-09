@@ -26,11 +26,13 @@ import {
   UserPlus,
   Edit,
   Archive,
-  ArrowRightLeft
+  ArrowRightLeft,
+  FileText,
+  ChevronRight
 } from 'lucide-react';
 import { StatisticsCard } from '@/components/ui/statistics-card';
 import StatCard from '@/components/feature/StatCard';
-import { TestSubmissionCard, TestSubmission } from '@/components/answer-card';
+import { TestSubmissionCard, TestSubmission, ScoreDisplay } from '@/components/answer-card';
 import { MultiTagPicker, Option as MultiOption } from '@/components/ui/multi-tag-picker';
 import { DateRangePopover } from '@/components/ui/date-range-popover';
 import { pluralizeWord } from '@/lib/utils/pluralization';
@@ -49,79 +51,81 @@ type StudentCardProps = {
 const StudentCard: React.FC<StudentCardProps> = ({ student, isSelected, onSelect, groupId }) => {
   const router = useRouter();
   return (
-    <Card
-      className={`group transition-all duration-200 hover:border-green-600 hover:shadow-md cursor-pointer relative ${
-        isSelected ? 'ring-2 ring-blue-500' : ''
+    <div
+      className={`group flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:bg-gray-50 cursor-pointer ${
+        isSelected ? 'bg-blue-50' : ''
       }`}
       onClick={() => onSelect(student.id)}
     >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3">
-        <div className="flex items-center gap-3">
-            <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => onSelect(student.id)}
-              onClick={(e) => e.stopPropagation()}
-            />
-            <H3 className="truncate">{student.name}</H3>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56" onClick={(e) => e.stopPropagation()}>
-              <DropdownMenuItem onClick={() => router.push(`/results?studentId=${student.id}`)}>
-                Результаты
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/dashboard?studentId=${student.id}`)}>
-                Дашборд ученика
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {
-                console.log('Деактивировать ученика', student.id);
-                alert('Ученика пометили как неактивного (заглушка)');
-              }}>
-                Деактивировать
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {
-                const newName = prompt('Установить имя ученика', student.name);
-                if (newName) {
-                  console.log('Установить имя', student.id, newName);
-                  alert(`Имя обновлено (заглушка): ${newName}`);
-                }
-              }}>
-                Установить имя
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {
-                console.log('Перенести ученика', student.id);
-                alert('Откроется диалог переноса (заглушка)');
-              }}>
-                Перенести
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600" onClick={() => {
-                if (confirm('Удалить ученика?')) {
-                  console.log('Удалить ученика', student.id);
-                  alert('Ученик удален (заглушка)');
-                }
-              }}>
-                Удалить
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/dashboard/${groupId}/statistics?studentId=${student.id}`)}>
-                📈 Статистика
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/answers?studentId=${student.id}`)}>
-                Ответы
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardHeader>
-        <CardContent className="p-3 pt-0">
+      <div className="flex items-center gap-4 flex-1 truncate">
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => onSelect(student.id)}
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Выбрать ${student.name}`}
+        />
+        <div className="flex flex-1 items-baseline gap-x-4 truncate">
+          <p className="font-medium truncate">{student.name}</p>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Mail className="h-4 w-4" />
+            <Mail className="h-4 w-4 flex-shrink-0" />
             <span className="truncate">{student.email}</span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+      <div className="ml-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Действия с учеником</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56" onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuItem onClick={() => router.push(`/results?studentId=${student.id}`)}>
+              Результаты
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/dashboard?studentId=${student.id}`)}>
+              Дашборд ученика
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              console.log('Деактивировать ученика', student.id);
+              alert('Ученика пометили как неактивного (заглушка)');
+            }}>
+              Деактивировать
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              const newName = prompt('Установить имя ученика', student.name);
+              if (newName) {
+                console.log('Установить имя', student.id, newName);
+                alert(`Имя обновлено (заглушка): ${newName}`);
+              }
+            }}>
+              Установить имя
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              console.log('Перенести ученика', student.id);
+              alert('Откроется диалог переноса (заглушка)');
+            }}>
+              Перенести
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600" onClick={() => {
+              if (confirm('Удалить ученика?')) {
+                console.log('Удалить ученика', student.id);
+                alert('Ученик удален (заглушка)');
+              }
+            }}>
+              Удалить
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/dashboard/${groupId}/statistics?studentId=${student.id}`)}>
+              📈 Статистика
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/answers?studentId=${student.id}`)}>
+              Ответы
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
   );
 };
 
@@ -201,7 +205,7 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
   const isDraft = groupStatus === 'draft';
   
   // Устанавливаем активный таб по умолчанию: для черновиков - "table", для остальных - "skills"
-  const [activeTab, setActiveTab] = useState(isDraft ? 'table' : 'skills');
+  const [activeTab, setActiveTab] = useState<'skills' | 'students' | 'table' | 'answers'>(isDraft ? 'table' : 'skills');
   const [testsSource, setTestsSource] = useState<'all' | 'platform' | 'mine'>('platform');
   const tableStats: TableStats[] = getTableStatisticsByGroupId(groupId);
 
@@ -233,6 +237,12 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
 
   const [students] = useState<SimpleStudent[]>(mockTableStudents);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+
+  // Фильтры для вкладки "Ответы"
+  const [selectedStudentIdsAnswers, setSelectedStudentIdsAnswers] = useState<string[]>([]);
+  const [selectedTestIdsAnswers, setSelectedTestIdsAnswers] = useState<string[]>([]);
+  const [startDateAnswers, setStartDateAnswers] = useState<Date | undefined>(undefined);
+  const [endDateAnswers, setEndDateAnswers] = useState<Date | undefined>(undefined);
 
   const handleStudentSelect = (studentId: string) => {
     setSelectedStudents((prev) =>
@@ -353,9 +363,31 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     ]
   };
 
+  // Options for answers tab filters
+  const studentOptionsAnswers: MultiOption[] = students.map((s) => ({ value: s.id, label: s.name }));
+  const testOptionsAnswers: MultiOption[] = Array.from(
+    new Map(mockTestFeed.submissions.map((s) => [s.testId, s.testTitle])).entries()
+  ).map(([value, label]) => ({ value, label }));
+
   // удалено: локальная реализация карточки отправки теста, заменяем на общий компонент
 
-  const TestFeed: React.FC<{ data: GroupTestFeedData; students: SimpleStudent[] }> = ({ data, students }) => {
+  interface TestFeedProps {
+    data: GroupTestFeedData;
+    students: SimpleStudent[];
+    selectedStudentIds: string[];
+    selectedTestIds: string[];
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  }
+
+  const TestFeed: React.FC<TestFeedProps> = ({
+    data,
+    students,
+    selectedStudentIds,
+    selectedTestIds,
+    startDate,
+    endDate,
+  }) => {
     const emailById: Record<string, string> = Object.fromEntries(students.map((s) => [s.id, s.email]));
     const mappedSubmissions: TestSubmission[] = data.submissions.map((sub) => ({
       id: sub.id,
@@ -374,26 +406,6 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
     const testOptions: MultiOption[] = Array.from(
       new Map(data.submissions.map((s) => [s.testId, s.testTitle])).entries()
     ).map(([value, label]) => ({ value, label }));
-
-    const [selectedStudentIds, setSelectedStudentIds] = React.useState<string[]>([]);
-    const [selectedTestIds, setSelectedTestIds] = React.useState<string[]>([]);
-    const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
-    const [endDate, setEndDate] = React.useState<Date | undefined>(undefined);
-
-    const toInputDate = (d?: Date): string => {
-      if (!d) return "";
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
-    };
-
-    const parseIsoInput = (iso: string): Date | undefined => {
-      if (!iso) return undefined;
-      const [y, m, d] = iso.split("-").map(Number);
-      const next = new Date(y, (m ?? 1) - 1, d ?? 1);
-      return isNaN(next.getTime()) ? undefined : next;
-    };
 
     const inRange = (submittedAt: string) => {
       const dt = new Date(submittedAt);
@@ -420,88 +432,32 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
       incorrectAnswers: filtered.reduce((sum, s) => sum + ((s.totalQuestions ?? 0) - (s.correctAnswers ?? 0)), 0),
     };
 
-    const resetFilters = () => {
-      setSelectedStudentIds([]);
-      setSelectedTestIds([]);
-      setStartDate(undefined);
-      setEndDate(undefined);
-    };
-
     return (
       <div className="space-y-4">
-        {/* Компактная панель фильтров */}
-        <div className="mb-2">
-          {(() => {
-            const getSummary = (title: string, ids: string[], options: MultiOption[]) => {
-              if (!ids || ids.length === 0) return `${title} · все`;
-              const labels = ids
-                .map((id) => options.find((o) => o.value === id)?.label || id)
-                .filter(Boolean);
-              if (labels.length === 1) return `${title} · ${labels[0]}`;
-              return `${title} · ${labels[0]} +${labels.length - 1}`;
-            };
-            const studentSummary = getSummary('Ученики', selectedStudentIds, studentOptions);
-            const testSummary = getSummary('Тесты', selectedTestIds, testOptions);
-            return (
-              <div className="flex flex-wrap items-center gap-2">
-                <MultiTagPicker
-                  options={studentOptions}
-                  value={selectedStudentIds}
-                  onChange={setSelectedStudentIds}
-                  showChips={false}
-                  placeholder={studentSummary}
-                  triggerClassName="h-9 px-3"
-                />
-                <MultiTagPicker
-                  options={testOptions}
-                  value={selectedTestIds}
-                  onChange={setSelectedTestIds}
-                  showChips={false}
-                  placeholder={testSummary}
-                  triggerClassName="h-9 px-3"
-                />
-                <DateRangePopover
-                  onChange={(start, end) => { setStartDate(start); setEndDate(end); }}
-                  startDate={startDate}
-                  endDate={endDate}
-                  triggerClassName="h-9 px-3"
-                />
-                <Button variant="ghost" size="sm" onClick={resetFilters}>
-                  Сброс
-                </Button>
+        <Card className="mb-6">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <p className="font-bold text-lg">{stats.totalTests}</p>
+                <p className="text-sm text-muted-foreground">{pluralizeWord(stats.totalTests, 'тест', 'теста', 'тестов')}</p>
               </div>
-            );
-          })()}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-2xl font-bold text-blue-600">{stats.totalTests}</h2>
-              <div className="text-sm text-gray-600">{pluralizeWord(stats.totalTests, 'тест', 'теста', 'тестов')}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-2xl font-bold text-indigo-600">{stats.totalAnswers}</h2>
-              <div className="text-sm text-gray-600">{pluralizeWord(stats.totalAnswers, 'ответ', 'ответа', 'ответов')}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-2xl font-bold text-green-600">{stats.correctAnswers}</h2>
-              <div className="text-sm text-gray-600">{pluralizeWord(stats.correctAnswers, 'правильный', 'правильных', 'правильных')}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-2xl font-bold text-red-600">{stats.incorrectAnswers}</h2>
-              <div className="text-sm text-gray-600">{pluralizeWord(stats.incorrectAnswers, 'неправильный', 'неправильных', 'неправильных')}</div>
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <p className="font-bold text-lg">{stats.totalAnswers}</p>
+                <p className="text-sm text-muted-foreground">{pluralizeWord(stats.totalAnswers, 'ответ', 'ответа', 'ответов')}</p>
+              </div>
+              <div>
+                <p className="font-bold text-lg text-green-700">{stats.correctAnswers}</p>
+                <p className="text-sm text-muted-foreground">{pluralizeWord(stats.correctAnswers, 'правильный', 'правильных', 'правильных')}</p>
+              </div>
+              <div>
+                <p className="font-bold text-lg text-red-700">{stats.incorrectAnswers}</p>
+                <p className="text-sm text-muted-foreground">{pluralizeWord(stats.incorrectAnswers, 'неправильный', 'неправильных', 'неправильных')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Последние тесты</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Последние тесты</h3>
           {filtered.map((sub) => (
             <TestSubmissionCard key={sub.id} submission={sub} />
           ))}
@@ -671,105 +627,35 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
           </div>
 
           {/* Табы для навигации */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="flex w-full bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-              {/* Показываем таб "Навыки" только для не-черновиков */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'skills' | 'students' | 'table' | 'answers')} className="space-y-8">
+            <TabsList className="flex w-full bg-muted p-1 rounded-xl">
               {!isDraft && (
                 <TabsTrigger 
                   value="skills" 
-                  className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
+                  className="flex-1 data-[state=active]:bg-background data-[state=active]:shadow-sm"
                 >
                   Навыки
                 </TabsTrigger>
               )}
               <TabsTrigger 
                 value="students"
-                className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
+                className="flex-1 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
                 Ученики
               </TabsTrigger>
               <TabsTrigger
                 value="table"
-                className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
+                className="flex-1 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
                 Тесты
               </TabsTrigger>
               <TabsTrigger
                 value="answers"
-                className="flex-shrink-0 data-[state=active]:bg-gray-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 text-gray-600 hover:text-gray-900 transition-all duration-200 font-medium"
+                className="flex-1 data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
                 Ответы
               </TabsTrigger>
             </TabsList>
-
-            {/* Стандартизованная ActionPanel под табами (по контракту) */}
-            {(() => {
-              if (activeTab === 'table') {
-                return (
-                  <Tabs
-                    value={testsSource}
-                    onValueChange={(v) => setTestsSource(v as "all" | "platform" | "mine")}
-                    className="w-full"
-                  >
-                    <ActionPanel
-                      filterGroups={[]}
-                      sourceSwitcher={{ enabled: true, value: testsSource, onChange: (v) => setTestsSource(v) }}
-                      primaryAction={{
-                        label: 'Создать тест',
-                        icon: BookOpen,
-                        onClick: () => router.push('/create-test'),
-                      }}
-                      density="compact"
-                    />
-                  </Tabs>
-                );
-              }
-
-              if (activeTab === 'students') {
-                return (
-                  <ActionPanel
-                    filterGroups={[]}
-                    selectAll={{
-                      label: 'Выбрать всех',
-                      checked: students.length > 0 && selectedStudents.length === students.length,
-                      onToggle: (checked) => {
-                        if (checked) {
-                          selectAllStudents();
-                        } else {
-                          setSelectedStudents([]);
-                        }
-                      },
-                    }}
-                    secondaryActions={selectedStudents.length > 0 ? [
-                      {
-                        id: 'transfer',
-                        label: 'Перенести',
-                        icon: ArrowRightLeft,
-                        onClick: transferSelectedStudents,
-                      },
-                    ] : []}
-                    primaryAction={{
-                      label: 'Добавить учеников',
-                      icon: UserPlus,
-                      onClick: addStudents,
-                    }}
-                    density="compact"
-                  />
-                );
-              }
-
-              return (
-                <ActionPanel
-                  filterGroups={[]}
-                  primaryAction={{
-                    label: 'Действие',
-                    icon: MoreHorizontal,
-                    onClick: () => console.log('Primary action for tab', activeTab),
-                  }}
-                  density="compact"
-                />
-              );
-            })()}
 
             {/* Таб "Навыки" - только для не-черновиков */}
             {!isDraft && (
@@ -821,97 +707,72 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
 
             {/* Таб "Ученики" */}
             <TabsContent value="students" className="space-y-4">
+              <ActionPanel
+                filterGroups={[]}
+                selectAll={{
+                  label: 'Выбрать всех',
+                  checked: students.length > 0 && selectedStudents.length === students.length,
+                  onToggle: (checked) => {
+                    if (checked) {
+                      selectAllStudents();
+                    } else {
+                      setSelectedStudents([]);
+                    }
+                  },
+                }}
+                secondaryActions={selectedStudents.length > 0 ? [
+                  {
+                    id: 'transfer',
+                    label: 'Перенести',
+                    icon: ArrowRightLeft,
+                    onClick: transferSelectedStudents,
+                  },
+                ] : []}
+                primaryAction={{
+                  label: 'Добавить учеников',
+                  icon: UserPlus,
+                  onClick: addStudents,
+                }}
+                density="compact"
+              />
               {/* Список учеников */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {students.map((student) => (
-                  <StudentCard
-                    key={student.id}
-                    student={student}
-                    isSelected={selectedStudents.includes(student.id)}
-                    onSelect={handleStudentSelect}
-                    groupId={groupId}
-                  />
+              <div className="border rounded-lg bg-card">
+                {students.map((student, index) => (
+                  <div key={student.id} className={index > 0 ? 'border-t' : ''}>
+                    <StudentCard
+                      student={student}
+                      isSelected={selectedStudents.includes(student.id)}
+                      onSelect={handleStudentSelect}
+                      groupId={groupId}
+                    />
+                  </div>
                 ))}
               </div>
             </TabsContent>
 
             {/* Таб "Тесты" */}
             <TabsContent value="table" className="space-y-6 table-tab-content">
-              <Tabs
-                value={testsSource}
-                onValueChange={(v) => setTestsSource(v as "all" | "platform" | "mine")}
-                className="w-full"
-              >
-                {/* Глобальная панель действий вынесена выше вкладок */}
-
-                {/* Все тесты: пока отображаем библиотеку платформы */}
-                <TabsContent value="all" className="space-y-6">
-                  {isDraft || groupStatus === 'archived' ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                        <BarChart3 className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Тесты</h3>
-                      <p className="text-gray-500 max-w-md">
-                        Для этой группы пока нет данных о результатах тестирования.
-                      </p>
-                    </div>
-                  ) : (
-                    <section className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {tableStats.map((stat) => (
-                        <Link
-                          key={stat.id}
-                          href={`/dashboard/${groupId}/statistics?title=${encodeURIComponent(toSlug(stat.title))}&stat=${encodeURIComponent(stat.id)}`}
-                          className="block"
-                        >
-                          <StatCard
-                            title={stat.title}
-                            testsCompleted={stat.testsCompleted}
-                            score={stat.score}
-                            totalScore={stat.totalScore}
-                            percentage={stat.percentage}
-                          />
-                        </Link>
-                      ))}
-                    </section>
-                  )}
-                </TabsContent>
-
-                {/* Тесты платформы: текущая библиотека */}
-                <TabsContent value="platform" className="space-y-6">
-                  {isDraft || groupStatus === 'archived' ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                        <BarChart3 className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Тесты</h3>
-                      <p className="text-gray-500 max-w-md">
-                        Для этой группы пока нет данных о результатах тестирования.
-                      </p>
-                    </div>
-                  ) : (
-                    <section className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {tableStats.map((stat) => (
-                        <Link
-                          key={stat.id}
-                          href={`/dashboard/${groupId}/statistics?title=${encodeURIComponent(toSlug(stat.title))}&stat=${encodeURIComponent(stat.id)}`}
-                          className="block"
-                        >
-                          <StatCard
-                            title={stat.title}
-                            testsCompleted={stat.testsCompleted}
-                            score={stat.score}
-                            totalScore={stat.totalScore}
-                            percentage={stat.percentage}
-                          />
-                        </Link>
-                      ))}
-                    </section>
-                  )}
-                </TabsContent>
-
-                {/* Мои тесты: пока пусто */}
-                <TabsContent value="mine" className="space-y-6">
+              <ActionPanel
+                filterGroups={[
+                  {
+                    id: 'source',
+                    controls: [
+                      { type: 'chip', id: 'all', label: 'Все', selected: testsSource === 'all', onToggle: () => setTestsSource('all') },
+                      { type: 'chip', id: 'platform', label: 'Тесты платформы', selected: testsSource === 'platform', onToggle: () => setTestsSource('platform') },
+                      { type: 'chip', id: 'mine', label: 'Мои тесты', selected: testsSource === 'mine', onToggle: () => setTestsSource('mine') },
+                    ],
+                  },
+                ]}
+                primaryAction={{
+                  label: 'Создать тест',
+                  icon: BookOpen,
+                  onClick: () => router.push('/create-test'),
+                }}
+                density="compact"
+              />
+              
+              {testsSource === 'mine' ? (
+                <div className="space-y-6">
                   <div className="text-center py-12">
                     <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">Мои тесты пусты</h3>
@@ -923,12 +784,111 @@ export default function GroupStatsClient({ groupId }: { groupId: string }) {
                       Создать тест
                     </Button>
                   </div>
-                </TabsContent>
-              </Tabs>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {(isDraft || groupStatus === 'archived' || tableStats.length === 0) ? (
+                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <BarChart3 className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Тесты</h3>
+                      <p className="text-gray-500 max-w-md">
+                        Для этой группы пока нет данных о результатах тестирования.
+                      </p>
+                    </div>
+                  ) : (
+                    <section className="mt-6 md:mt-8">
+                      <div className="border rounded-lg bg-card">
+                        {tableStats.map((stat, index) => (
+                          <Link
+                            key={stat.id}
+                            href={`/dashboard/${groupId}/statistics?title=${encodeURIComponent(toSlug(stat.title))}&stat=${encodeURIComponent(stat.id)}`}
+                            className={`block ${index > 0 ? 'border-t' : ''}`}
+                          >
+                            <div className="group flex justify-between items-center p-3 transition-all duration-200 hover:bg-gray-50">
+                              <div className="flex-1 truncate mr-4">
+                                <div className="flex items-center gap-3">
+                                  <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                  <p className="font-medium truncate">{stat.title}</p>
+                                </div>
+                                <div className="flex sm:hidden items-center flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground mt-2">
+                                  <span>{stat.testsCompleted} {pluralizeWord(stat.testsCompleted, 'тест', 'теста', 'тестов')}</span>
+                                  <span>{stat.score} / {stat.totalScore} {pluralizeWord(stat.totalScore, 'балл', 'балла', 'баллов')}</span>
+                                  <span className="font-bold text-foreground">{stat.percentage}%</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center shrink-0">
+                                <div className="hidden sm:flex items-center gap-6 text-sm text-muted-foreground">
+                                  <span className="w-28 hidden md:inline">{stat.testsCompleted} {pluralizeWord(stat.testsCompleted, 'тест', 'теста', 'тестов')}</span>
+                                  <span className="w-44 hidden sm:inline">{stat.score} / {stat.totalScore} {pluralizeWord(stat.totalScore, 'балл', 'балла', 'баллов')}</span>
+                                  <span className="w-16 font-bold text-foreground">{stat.percentage}%</span>
+                                </div>
+                                <div className="ml-4">
+                                  <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
+              )}
             </TabsContent>
             {/* Таб "Ответы" */}
             <TabsContent value="answers" className="space-y-6">
-              <TestFeed data={mockTestFeed} students={students} />
+              <div className="flex flex-wrap items-center gap-2">
+                <ActionPanel
+                  filterGroups={[
+                    {
+                      id: 'answers-filters',
+                      controls: [
+                        {
+                          type: 'multiselect',
+                          id: 'students',
+                          label: 'Ученики',
+                          values: selectedStudentIdsAnswers,
+                          options: studentOptionsAnswers,
+                          onChange: setSelectedStudentIdsAnswers,
+                        },
+                        {
+                          type: 'multiselect',
+                          id: 'tests',
+                          label: 'Тесты',
+                          values: selectedTestIdsAnswers,
+                          options: testOptionsAnswers,
+                          onChange: setSelectedTestIdsAnswers,
+                        },
+                      ],
+                    },
+                  ]}
+                  primaryAction={{
+                    label: 'Экспорт',
+                    icon: BookOpen,
+                    onClick: () => console.log('Export answers'),
+                  }}
+                  density="compact"
+                />
+                <DateRangePopover
+                  startDate={startDateAnswers}
+                  endDate={endDateAnswers}
+                  onChange={(start, end) => {
+                    setStartDateAnswers(start);
+                    setEndDateAnswers(end);
+                  }}
+                  triggerClassName="h-9 px-3"
+                />
+              </div>
+              <TestFeed
+                data={mockTestFeed}
+                students={students}
+                selectedStudentIds={selectedStudentIdsAnswers}
+                selectedTestIds={selectedTestIdsAnswers}
+                startDate={startDateAnswers}
+                endDate={endDateAnswers}
+              />
             </TabsContent>
            </Tabs>
         </div>
